@@ -1,9 +1,7 @@
-include config.mk # defintions of flags and methods that the project is using
+include config.mk      # defintions of flags and methods that the project is using
 
 # depends on the run so when we use just make we call this:
 all: run
-	@echo "$(CPP_FILES)"
-	@echo "$(OBJ_CPP_FILES)"
 	
 
 # running the os:
@@ -38,3 +36,12 @@ $(OBJ_DIR)%.o: %.cpp
 	mkdir -p $(dir $@) # creating the dir in the case that it is not created:
 	$(CC) $(COMPILER_FLAGS) -c $< -o $@
 	@echo "\n"
+
+
+# simple dependecies:
+dependencies:
+	sudo apt update
+	sudo apt install qemu-system-x86
+	sudo apt install nasm
+
+include dependecies.mk # installing the compiler and linker to the machine

@@ -4,8 +4,8 @@ CURRENT_DIR := $(shell pwd)
 
 # Compilation and assembly methods:
 export ASM    := nasm
-export CC     := x86_64-elf-gcc
-export LINKER := x86_64-elf-ld
+export CC     := compiler/x86_64-elf-gcc
+export LINKER := compiler/x86_64-elf-ld
 
 # asmbller flags: 
 export ASSEMLER_MBR_FLAGS := -f bin -o

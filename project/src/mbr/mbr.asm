@@ -9,8 +9,7 @@ mov sp, bp
 
 ; reading some sectors from the disk in order for us to load the bootloader
 call readDisk
-jmp $
-; jmp PROGRAM_SPACE
+jmp PROGRAM_SPACE
 
 ; including some src files:
 %include "src/mbr/print.asm"

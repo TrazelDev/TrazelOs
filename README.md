@@ -1,2 +1,39 @@
-# TrazelOs
-Trazel operating system
+# Trazel operating system - specializes mainly in managing memory
+## OS that mainly focuses on managing memory using paging, virtual memory, and a free memory pool for dynamic allocation of memory.
+
+## Building:
+> [!NOTE]
+> The project will work on Linux out of the box (mainly Ubuntu, the OS it was developed with); it was not tested on Windows and Mac.
+
+### Installation:
+
+#### Ubuntu:
+1. clone the projecct
+2. run: cd project
+3. run: sudo apt install make
+4. run: make dependencies
+5. run: make compiler_and_linker_dependencies
+6. in the case that it fails to run add the following to the bashrc PATH: "/usr/local/x86_64elfgcc/bin"
+
+#### Other Linux distributions:
+1. clone the projecct
+2. run: cd project
+3. install `make` `qemu-system-x86` `nasm`
+4. run: make compiler_and_linker_dependencies
+5. in the case that it fails to run add the following to the bashrc PATH: "/usr/local/x86_64elfgcc/bin"
+
+### Running the project:
+make
+
+### Cleaning the bin files:
+make clean
+
+## Current Goals:
+- [x] mbr
+- [ ] bootloader
+- [ ] idt
+- [ ] physical memory manager
+- [ ] virtual memory manager
+- [ ] process free memory (heap)
+- [ ] process managemnt
+- [ ] filing system
