@@ -1,4 +1,4 @@
-#.ONESHELL: # this means that all of the commands in the dependencies will be executed in the same shell
+
 compiler_and_linker_dependencies:
 	sudo apt install build-essential
 	sudo apt install bison
@@ -26,7 +26,7 @@ compiler_and_linker_dependencies:
 
 	mkdir -p binutils-build
 	cd binutils-build
-	../binutils-2.35.1/configure --target=$$TARGET --enable-interwork --enable-multilib --disable-nls --disable-werror --prefix=$$PREFIX 2>&1 | tee configure.log
+	../binutils-2.35.1/configure --target=$$TARGET --enable-interwork --enable-multilib --disable-nls --disable-werror --prefix=$$PREFIX 2>&1 | tee configure.log 
 	sudo make all install 2>&1 | tee make.log
 
 	cd /tmp/src

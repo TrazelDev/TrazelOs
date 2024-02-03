@@ -23,8 +23,8 @@ enableA20:
 	ret
 
 [bits 32]
-; %include "bootloader_stage/cpuDetection.asm"
-; %include "bootloader_stage/identityPaging.asm"
+%include "src/boot_loader/cpuDetection.asm"
+%include "src/boot_loader/identityPaging.asm"
 
 startProtectedMode:
     mov ax, dataseg
@@ -58,6 +58,24 @@ startProtectedMode:
     mov [0xb8028], byte ' '
     mov [0xb802A], byte ' '
 
-    
-    jmp $
+    call checkCpuId           ; making sure that the cpu that we are working with supports the cpuid instrecution
+	call detectLongMode       ; make sure that the cpu supports long mode
+	call setUpIdentityPaging  ; setting up identity paging for the first 512 pages
+	call editGDT              ; chaning the gdt so it will now be in protected mode
+
+	; switching to long mode:
+    jmp codeseg:start64Bit ; preforming far jump which is necessary because the cpu needs to switch to a new code segment after switching to 64 bit
+
+[bits 64]
+[extern _start]
+
+start64Bit:
+	; cleaning the text and changing the text color to green
+	mov edi, 0xb8000
+	mov rax, 0x0a200a200a200a20
+	mov ecx, 500
+	rep stosq
+
+	call _start
+	jmp $
 times 32650-($-$$) db 0

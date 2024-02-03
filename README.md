@@ -13,22 +13,26 @@ run:
 2. cd project
 3. sudo apt install `make`
 4. make `dependencies`
-5. make `compiler_and_linker_dependencies`
-6. in the case that it fails to run add the following to the bashrc PATH: "/usr/local/x86_64elfgcc/bin" with the command:
+5. cd `_linker_compiler_installer`
+6. make `compiler_and_linker_dependencies`
+7. in the case that it fails to run add the following to the bashrc PATH: "/usr/local/x86_64elfgcc/bin" with the command:
 `echo` 'export PATH="$PATH:/usr/local/x86_64elfgcc/bin"' >> ~/.bashrc;
 
 #### Other Linux distributions:
 1. clone the projecct
 2. cd project
 3. install `make` `qemu-system-x86` `nasm`
-4. run: make `compiler_and_linker_dependencies`
-5. in the case that it fails to run add the following to the bashrc PATH: "/usr/local/x86_64elfgcc/bin" with the command:
+4. cd `_linker_compiler_installer`
+5. make `compiler_and_linker_dependencies`
+6. in the case that it fails to run add the following to the bashrc PATH: "/usr/local/x86_64elfgcc/bin" with the command:
 `echo` 'export PATH="$PATH:/usr/local/x86_64elfgcc/bin"' >> ~/.bashrc;
 
 ### Running the project:
+cd project
 make run
 
 ### Cleaning the bin files:
+cd project
 make clean
 
 ## Current Goals:

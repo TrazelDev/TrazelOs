@@ -1,5 +1,5 @@
 include config.mk      # defintions of flags and methods that the project is using
-include dependencies.mk # installing the compiler and linker to the machine
+
 
 # depends on the run so when we use just make we call this:
 all: run
@@ -45,3 +45,4 @@ dependencies:
 	sudo apt install qemu-system-x86
 	sudo apt install nasm
 	
+#include dependencies.mk # installing the compiler and linker to the machine
