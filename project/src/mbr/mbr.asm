@@ -15,6 +15,7 @@ jmp PROGRAM_SPACE
 %include "src/mbr/print.asm"
 %include "src/mbr/diskRead.asm"
 
+errorString: db 'failed', 0 
 
 ; adding zeros in the end of the sector so there will the signiture 0xaa55 at the end of the file:
 times 510-($-$$) db 0

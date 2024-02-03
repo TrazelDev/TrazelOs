@@ -22,6 +22,6 @@ BOOT_DISK: db 0
 diskReadErrorString: db 'Disk Read Failed!', 0
 
 diskReadFailed:
-	mov bx, diskReadErrorString
+	mov si, diskReadErrorString
 	call printString
 	jmp $ ; infinite jump in the case that we fail to load from the disk

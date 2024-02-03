@@ -1,4 +1,4 @@
-.ONESHELL: # this means that all of the commands in the dependencies will be executed in the same shell
+#.ONESHELL: # this means that all of the commands in the dependencies will be executed in the same shell
 compiler_and_linker_dependencies:
 	sudo apt install build-essential
 	sudo apt install bison
