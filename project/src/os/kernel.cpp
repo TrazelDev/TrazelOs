@@ -1,5 +1,5 @@
 #include "utility/utility.h"
-#include "src/tests/test.h"
+#include "tests/test.h"
 
 extern "C" void _start()
 {
@@ -7,5 +7,5 @@ extern "C" void _start()
     
 
     IF_DEBUG(testEverything());
-    printString("success");
+    printString("success\n");
 }

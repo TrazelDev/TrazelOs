@@ -1,6 +1,7 @@
 #include "print.h"
-#include "utility/io/io.h"
 #include "utility/debug/assert.h"
+#include "utility/io/io.h"
+#include "utility/types/integer.h"
 
 uint16_t cursorPostion = 0;
 
@@ -31,6 +32,13 @@ uint16_t postionFromCords(uint8_t x, uint8_t y)
     return (y * VGA_WIDTH) + x;
 }
 
+
+void printf(const char* format, ...)
+{
+    printInt((uint64_t)(format));
+}
+
+
 void printString(const char* str)
 {
     uint16_t index = cursorPostion;
@@ -60,12 +68,27 @@ void printString(const char* str)
 }
 
 
-
 /// @brief templated function that prints some sort of integer to the string
 /// @tparam T some sort of and integer
 /// @param value the value that needs to be printed
 template< typename T>
 void printInt(T value)
 {
-    static char intStrBuffer[21];
+    printString(intToString(value));
+}
+
+void printInt(uint8_t  value)  { printInt<uint8_t  >(value); }
+void printInt(uint16_t value)  { printInt<uint16_t >(value); }
+void printInt(uint32_t value)  { printInt<uint32_t >(value); }
+void printInt(uint64_t value)  { printInt<uint64_t >(value); }
+void printInt(char      value) { printInt<char     >(value); }
+void printInt(short     value) { printInt<short    >(value); }
+void printInt(int       value) { printInt<int      >(value); }
+void printInt(long long value) { printInt<long long>(value); }
+
+
+void printChar(char ch)
+{
+    *(VGA_MEMORY + (cursorPostion * 2)) = ch;
+    setCursorPosition(cursorPostion + 1);
 }

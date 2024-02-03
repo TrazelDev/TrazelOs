@@ -19,18 +19,21 @@ void setCursorPosition(uint16_t position);
 uint16_t postionFromCords(uint8_t x, uint8_t y);
 
 
+void printf(const char* format, ...);
 
 
-
-
-
-
-
-
-
-
+void printInt(uint8_t   value);
+void printInt(uint16_t  value);
+void printInt(uint32_t  value);
+void printInt(uint64_t  value);
+void printInt(char      value);
+void printInt(short     value);
+void printInt(int       value);
+void printInt(long long value);
 
 
 /// @brief function that is printing an string
 /// @param str the string that needs to be printed and it is terminated with a null
 void printString(const char* str);
+
+void printChar(char ch);

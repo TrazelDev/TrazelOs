@@ -17,11 +17,11 @@ INCLUDE_DIRS                := -I$(CURRENT_DIR)/src/os/ -I$(CURRENT_DIR)/src/os/
 export COMPILER_FLAGS       := -Ttext 0x9000 -ffreestanding -mno-red-zone -m64 $(INCLUDE_DIRS)
 export COMPILER_DEBUG_FLAGS := $(COMPILER_FLAGS) -DDEBUG=1
 
-
 # locations:
 export BIN_DIR := bin/
 export SRC_DIR := src/
 export OBJ_DIR := obj/
+export ASM_DIR := my_asm/
 
 # files:
 export MBR_FILE        := src/mbr/mbr.asm
@@ -35,7 +35,7 @@ export KERNEL_BIN      := $(BIN_DIR)kernel.bin
 REMOVE_PREFIX := sed 's|^\./||'
 export CPP_FILES     := $(shell find . -name "*.cpp" | $(REMOVE_PREFIX))
 export OBJ_CPP_FILES := $(addprefix $(OBJ_DIR), $(CPP_FILES:.cpp=.o))
-
+export ASM_CPP_FILES := $(addprefix $(ASM_DIR), $(CPP_FILES:.cpp=.asm))
 
 
 # simulator:

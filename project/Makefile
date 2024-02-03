@@ -2,21 +2,42 @@ include config.mk      # defintions of flags and methods that the project is usi
 
 
 # depends on the run so when we use just make we call this:
-all: run
-	
+all: #run
+	@echo "$(ASM_CPP_FILES)"
+
+# a configuration to generate asm files from the cpp files:
+compile_asm: $(ASM_CPP_FILES)
+
+$(ASM_DIR)%.asm: %.cpp
+	@echo "${ECHO_GREEN_COLOR}compiling $< to asm:${ECHO_NO_COLOR}"
+	mkdir -p $(dir $@) # creating the dir in the case that it is not created:
+	$(CC) $(COMPILER_FLAGS) -S $< -o $@
+	@echo "\n"
+
+
+
+
+
 
 # new configuration that changes the compiler flags to debug flags and the running normal run
 debug: COMPILER_FLAGS = $(COMPILER_DEBUG_FLAGS)
 debug: run
 
-# running the os:
-run: create_os_bin
-	$(SIMULATOR) -drive file=$(OS_BIN),format=raw $(SIMULATOR_FLAGS)
+
+
 
 
 # cleaning all of the object files and bin files:
 clean:
-	$(RM) -r bin/* obj/*
+	$(RM) -r $(BIN_DIR)* $(OBJ_DIR)* $(ASM_DIR)*
+
+
+
+
+
+# running the os:
+run: create_os_bin
+	$(SIMULATOR) -drive file=$(OS_BIN),format=raw $(SIMULATOR_FLAGS)
 
 # adding togther the kernel and the master boot record:
 create_os_bin: link
@@ -24,10 +45,12 @@ create_os_bin: link
 
 
 # linking all of the cpp object files and the bootloader:
-link: asm $(OBJ_CPP_FILES)
+link: asm compile
 	@echo "${ECHO_GREEN_COLOR}linking everything:${ECHO_NO_COLOR}"
 	$(LINKER) -T linker.ld -o $(KERNEL_BIN) $(BOOTLOADER_OBJ) $(OBJ_CPP_FILES)
 	@echo "\n"
+
+compile: $(OBJ_CPP_FILES)
 
 # compiling the master boot record and bootloader:
 asm:
@@ -43,10 +66,12 @@ $(OBJ_DIR)%.o: %.cpp
 	$(CC) $(COMPILER_FLAGS) -c $< -o $@
 	@echo "\n"
 
+
+
+
+
 # simple dependecies:
 dependencies:
 	sudo apt update
 	sudo apt install qemu-system-x86
 	sudo apt install nasm
-	
-#include dependencies.mk # installing the compiler and linker to the machine
