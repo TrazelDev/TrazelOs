@@ -12,7 +12,10 @@ export ASSEMLER_MBR_FLAGS := -f bin -o
 export ASSEMLER_BOOT_LOADER_FLAGS := -f elf64 -o
 
 # compiler flags:
-export COMPILER_FLAGS := -Ttext 0x9000 -ffreestanding -mno-red-zone -m64 # $(INCLUDE_DIR)
+CURRENT_DIR                 := $(shell pwd)
+INCLUDE_DIRS                := -I$(CURRENT_DIR)/src/os/ -I$(CURRENT_DIR)/src/os/src/
+export COMPILER_FLAGS       := -Ttext 0x9000 -ffreestanding -mno-red-zone -m64 $(INCLUDE_DIRS)
+export COMPILER_DEBUG_FLAGS := $(COMPILER_FLAGS) -DDEBUG=1
 
 
 # locations:

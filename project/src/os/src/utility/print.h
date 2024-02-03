@@ -1,0 +1,35 @@
+#include "utility/types/types.h"
+
+#define VGA_WIDTH 80
+#define VGA_HEIGHT 25
+#define VGA_MEMORY (uint8_t*)0xb8000
+
+
+#define POSITION_LOWER_BYTES(position) (uint8_t)( position        & 0xFF)
+#define POSITION_UPPER_BYTES(position) (uint8_t)((position >> 8 ) & 0xFF)
+/// @brief function that is changing the position of the cursor on the screen:
+/// @param position the new position of the cursor where things will be printed
+void setCursorPosition(uint16_t position);
+
+/// @brief function that translates an x and y coordinates into a cursor position:
+/// @param x the x coordinate
+/// @param y the y coordinate
+/// @return the cursor position of this two coordinates
+uint16_t postionFromCords(uint8_t x, uint8_t y);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/// @brief function that is printing an string
+/// @param str the string that needs to be printed and it is terminated with a null
+void printString(const char* str);

@@ -5,6 +5,10 @@ include config.mk      # defintions of flags and methods that the project is usi
 all: run
 	
 
+# new configuration that changes the compiler flags to debug flags and the running normal run
+debug: COMPILER_FLAGS = $(COMPILER_DEBUG_FLAGS)
+debug: run
+
 # running the os:
 run: create_os_bin
 	$(SIMULATOR) -drive file=$(OS_BIN),format=raw $(SIMULATOR_FLAGS)
@@ -20,13 +24,13 @@ create_os_bin: link
 
 
 # linking all of the cpp object files and the bootloader:
-link: compile $(OBJ_CPP_FILES)
+link: asm $(OBJ_CPP_FILES)
 	@echo "${ECHO_GREEN_COLOR}linking everything:${ECHO_NO_COLOR}"
 	$(LINKER) -T linker.ld -o $(KERNEL_BIN) $(BOOTLOADER_OBJ) $(OBJ_CPP_FILES)
 	@echo "\n"
 
 # compiling the master boot record and bootloader:
-compile:
+asm:
 	@echo "${ECHO_GREEN_COLOR}compiling mbr:${ECHO_NO_COLOR}"
 	$(ASM) $(MBR_FILE) $(ASSEMLER_MBR_FLAGS) $(MBR_BIN)
 	$(ASM) $(BOOTLOADER_FILE) $(ASSEMLER_BOOT_LOADER_FLAGS) $(BOOTLOADER_OBJ)
