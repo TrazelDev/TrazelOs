@@ -1,3 +1,9 @@
-#include "debug/assert.h"
+#pragma once
+
+#include "utility/debug/assert.h"
+#include "utility/debug/debug.h"
+
 #include "utility/types/types.h"
-#include "print.h"
+#include "utility/types/integer.h"
+
+#include "utility/print.h"

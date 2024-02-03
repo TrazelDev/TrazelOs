@@ -1,7 +1,11 @@
-#include "src/utility/print.h"
+#include "utility/utility.h"
+#include "src/tests/test.h"
 
 extern "C" void _start()
 {
     setCursorPosition(postionFromCords(0, 0));
-    printString("hello world");
+    
+
+    IF_DEBUG(testEverything());
+    printString("success");
 }

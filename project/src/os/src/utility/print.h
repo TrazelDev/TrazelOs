@@ -1,3 +1,4 @@
+#pragma once
 #include "utility/types/types.h"
 
 #define VGA_WIDTH 80

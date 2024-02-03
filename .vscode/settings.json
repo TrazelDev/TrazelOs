@@ -1,5 +1,9 @@
 {
     "cSpell.words": [
         "CMOS"
-    ]
+    ],
+    "files.associations": {
+        "type_traits": "cpp",
+        "utility": "cpp"
+    }
 }

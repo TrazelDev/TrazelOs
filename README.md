@@ -9,7 +9,6 @@
 
 #### Ubuntu:
 1. clone the projecct
-run:
 2. cd project
 3. sudo apt install `make`
 4. make `dependencies`
@@ -28,12 +27,17 @@ run:
 `echo` 'export PATH="$PATH:/usr/local/x86_64elfgcc/bin"' >> ~/.bashrc;
 
 ### Running the project:
+#### Regular configuration:
+cd project
+make run
+#### Debug configuration:
 cd project
 make run
 
 ### Cleaning the bin files:
 cd project
 make clean
+
 
 ## Current Goals:
 - [x] mbr
