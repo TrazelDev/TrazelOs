@@ -11,7 +11,7 @@ compile_asm: $(ASM_CPP_FILES)
 $(ASM_DIR)%.asm: %.cpp
 	@echo "${ECHO_GREEN_COLOR}compiling $< to asm:${ECHO_NO_COLOR}"
 	mkdir -p $(dir $@) # creating the dir in the case that it is not created:
-	$(CC) $(COMPILER_FLAGS) -S $< -o $@
+	$(CC) $(COMPILER_DEBUG_FLAGS) -S $< -o $@
 	@echo "\n"
 
 
@@ -20,7 +20,7 @@ $(ASM_DIR)%.asm: %.cpp
 
 
 # new configuration that changes the compiler flags to debug flags and the running normal run
-debug: COMPILER_FLAGS = $(COMPILER_DEBUG_FLAGS)
+debug: COMPILER_RELEASE_FLAGS = $(COMPILER_DEBUG_FLAGS)
 debug: run
 
 
@@ -63,7 +63,7 @@ asm:
 $(OBJ_DIR)%.o: %.cpp
 	@echo "${ECHO_GREEN_COLOR}compiling $<:${ECHO_NO_COLOR}"
 	mkdir -p $(dir $@) # creating the dir in the case that it is not created:
-	$(CC) $(COMPILER_FLAGS) -c $< -o $@
+	$(CC) $(COMPILER_RELEASE_FLAGS) -c $< -o $@
 	@echo "\n"
 
 

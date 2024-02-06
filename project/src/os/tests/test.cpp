@@ -6,7 +6,7 @@
 void testEverything()
 {
     testIntLength();
-    testIntToString();
+    testStrCmp();
 }
 
 static void testIntLength()
@@ -19,7 +19,7 @@ static void testIntLength()
     ASSERT(getIntLength(value) == 13);
 }
 
-static void testIntToString()
+static void testStrCmp()
 {
     ASSERT(strCmp("value\0", "value"));
     ASSERT(!strCmp("hello world", " hello world"));

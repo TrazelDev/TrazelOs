@@ -1,9 +1,10 @@
 #pragma once
 #include "utility/types/types.h"
 
-#define INTEGER_MAX_LENGTH 21
-#define NEGATIVE           -1
+#define INTEGER_MAX_LENGTH  21
 #define DECIMAL_DIGIT_COUNT 10
+#define NEGATIVE            -1
+#define POSITIVE            1 
 /// @brief function that gets the number and returns the number of digits in the number plus 1 if the number is negative
 uint8_t getIntLength(uint8_t  value);
 /// @brief function that gets the number and returns the number of digits in the number plus 1 if the number is negative

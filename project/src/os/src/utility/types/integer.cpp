@@ -1,6 +1,5 @@
 #include "integer.h"
 
-
 /// @brief function that gets the number and returns the number of digits in the number plus 1 if the number is negative
 /// @tparam IntegerType the type of int that we need to know its length
 /// @return the length of the number
@@ -49,6 +48,7 @@ static char* intToString(IntegerType value)
 
     uint8_t integerLength = getIntLength(value);
     bool isNegative = false;
+    char digit;
     if(value < 0)
     {
         intToStringBuffer[0] = '-';
@@ -58,9 +58,12 @@ static char* intToString(IntegerType value)
     intToStringBuffer[integerLength] = '\0';
     while (value != 0)
     {
-        integerLength--;    
-        // putting the current digit in the most left side to create the number:
-        intToStringBuffer[integerLength] = (( (value % DECIMAL_DIGIT_COUNT) * (isNegative * NEGATIVE) ) + '0');
+        integerLength--;
+        
+        // putting the current digit in the most right side to create the number:
+        digit = ( (value % DECIMAL_DIGIT_COUNT) * (isNegative ? NEGATIVE : POSITIVE) ) + '0';
+        intToStringBuffer[integerLength] = digit;
+
         value /= DECIMAL_DIGIT_COUNT;
     }
 

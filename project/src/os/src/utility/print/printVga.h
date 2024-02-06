@@ -19,9 +19,6 @@ void setCursorPosition(uint16_t position);
 uint16_t postionFromCords(uint8_t x, uint8_t y);
 
 
-void printf(const char* format, ...);
-
-
 void printInt(uint8_t   value);
 void printInt(uint16_t  value);
 void printInt(uint32_t  value);

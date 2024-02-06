@@ -1,4 +1,4 @@
-void func(long long value, ...)
+void func(...)
 {
-
+    
 }

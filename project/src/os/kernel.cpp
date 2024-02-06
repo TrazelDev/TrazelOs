@@ -3,9 +3,8 @@
 
 extern "C" void _start()
 {
-    setCursorPosition(postionFromCords(0, 0));
+    initPrint();
     
-
-    IF_DEBUG(testEverything());
-    printString("success\n");
+    IF_DEBUG(testEverything());    
+    printf("success\n");
 }

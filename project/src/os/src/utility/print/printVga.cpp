@@ -1,4 +1,4 @@
-#include "print.h"
+#include "printVga.h"
 #include "utility/debug/assert.h"
 #include "utility/io/io.h"
 #include "utility/types/integer.h"
@@ -30,12 +30,6 @@ uint16_t postionFromCords(uint8_t x, uint8_t y)
     ASSERT((x >= 0 && y >= 0 && x < VGA_WIDTH && y < VGA_HEIGHT));
 
     return (y * VGA_WIDTH) + x;
-}
-
-
-void printf(const char* format, ...)
-{
-    printInt((uint64_t)(format));
 }
 
 
@@ -89,6 +83,7 @@ void printInt(long long value) { printInt<long long>(value); }
 
 void printChar(char ch)
 {
-    *(VGA_MEMORY + (cursorPostion * 2)) = ch;
-    setCursorPosition(cursorPostion + 1);
+    static char str[2] = { NULL, NULL };
+    str[0] = ch;
+    printString(str);
 }

@@ -3,4 +3,4 @@
 
 bool strCmp(const char* str1, const char* str2);
 
-uint64_t strLength(const char* );
+uint64_t strLength(const char* str);
