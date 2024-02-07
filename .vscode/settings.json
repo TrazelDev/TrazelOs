@@ -1,6 +1,7 @@
 {
     "cSpell.words": [
-        "CMOS"
+        "CMOS",
+        "IRQS"
     ],
     "files.associations": {
         "type_traits": "cpp",
