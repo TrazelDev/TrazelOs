@@ -1,6 +1,6 @@
 #pragma once
 
-enum InterruptIndexes
+enum class InterruptIndexes
 {
     // software interrupts:
     double_fault = 0x8,

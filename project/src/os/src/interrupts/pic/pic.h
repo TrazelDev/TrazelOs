@@ -1,6 +1,6 @@
 #pragma once
 
-
+#define TURN_OFF_ALL_INTERRUPTS 0xFF
 /// @brief function that is used to remap the programable interrupt controllers(pic).
 /// the reason that this function exists is because when the IBM created the first home
 /// computer, they designed it that by default that when a hardware interrupt is triggered
@@ -10,7 +10,7 @@ void remapPics();
 
 
 #define IRQS_PER_PIC 8
-enum IRQ
+enum class IRQ
 {
     pit = 0,
     keyboard,
@@ -31,7 +31,7 @@ enum IRQ
 };
 
 /// @brief function that enables the specific IRQ to generate interrupts if needed
-void enableInterrupt(IRQ irqNumber);
+void enableHardwareInterrupt(IRQ irqNumber);
 
 // this is the value of EOI ( end of interrupt ) that is being signaled to the pic when the interrupt has been handled so interrupt can be used again;
 #define END_OF_INTERRUPT 0x20 
@@ -41,4 +41,4 @@ void enableInterrupt(IRQ irqNumber);
  * @brief the function is getting an irq number and signals that the hardware
  *  interrupt has ended and another hardware interrupt can now be executed
 */
-void sendEOI(IRQ irqNumber);
+void picSendEOI(IRQ irqNumber);

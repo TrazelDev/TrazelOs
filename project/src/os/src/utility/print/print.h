@@ -4,7 +4,7 @@ void initPrint();
 
 
 #define SPECIAL_SYMBOL_PREFIX '%'
-enum SPECIAL_SYMBOLS
+enum class SPECIAL_SYMBOLS
 {
     CHAR    = 'c',
     INTEGER = 'd',

@@ -23,13 +23,13 @@ void __attribute__((optimize("-O0"))) printf(const char* format, ...)
         {
             switch(*(format + 1))
             {
-            case SPECIAL_SYMBOLS::CHAR:
+            case (int)SPECIAL_SYMBOLS::CHAR:
                 printChar(*((char*)param));
                 break;
-            case SPECIAL_SYMBOLS::INTEGER:
+            case (int)SPECIAL_SYMBOLS::INTEGER:
                 printInt(*((int32_t*)param));
                 break;
-            case SPECIAL_SYMBOLS::STRING:
+            case (int)SPECIAL_SYMBOLS::STRING:
                 printString(*((char**)param));
                 break;    
             default:
@@ -53,11 +53,11 @@ static bool isSpecialSymbol(char ch)
 {
     switch(ch)
     {
-    case SPECIAL_SYMBOLS::CHAR:
+    case (int)SPECIAL_SYMBOLS::CHAR:
         return true;
-    case SPECIAL_SYMBOLS::INTEGER:
+    case (int)SPECIAL_SYMBOLS::INTEGER:
         return true;
-    case SPECIAL_SYMBOLS::STRING:
+    case (int)SPECIAL_SYMBOLS::STRING:
         return true;
     default:
         return false;

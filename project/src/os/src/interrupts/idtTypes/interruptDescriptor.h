@@ -1,7 +1,6 @@
 #pragma once
 #include "utility/utility.h"
 #include "idtSelector.h"
-#include "idtOffset.h"
 #include "idtIndexes.h"
 
 typedef struct

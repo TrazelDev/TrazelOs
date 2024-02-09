@@ -28,20 +28,20 @@
 
 ### Running the project:
 #### Regular configuration:
-cd project
-make run
+1. `cd project`
+2. `make run`
 #### Debug configuration:
-cd project
-make run
+1. `cd project`
+2. `make debug`
 
 ### Cleaning the bin files:
-cd project
-make clean
+1. `cd project`
+2. `make clean`
 
 
 ## Current Goals:
 - [x] mbr
-- [ ] bootloader
+- [x] bootloader
 - [ ] idt
 - [ ] physical memory manager
 - [ ] virtual memory manager

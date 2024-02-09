@@ -68,7 +68,7 @@ startProtectedMode:
 
 [bits 64]
 [extern _start]
-
+%include "src/os/src/interrupts/specificInterrupts/keyboardInterrupt/keboardHandler.asm"
 start64Bit:
 	; cleaning the text and changing the text color to green
 	mov edi, 0xb8000

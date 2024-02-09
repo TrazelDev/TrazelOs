@@ -1,6 +1,7 @@
 #pragma once
 #include "utility/utility.h"
 #include "idtTypes/interruptDescriptor.h"
+#include "idtTypes/idtOffset.h"
 #include "pic/pic.h"
 
 /// @brief initializing the idt

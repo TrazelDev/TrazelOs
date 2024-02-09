@@ -1,7 +1,7 @@
 #pragma once
 #include "utility/utility.h"
-
 #include "interruptDescriptor.h"
+
 
 // ways to configure the offset, the offset is address of the isr function that is being called when the interrupt is triggered:
 #define OFFSET_LOW_BIT_MASK( offset)      (uint16_t)((offset & 0x000000000000FFFF)      )

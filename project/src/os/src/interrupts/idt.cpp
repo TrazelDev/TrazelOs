@@ -1,5 +1,5 @@
 #include "idt.h"
-
+#include "specificInterrupts/keyboardInterrupt/keyboardInterrupt.h"
 
 static InterruptDescriptor interruptTable[256];
 static IdtRegister         idtRegister;
@@ -17,11 +17,22 @@ void initSpecificInterrupt(uint64_t isrAddress, uint8_t interruptStackTable,
 void initIDT()
 {
     idtRegister.size = 0x1000; 
-    idtRegister.idtAddress = (uint64_t)interruptTable;
+    idtRegister.idtAddress = (uint64_t)(interruptTable);
 
-    // loading all of the interrupts
-    
-
+    // remapping the programable interrupts controllers ( farther explanation in the function itself )  
     remapPics();
 
+    
+    // loading all of the interrupts
+    initKeyboardInterrupt();
+
+
+
+    asm volatile(
+        "lidt %0 \n\t"  // loading the interrupt register
+        "sti     \n\t"  // enabling interrupts
+        : 
+        : "m"(idtRegister)
+        : "%eax", "%ecx", "%edx"
+    );
 }
