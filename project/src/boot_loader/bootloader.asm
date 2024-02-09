@@ -78,4 +78,4 @@ start64Bit:
 
 	call _start
 	jmp $
-times 26000-($-$$) db 0
+times 26500-($-$$) db 0
