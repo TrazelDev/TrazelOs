@@ -15,6 +15,9 @@ typedef struct
     uint64_t idtAddress;
 } __attribute__((packed)) IdtRegister;
 
+/// @brief the function loads the interrupt register to memory which loads the interrupt descriptor table to memory.
+/// this function all also sets the interrupt flag which enables interrupts to get called in the os.
+static void loadIDTRegister();
 
 /// @brief this function is used to initialize a specific interrupt function
 /// @param isrAddress the address of the function is called when an interrupt is triggered
@@ -23,3 +26,5 @@ typedef struct
 /// @param extraBits extra bits that could be used as flags currently it is nothing
 /// @param interruptIndex the index of the interrupt
 void initSpecificInterrupt(uint64_t isrAddress, uint8_t interruptStackTable, uint8_t typesAndAttributes, uint8_t extraBits, uint8_t interruptIndex);
+
+

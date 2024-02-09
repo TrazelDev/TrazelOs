@@ -1,8 +1,8 @@
 #include "idt.h"
-#include "specificInterrupts/keyboardInterrupt/keyboardInterrupt.h"
+#include "specificInterrupts/allInterrupts.h"
 
-static InterruptDescriptor interruptTable[256];
-static IdtRegister         idtRegister;
+static InterruptDescriptor interruptTable[256]; // the interrupt descriptor table
+static IdtRegister         idtRegister;         // the idt register that is loaded
 
 void initSpecificInterrupt(uint64_t isrAddress, uint8_t interruptStackTable, 
     uint8_t typesAndAttributes, uint8_t extraBits, uint8_t interruptIndex)
@@ -14,6 +14,19 @@ void initSpecificInterrupt(uint64_t isrAddress, uint8_t interruptStackTable,
     interruptTable[interruptIndex].extraBits  = extraBits;              // extra bits that can store specific information and in the future flags
 }
 
+
+static void loadIDTRegister()
+{
+    asm volatile(
+        "lidt %0 \n\t"  // loading the interrupt register
+        "sti     \n\t"  // enabling interrupts
+        : 
+        : "m"(idtRegister)
+        : "%eax", "%ecx", "%edx"
+    );
+}
+
+
 void initIDT()
 {
     idtRegister.size = 0x1000; 
@@ -22,17 +35,8 @@ void initIDT()
     // remapping the programable interrupts controllers ( farther explanation in the function itself )  
     remapPics();
 
-    
-    // loading all of the interrupts
-    initKeyboardInterrupt();
+    // initializing all of the current interrupt that the os supports right now:
+    initAllInterrupt();
 
-
-
-    asm volatile(
-        "lidt %0 \n\t"  // loading the interrupt register
-        "sti     \n\t"  // enabling interrupts
-        : 
-        : "m"(idtRegister)
-        : "%eax", "%ecx", "%edx"
-    );
+    loadIDTRegister();
 }

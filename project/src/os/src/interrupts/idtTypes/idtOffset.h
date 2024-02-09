@@ -4,9 +4,9 @@
 
 
 // ways to configure the offset, the offset is address of the isr function that is being called when the interrupt is triggered:
-#define OFFSET_LOW_BIT_MASK( offset)      (uint16_t)((offset & 0x000000000000FFFF)      )
-#define OFFSET_MID_BIT_MASK( offset)      (uint16_t)((offset & 0x00000000FFFF0000) >> 16)
-#define OFFSET_HIGH_BIT_MASK(offset)      (uint32_t)((offset & 0xFFFFFFFF00000000) >> 32)
+#define SET_OFFSET_LOW_BIT_MASK( offset)      (uint16_t)((offset & 0x000000000000FFFF)      )
+#define SET_OFFSET_MID_BIT_MASK( offset)      (uint16_t)((offset & 0x00000000FFFF0000) >> 16)
+#define SET_OFFSET_HIGH_BIT_MASK(offset)      (uint32_t)((offset & 0xFFFFFFFF00000000) >> 32)
 
 
 /// @brief this function is getting the offset which is the address of the isr function that we want to be called when the interrupt is triggered
@@ -14,8 +14,13 @@ void    setOffset(InterruptDescriptor* desc, uint64_t offset);
 #define setIsrFunctionAddress(desc, offset) setOffset(desc, offset)
 
 
+// ways to extract the offset:
+#define GET_OFFSET_LOW_BIT_MASK( desc) ((uint64_t)desc->offsetLow )
+#define GET_OFFSET_MID_BIT_MASK( desc) ((uint64_t)desc->offsetMid )  << 16
+#define GET_OFFSET_HIGH_BIT_MASK(desc) ((uint64_t)desc->offsetHigh)  << 32
+
 /// @brief function that will return the offset from the descriptor:
-/// @return 
+/// @return the offset 
 uint64_t getOffset(InterruptDescriptor* desc);
 
 

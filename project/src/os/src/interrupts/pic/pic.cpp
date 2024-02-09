@@ -47,16 +47,15 @@ void enableHardwareInterrupt(IRQ irqNumber)
     uint8_t portOfTheIRQ = (irqNumber > LAST_INDEX_OF_MASTER_PIC); // a value that stores the port ( slave port or master port ) that corresponds to this specific IRQ number
     
     // to turn on a specific irq line we have to go to the specific bit that represents
-    // the irq line and turn off that bit. this value represents the bit index of irq we want to turn on
-    uint8_t bitIndex = ((uint8_t)irqNumber % IRQS_PER_PIC);
+    // the irq line and turn off that bit. 
+    // this value represents the bit index of irq we want to turn on
+    uint8_t bitIndexOfNewIRQ = ((uint8_t)irqNumber % IRQS_PER_PIC);
     
     if(irqNumber > LAST_INDEX_OF_MASTER_PIC) { portOfTheIRQ = IO_PORTS::slave_pic_data_port;  }
     else                                     { portOfTheIRQ = IO_PORTS::master_pic_data_port; }
 
-    workingInterruptsBitMask = inb(portOfTheIRQ);
-    
-    //outb(IO_PORTS::master_pic_data_port, 0xfd); //~(1 >> bitIndex));    
-    //outb(0xa1, 0xff);
+    workingInterruptsBitMask = inb(portOfTheIRQ); // getting the current working hardware interrupts
+    outb(IO_PORTS::master_pic_data_port, WORKING_HARDWARE_INTERRUPTS(workingInterruptsBitMask, bitIndexOfNewIRQ)); // uploading the new working hardware interrupts
 }
 
 void picSendEOI(IRQ irqNumber)
@@ -64,11 +63,11 @@ void picSendEOI(IRQ irqNumber)
     // in the case that the handled interrupt was on the slave pic:
     if(irqNumber > LAST_INDEX_OF_MASTER_PIC)
     {
-        outb(IO_PORTS::slave_pic_data_port, END_OF_INTERRUPT);
+        outb(IO_PORTS::slave_pic_command_port, END_OF_INTERRUPT);
         return;
     }
     
 
     // in the case that the handled interrupt was on the master pic:
-    outb(IO_PORTS::master_pic_data_port, END_OF_INTERRUPT);
+    outb(IO_PORTS::master_pic_command_port, END_OF_INTERRUPT);
 }

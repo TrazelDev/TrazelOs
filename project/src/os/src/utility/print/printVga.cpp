@@ -43,9 +43,14 @@ void printString(const char* str)
         // using a switch to check if it is a normal char or there is a special char that needs to be printed:
         switch (str[strIndex])
         {
-            case '\n':
+            case (char)SPECIAL_CHARS::NEW_LINE:
                 index += VGA_WIDTH;
                 index -= (index % VGA_WIDTH + 1);
+                break;
+            case (char)SPECIAL_CHARS::BACK_SPACE:
+                index--;
+                *(VGA_MEMORY + (index * 2)) = ' ';
+                index--;
                 break;
             default:
                 *(VGA_MEMORY + (index * 2)) = str[strIndex];

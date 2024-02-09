@@ -8,5 +8,5 @@ extern "C" void _start()
     initIDT();
     
     IF_DEBUG(testEverything());    
-    printf("success\n");
+    printf("current tests are successful\n");
 }

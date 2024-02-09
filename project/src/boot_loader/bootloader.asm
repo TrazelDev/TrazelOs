@@ -68,7 +68,7 @@ startProtectedMode:
 
 [bits 64]
 [extern _start]
-%include "src/os/src/interrupts/specificInterrupts/keyboardInterrupt/keboardHandler.asm"
+%include "src/os/src/interrupts/specificInterrupts/hardwareInterrupts/keyboardInterrupt/keboardHandler.asm"
 start64Bit:
 	; cleaning the text and changing the text color to green
 	mov edi, 0xb8000
@@ -78,4 +78,4 @@ start64Bit:
 
 	call _start
 	jmp $
-times 27000-($-$$) db 0
+times 26000-($-$$) db 0

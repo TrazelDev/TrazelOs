@@ -5,6 +5,11 @@
 #define VGA_HEIGHT 25
 #define VGA_MEMORY (uint8_t*)0xb8000
 
+enum class SPECIAL_CHARS
+{
+    NEW_LINE = '\n',
+    BACK_SPACE = '\b'
+};
 
 #define POSITION_LOWER_BYTES(position) (uint8_t)( position        & 0xFF)
 #define POSITION_UPPER_BYTES(position) (uint8_t)((position >> 8 ) & 0xFF)
