@@ -8,9 +8,9 @@ export CC     := x86_64-elf-gcc
 export LINKER := x86_64-elf-ld
 
 # asmbller flags: 
-export ASSEMLER_MBR_FLAGS := -f bin -o
-export ASSEMLER_BOOT_LOADER_FLAGS := -f elf64 -o
-
+export ASSEMBLER_MBR_FLAGS := -f bin -o
+export ASSEMBLER_BOOT_LOADER_FLAGS := -f elf64 -o
+export ASSEMBLER_OS_FLAGS := -f elf64 -o
 # compiler flags:
 CURRENT_DIR                   := $(shell pwd)
 INCLUDE_DIRS                  := -I$(CURRENT_DIR)/src/os/ -I$(CURRENT_DIR)/src/os/src/
@@ -35,8 +35,10 @@ export KERNEL_BIN      := $(BIN_DIR)kernel.bin
 # this removes the ./ prefix at the start:
 REMOVE_PREFIX := sed 's|^\./||'
 export CPP_FILES     := $(shell find . -name "*.cpp" | $(REMOVE_PREFIX))
-export OBJ_CPP_FILES := $(addprefix $(OBJ_DIR), $(CPP_FILES:.cpp=.o))
-export ASM_CPP_FILES := $(addprefix $(ASM_DIR), $(CPP_FILES:.cpp=.asm))
+export ASM_FILES     := $(shell find src/os/ -name "*.asm" | $(REMOVE_PREFIX))
+export OBJ_CPP_FILES := $(addprefix $(OBJ_DIR), $(CPP_FILES:.cpp=.o)   )
+export OBJ_ASM_FILES := $(addprefix $(OBJ_DIR), $(ASM_FILES:.asm=Asm.o))
+export ASM_CPP_FILES := $(addprefix $(ASM_DIR), $(CPP_FILES:.cpp=.asm) )
 
 
 # simulator:

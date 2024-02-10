@@ -45,18 +45,20 @@ create_os_bin: link
 
 
 # linking all of the cpp object files and the bootloader:
-link: asm compile
+link: asm compile assemble
 	@echo "${ECHO_GREEN_COLOR}linking everything:${ECHO_NO_COLOR}"
-	$(LINKER) -T linker.ld -o $(KERNEL_BIN) $(BOOTLOADER_OBJ) $(OBJ_CPP_FILES)
+	$(LINKER) -T linker.ld -o $(KERNEL_BIN) $(BOOTLOADER_OBJ) $(OBJ_ASM_FILES) $(OBJ_CPP_FILES)
 	@echo "\n"
 
-compile: $(OBJ_CPP_FILES)
+compile: $(OBJ_CPP_FILES) 
 
-# compiling the master boot record and bootloader:
+assemble: $(OBJ_ASM_FILES)
+
+# assembling the master boot record and bootloader:
 asm:
-	@echo "${ECHO_GREEN_COLOR}compiling mbr:${ECHO_NO_COLOR}"
-	$(ASM) $(MBR_FILE) $(ASSEMLER_MBR_FLAGS) $(MBR_BIN)
-	$(ASM) $(BOOTLOADER_FILE) $(ASSEMLER_BOOT_LOADER_FLAGS) $(BOOTLOADER_OBJ)
+	@echo "${ECHO_GREEN_COLOR}assembling mbr:${ECHO_NO_COLOR}"
+	$(ASM) $(MBR_FILE) $(ASSEMBLER_MBR_FLAGS) $(MBR_BIN)
+	$(ASM) $(BOOTLOADER_FILE) $(ASSEMBLER_BOOT_LOADER_FLAGS) $(BOOTLOADER_OBJ)
 	@echo "\n"
 
 # this tells make how to compile a cpp file into an o file:
@@ -66,7 +68,12 @@ $(OBJ_DIR)%.o: %.cpp
 	$(CC) $(COMPILER_RELEASE_FLAGS) -c $< -o $@
 	@echo "\n"
 
-
+# this tells make how to assemble a asm file into an o file:
+$(OBJ_DIR)%Asm.o: %.asm
+	@echo "${ECHO_GREEN_COLOR}assembling $<:${ECHO_NO_COLOR}"
+	mkdir -p $(dir $@) # creating the dir in the case that it is not created:
+	$(ASM) $< $(ASSEMBLER_BOOT_LOADER_FLAGS) $@
+	@echo "\n"
 
 
 

@@ -1,3 +1,4 @@
+[bits 64]
 
 %macro PUSHALL 0
   push rax
