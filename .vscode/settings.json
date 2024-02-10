@@ -11,5 +11,6 @@
         "functional": "cpp",
         "tuple": "cpp",
         "random": "cpp"
-    }
+    },
+    "C_Cpp.dimInactiveRegions": false
 }
