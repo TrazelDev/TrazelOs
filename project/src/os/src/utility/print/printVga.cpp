@@ -66,9 +66,15 @@ void printString(const char* str)
     setCursorPosition(index);
 }
 
+void printChar(char ch)
+{
+    static char str[2] = { NULL, NULL };
+    str[0] = ch;
+    printString(str);
+}
 
-/// @brief templated function that prints some sort of integer to the string
-/// @tparam T some sort of and integer
+/// @brief templated function that prints some sort of integer
+/// @tparam T some sort of an integer
 /// @param value the value that needs to be printed
 template< typename T>
 void printInt(T value)
@@ -85,10 +91,16 @@ void printInt(short     value) { printInt<short    >(value); }
 void printInt(int       value) { printInt<int      >(value); }
 void printInt(long long value) { printInt<long long>(value); }
 
-
-void printChar(char ch)
+/// @brief templated function that prints some sort of hex
+/// @tparam T some sort of an hex number
+/// @param value the value that needs to be printed
+template< typename T>
+void printHex(T value)
 {
-    static char str[2] = { NULL, NULL };
-    str[0] = ch;
-    printString(str);
+    printString(hexToString(value));
 }
+
+void printHex(uint8_t  value) { return printHex<uint8_t >(value); };
+void printHex(uint16_t value) { return printHex<uint16_t>(value); };
+void printHex(uint32_t value) { return printHex<uint32_t>(value); };
+void printHex(uint64_t value) { return printHex<uint64_t>(value); };

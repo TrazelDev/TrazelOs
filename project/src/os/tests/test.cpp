@@ -7,6 +7,7 @@ void testEverything()
 {
     testIntLength();
     testStrCmp();
+    testHexToString();
     printf("current tests are successful\n");
 }
 
@@ -24,6 +25,12 @@ static void testStrCmp()
 {
     ASSERT(strCmp("value\0", "value"));
     ASSERT(!strCmp("hello world", " hello world"));
+}
+
+static void testHexToString()
+{
+    ASSERT(strCmp("0x5555", hexToString((uint64_t)0x5555)));
+    ASSERT(strCmp("0x5AEFC8D", hexToString((uint64_t)0x5AEFC8D)));
 }
 
 #endif // DEBUG

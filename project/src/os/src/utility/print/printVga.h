@@ -40,3 +40,9 @@ void printInt(long long value);
 void printString(const char* str);
 
 void printChar(char ch);
+
+
+void printHex(uint8_t  value);
+void printHex(uint16_t value);
+void printHex(uint32_t value);
+void printHex(uint64_t value);

@@ -31,7 +31,13 @@ void __attribute__((optimize("-O0"))) printf(const char* format, ...)
                 break;
             case (int)SPECIAL_SYMBOLS::STRING:
                 printString(*((char**)param));
-                break;    
+                break;
+            case (int)SPECIAL_SYMBOLS::UNSIGNED_INTEGER:
+                printInt(*((uint64_t*)param));
+                break;
+            case (int)SPECIAL_SYMBOLS::HEX:
+                printHex(*((uint64_t*)param));
+                break;
             default:
                 break;
             }
@@ -58,6 +64,10 @@ static bool isSpecialSymbol(char ch)
     case (int)SPECIAL_SYMBOLS::INTEGER:
         return true;
     case (int)SPECIAL_SYMBOLS::STRING:
+        return true;
+    case (int)SPECIAL_SYMBOLS::UNSIGNED_INTEGER:
+        return true;
+    case (int)SPECIAL_SYMBOLS::HEX:
         return true;
     default:
         return false;

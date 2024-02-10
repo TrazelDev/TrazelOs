@@ -3,8 +3,10 @@ jmp EnterProtectedMode
 errorString: db 'failed', 0 
 %include "src/boot_loader/gdt.asm"
 %include "src/mbr/print.asm"
+%include "src/boot_loader/memoryMap.asm"
 
 EnterProtectedMode:
+	call detectMemory
 	call enableA20    
 	cli 					   ; clearing the interrupt flag
 	lgdt [gdt_descriptor]      ; this loads the gdt into the gdt registers

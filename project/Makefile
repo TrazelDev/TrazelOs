@@ -54,6 +54,7 @@ $(KERNEL_BIN): link
 # linking all of the cpp object files and the bootloader:
 link: asm_bootloader compile assemble
 	@echo "${ECHO_GREEN_COLOR}linking everything:${ECHO_NO_COLOR}"
+	mkdir -p $(dir $(KERNEL_BIN))
 	$(LINKER) -T linker.ld -o $(KERNEL_BIN) $(BOOTLOADER_OBJ) $(OBJ_ASM_FILES) $(OBJ_CPP_FILES)
 	@echo "\n"
 
