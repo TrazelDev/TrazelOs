@@ -7,6 +7,5 @@ extern "C" void _start()
     initPrint();
     initIDT();
     
-    IF_DEBUG(testEverything());    
-    printf("current tests are successful\n");
+    IF_DEBUG(testEverything());
 }

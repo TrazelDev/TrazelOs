@@ -40,12 +40,19 @@ run: create_os_bin
 	$(SIMULATOR) -drive file=$(OS_BIN),format=raw $(SIMULATOR_FLAGS)
 
 # adding togther the kernel and the master boot record:
-create_os_bin: link
+create_os_bin: link asm_mbr
 	cat $(MBR_BIN) $(KERNEL_BIN) > $(OS_BIN)
 
+# creating the master boot record and loading the correct amount of sectors
+asm_mbr: $(KERNEL_BIN)
+	@echo "${ECHO_GREEN_COLOR}creating the master boot record:${ECHO_NO_COLOR}"
+	mkdir -p $(dir $(MBR_BIN))
+	$(ASM) -D SECTORS_TO_LOAD=$(SECTORS_TO_LOAD) $(MBR_FILE) $(ASSEMBLER_MBR_FLAGS) $(MBR_BIN)
+
+$(KERNEL_BIN): link
 
 # linking all of the cpp object files and the bootloader:
-link: asm compile assemble
+link: asm_bootloader compile assemble
 	@echo "${ECHO_GREEN_COLOR}linking everything:${ECHO_NO_COLOR}"
 	$(LINKER) -T linker.ld -o $(KERNEL_BIN) $(BOOTLOADER_OBJ) $(OBJ_ASM_FILES) $(OBJ_CPP_FILES)
 	@echo "\n"
@@ -54,10 +61,10 @@ compile: $(OBJ_CPP_FILES)
 
 assemble: $(OBJ_ASM_FILES)
 
-# assembling the master boot record and bootloader:
-asm:
+# assembling bootloader:
+asm_bootloader:
 	@echo "${ECHO_GREEN_COLOR}assembling mbr:${ECHO_NO_COLOR}"
-	$(ASM) $(MBR_FILE) $(ASSEMBLER_MBR_FLAGS) $(MBR_BIN)
+	mkdir -p $(dir $(BOOTLOADER_OBJ))
 	$(ASM) $(BOOTLOADER_FILE) $(ASSEMBLER_BOOT_LOADER_FLAGS) $(BOOTLOADER_OBJ)
 	@echo "\n"
 

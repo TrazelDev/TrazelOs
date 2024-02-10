@@ -53,3 +53,8 @@ export SIMULATOR_FLAGS $(RAM_SIZE) $(CPU_TYPE) $(CLOCK_TIME)
 #echo colors: 
 export ECHO_GREEN_COLOR := \033[0;32m
 export ECHO_NO_COLOR    := \033[97m
+
+
+KERNEL_SIZE ?= $(shell wc -c < $(KERNEL_BIN))
+SECTOR_SIZE := 512
+export SECTORS_TO_LOAD ?= $(shell if [ -e "$(KERNEL_BIN)" ]; then echo $$((($(KERNEL_SIZE) / $(SECTOR_SIZE)) + 1)); fi)

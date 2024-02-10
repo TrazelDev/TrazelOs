@@ -7,6 +7,7 @@ void testEverything()
 {
     testIntLength();
     testStrCmp();
+    printf("current tests are successful\n");
 }
 
 static void testIntLength()

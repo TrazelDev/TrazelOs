@@ -27,8 +27,6 @@
 `echo` 'export PATH="$PATH:/usr/local/x86_64elfgcc/bin"' >> ~/.bashrc;
 
 ### Running the project:
-In the case that the program is saying that the disk has failed to be read, you should change the value in the last line of the bootloader:
-`times 26500-($-$$) db 0` by decreasing or increasing the number according to the size of the file `kernel.o`.
 #### Regular configuration:
 1. `cd project`
 2. `make run`
