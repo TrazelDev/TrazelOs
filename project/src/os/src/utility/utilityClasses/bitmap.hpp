@@ -16,8 +16,21 @@ public:
     /// and also this bit map will also be used for the physical page manager which will span across multiple pages
     /// @param size the size of the buffer in bytes
     BitMap(uint8_t* buffer, uint64_t sizeInBytes) : m_buffer(buffer), m_sizeInBits(sizeInBytes) { }
-    
-    
+    BitMap() : m_buffer(NULL), m_sizeInBits(NULL) { }
+
+
+    /// @brief function to reset the values of the bitmap:    
+    inline void resetBitmapValues(uint8_t* buffer, uint64_t sizeInBits) 
+    {
+        m_sizeInBits = sizeInBits;
+        m_buffer     = buffer;
+    }
+
+
+    inline uint8_t*  getBuffer()   { return m_buffer;     }
+    inline uint64_t  getBitCount() { return m_sizeInBits; }
+
+
     bool operator[](uint64_t index);
     void setBit(uint64_t index, bool value);
 private:

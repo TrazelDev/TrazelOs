@@ -3,7 +3,6 @@
 
 #define MAX_AMOUNT_OF_USABLE_MEMORY_REGIONS 20
 #define MAX_AMOUNT_OF_REGIONS_IN_MEMORY     20
-#define ADDRESS_WITH_MEMORY_MAPS 0x5000  // address with the memory maps ( regions that are reserved and free to use are stored)
 /*
 Memory Map Types:
 Usable RAM (Type 1):

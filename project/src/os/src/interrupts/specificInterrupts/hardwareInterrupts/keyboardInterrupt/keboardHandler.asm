@@ -43,4 +43,4 @@ asmIsrKeyboardHandler:
   POPALL
 
   iretq ; returning from the interrupt and enabling the interrupt flag 
-  GLOBAL asmIsrKeyboardHandler
+  global asmIsrKeyboardHandler

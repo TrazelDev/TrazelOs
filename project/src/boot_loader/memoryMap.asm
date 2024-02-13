@@ -6,7 +6,7 @@ MEMORY_MAP_SIZE                    equ 24
 
 ; global variables that are used in cpp kernel code:
 addressWithMemoryMaps:
-	dq 0x5000
+	dq 0x5002
 	global addressWithMemoryMaps
 memoryRegionCount:
     db 0

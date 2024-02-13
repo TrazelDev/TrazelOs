@@ -8,6 +8,7 @@
 #include "utility/types/types.h"
 #include "utility/types/integer.h"
 #include "utility/types/string.h"
+#include "utility/memory/memory.h"
 
 // print:
 #include "utility/print/print.h"

@@ -1,5 +1,6 @@
 (0x0000 - 0x1000) - bios functions can be overriten after finishing with the bootloader
 (0x1000 - 0x5000) - the identity mapped pages that the kernel is using
-(0x5000 - 0x6000) - the memory map of the ram which sections can be used and which not
+(0x5000 - 0x5002) - the amount of sectores that the kernel uses
+(0x5002 - 0x6000) - the memory map of the ram which sections can be used and which not
 (0x9000 - 0xBC000) - the address that the bootloader + kernel code is in
 (0xB8000 - 0xBC000) - address that are used for the vga screen

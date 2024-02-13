@@ -130,7 +130,7 @@ void printAllRegions()
 {
     uint64_t count = 0;
     uint64_t countUsable = 0;
-    MemoryMapEntry* allMemoryRegions = (MemoryMapEntry*)ADDRESS_WITH_MEMORY_MAPS;
+    MemoryMapEntry* allMemoryRegions = (MemoryMapEntry*)addressWithMemoryMaps;
 
     for(int i = 0; i < memoryRegionCount; i++)
     {
