@@ -1,5 +1,8 @@
 # Trazel operating system - specializes mainly in managing memory
+
 ## OS that mainly focuses on managing memory using paging, virtual memory, and a free memory pool for dynamic allocation of memory.
+> [!NOTE]
+> This project represents a refactored and improved version of an earlier project. It is currently under development, with the aim of migrating all the features from the old project to this new iteration.
 
 ## Building:
 > [!NOTE]
