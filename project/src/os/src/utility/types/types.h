@@ -13,5 +13,9 @@ typedef int        int32_t;
 typedef long long  int64_t;
 
 #define NULL 0
-
 #define ARRAY_SIZE(array) (sizeof(array) / sizeof(array[0]))
+
+// this macro returns 1 for positive value and -1 for negative value
+#define BOOL_TO_INT(value) ((!value * -2) + 1)
+
+#define MAX_UINT64 0xFFFFFFFFFFFFFFFF

@@ -27,6 +27,8 @@ export ASM_DIR := my_asm/
 # files:
 export MBR_FILE        := src/mbr/mbr.asm
 export MBR_BIN         := $(BIN_DIR)mbr.bin
+export MEMORY_PAD_FILE := src/mbr/memoryPad.asm
+export MEMORY_PAD_BIN  := $(BIN_DIR)memoryPad.bin
 export BOOTLOADER_FILE := src/boot_loader/bootloader.asm
 export BOOTLOADER_OBJ  := $(OBJ_DIR)bootloader.o
 export OS_BIN          := $(BIN_DIR)os.iso
@@ -58,3 +60,9 @@ export ECHO_NO_COLOR    := \033[97m
 KERNEL_SIZE ?= $(shell wc -c < $(KERNEL_BIN))
 SECTOR_SIZE := 512
 export SECTORS_TO_LOAD ?= $(shell if [ -e "$(KERNEL_BIN)" ]; then echo $$((($(KERNEL_SIZE) / $(SECTOR_SIZE)) + 1)); fi)
+
+# this is the memory that is need to be padded so it will be exactly the right amount of memory that should be loaded:
+export MEMORY_PAD ?= $(shell if [ -e "$(KERNEL_BIN)" ]; then echo $$(($(SECTOR_SIZE) - ($(KERNEL_SIZE) % $(SECTOR_SIZE)))); fi)
+
+
+# $(SECTOR_SIZE) - ($(KERNEL_SIZE) % $(SECTOR_SIZE))

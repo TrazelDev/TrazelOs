@@ -41,13 +41,14 @@ run: create_os_bin
 
 # adding togther the kernel and the master boot record:
 create_os_bin: link asm_mbr
-	cat $(MBR_BIN) $(KERNEL_BIN) > $(OS_BIN)
+	cat $(MBR_BIN) $(KERNEL_BIN) $(MEMORY_PAD_BIN) > $(OS_BIN)
 
 # creating the master boot record and loading the correct amount of sectors
 asm_mbr: $(KERNEL_BIN)
 	@echo "${ECHO_GREEN_COLOR}creating the master boot record:${ECHO_NO_COLOR}"
 	mkdir -p $(dir $(MBR_BIN))
 	$(ASM) -D SECTORS_TO_LOAD=$(SECTORS_TO_LOAD) $(MBR_FILE) $(ASSEMBLER_MBR_FLAGS) $(MBR_BIN)
+	$(ASM) -D MEMORY_TO_PAD=$(MEMORY_PAD) $(MEMORY_PAD_FILE) $(ASSEMBLER_MBR_FLAGS) $(MEMORY_PAD_BIN) 
 
 $(KERNEL_BIN): link
 
