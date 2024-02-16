@@ -5,7 +5,8 @@ RED_ERROR_TEXT = '\033[91m'
 RESET_TEXT_COLOR = '\033[0m'
 
 SPECIFIC_INTERRUPTS_DIRECTORY_RELATIVE_TO_PROJECT = "project/src/os/src/interrupts/specificInterrupts"
-ASM_FILE_CONTENT_TEMPLATE = """[bits 64]
+ASM_FILE_CONTENT_TEMPLATE = """; this is an auto generated file
+[bits 64]
 %include "src/os/src/interrupts/specificInterrupts/popAndPushAll.inc"
 
 [extern isr{}Handler]
@@ -18,7 +19,8 @@ asmIsr{}Handler:
   iretq ; returning from the interrupt
   global asmIsr{}Handler
 """
-HEADER_FILE_CONTENT_TEMPLATE = """#pragma once
+HEADER_FILE_CONTENT_TEMPLATE = """// this an auto generated file
+#pragma once
 
 
 /// @brief initializes the interrupt itself
@@ -57,7 +59,9 @@ void isr{}Handler()
     // picSendEOI(IRQ::thisHardwareInterrupt);  
 }}
 """
-ALL_INTERRUPT_CPP_TEMPLATE = """// including all of the interrupts:
+ALL_INTERRUPT_CPP_TEMPLATE = """// this is an auto generated file
+
+// including all of the interrupts:
 {}
 
 #include "utility/utility.h"

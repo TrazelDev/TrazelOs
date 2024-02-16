@@ -8,7 +8,6 @@ void initPageFaultInterrupt()
     extern uint64_t asmIsrPageFaultHandler;
     uint64_t asmIsrPageFaultHandlerAddress = (uint64_t)(&asmIsrPageFaultHandler);
 
-    printf("hello world\n");
     /* Example for the keyboard hardware interrupt 
     
     initSpecificInterrupt(
