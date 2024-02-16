@@ -28,7 +28,7 @@ void init{}Interrupt();
 /// @brief the isr function that is being triggered when and interrupt occurs
 extern "C" void isr{}Handler();
 """
-CPP_FILE_CONTENT_TEMPLATE = """#include "{}.h"
+CPP_FILE_CONTENT_TEMPLATE = """#include "{}Interrupt.h"
 #include "utility/utility.h"
 #include "src/interrupts/idt.h"
 
@@ -57,7 +57,27 @@ void isr{}Handler()
     // picSendEOI(IRQ::thisHardwareInterrupt);  
 }}
 """
+ALL_INTERRUPT_CPP_TEMPLATE = """// including all of the interrupts:
+{}
 
+#include "utility/utility.h"
+
+// function signature to initialize one interrupt:
+typedef void (*InterruptInitFunction)();
+
+void initAllInterrupt()
+{{
+    InterruptInitFunction interruptInits[] =
+    {{
+        {}
+    }};
+
+    for(uint8_t i = 0; i < ARRAY_SIZE(interruptInits); i++)
+    {{
+        interruptInits[i]();
+    }}
+}}
+"""
 
 def createInterruptFile(interrupt_name : str, file_full_name : str, file_content : str):
     """function to create a new file if it does not exist and if it does then printing an error
@@ -72,6 +92,7 @@ def createInterruptFile(interrupt_name : str, file_full_name : str, file_content
             headerFile.write(file_content)
     else:
         print(RED_ERROR_TEXT + "Error: some of the interrupt {} files already exists to run the script on this interrupt delete the files and rerun".format(interrupt_name) + RESET_TEXT_COLOR)
+        exit(1)
 
 
 def createAllInterruptFiles(interrupt_name : str, fileDirectory : str):
@@ -87,18 +108,19 @@ def createAllInterruptFiles(interrupt_name : str, fileDirectory : str):
     # creating the interrupt directory in the case that it needs to be created:
     os.makedirs(fileDirectory, exist_ok = True)
 
+
     # creating the asm file:
     file_name = fileDirectory + "/" + interrupt_name + ".asm"
     file_content = ASM_FILE_CONTENT_TEMPLATE.format(capital_interrupt_name, capital_interrupt_name, capital_interrupt_name, capital_interrupt_name)
     createInterruptFile(interrupt_name, file_name, file_content)
 
     # creating the header file:
-    file_name = fileDirectory + "/" + interrupt_name + ".h"
+    file_name = fileDirectory + "/" + interrupt_name + "Interrupt.h"
     file_content = HEADER_FILE_CONTENT_TEMPLATE.format(capital_interrupt_name, capital_interrupt_name)
     createInterruptFile(interrupt_name, file_name, file_content)
 
     # creating the cpp files:
-    file_name = fileDirectory + "/" + interrupt_name + ".cpp"
+    file_name = fileDirectory + "/" + interrupt_name + "Interrupt.cpp"
     file_content = CPP_FILE_CONTENT_TEMPLATE.format(interrupt_name, capital_interrupt_name, capital_interrupt_name, capital_interrupt_name, capital_interrupt_name, capital_interrupt_name)
     createInterruptFile(interrupt_name, file_name, file_content)
 
@@ -152,6 +174,63 @@ def getDirectoryOfInterrupt(interruptType : str, interruptName : str) -> str:
     return interruptFilesDirectory
 
 
+def find_files(directory : str, extension : str) -> list:
+    """
+    function to find all of the files with a specific extension within a specific directory and its subdirectories  
+
+    Parameters:
+    - directory (str): The directory to search in.
+    - extension (str): The file extension to search for (e.g., '.h').
+
+    Returns:
+    - file_list (list): A list of file paths relative to the specified directory.
+    """
+    file_list = []
+    for root, dirs, files in os.walk(directory):
+        for file in files:
+            if file.endswith(extension):
+                file_path = os.path.join(root, file)
+                rel_path = os.path.relpath(file_path, directory)
+                file_list.append(rel_path)
+    return file_list
+
+
+def recreateAllInterruptFile(directory_of_files):
+    """recreates the file allInterrupt.cpp so it will also call the new interrupts initialization
+    """
+
+    # getting the directory that the allInterrupt.cpp file is in:
+    specific_interrupt_full_dir : str = os.path.dirname(os.path.dirname(directory_of_files))
+    header_files : list = find_files(specific_interrupt_full_dir, ".h")
+
+    
+    all_headers_includes = ""
+    all_interrupt_init_functions = ""
+    base_file_name = ""
+    function_name = ""
+    for header in header_files:
+        base_file_name = os.path.basename(header)
+        
+        # only if the file represents a header of a specific interrupts:
+        if "Interrupt" in base_file_name:
+            # the includes of the files:
+            all_headers_includes += '#include "' + header + '"\n'
+            
+            # the functions of init:
+            if base_file_name != "allInterrupts.h":
+                function_name = base_file_name[:-2]
+                function_name =  function_name[0].capitalize() + function_name[1:]
+                function_name = "init" + function_name
+                all_interrupt_init_functions += "&" + function_name + ",\n\t\t"
+        
+
+    # recreating the file:
+    file_name = specific_interrupt_full_dir + "/" + "allInterrupts.cpp"
+    file_content = ALL_INTERRUPT_CPP_TEMPLATE.format(all_headers_includes, all_interrupt_init_functions)
+    with open(file_name, "w") as all_interrupts_file:
+        all_interrupts_file.write(file_content)
+
+
 def main():
     user_wanted_interrupt_to_directory_to_place_files : dict = {
         1: "hardwareInterrupts",
@@ -169,6 +248,9 @@ def main():
     
     # creating the actual files that are needed
     createAllInterruptFiles(interrupt_name, directory_of_files)
+
+    recreateAllInterruptFile(directory_of_files)
+
 
 if __name__ == "__main__":
     main()
