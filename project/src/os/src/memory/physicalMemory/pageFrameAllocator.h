@@ -1,3 +1,4 @@
+#pragma once
 #include "utility/utility.h"
 #include "utility/utilityClasses/bitmap.hpp"
 #include "pageFrameAllocatorDefs.h"
