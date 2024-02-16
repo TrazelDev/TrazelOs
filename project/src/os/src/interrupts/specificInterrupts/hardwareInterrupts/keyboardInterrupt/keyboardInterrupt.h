@@ -5,6 +5,5 @@
 void initKeyboardInterrupt();
 
 
-
 /// @brief the isr function that is being triggered when and interrupt occurs
 extern "C" void isrKeyboardHandler();

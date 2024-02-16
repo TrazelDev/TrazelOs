@@ -11,22 +11,22 @@
 ### Installation:
 
 #### Ubuntu:
-1. clone the projecct
+1. Clone the projecct
 2. cd project
 3. sudo apt install `make`
 4. make `dependencies`
 5. cd `_linker_compiler_installer`
 6. make `compiler_and_linker_dependencies`
-7. in the case that it fails to run add the following to the bashrc PATH: "/usr/local/x86_64elfgcc/bin" with the command:
+7. In the case that it fails to run add the following to the bashrc PATH: "/usr/local/x86_64elfgcc/bin" with the command:
 `echo` 'export PATH="$PATH:/usr/local/x86_64elfgcc/bin"' >> ~/.bashrc;
 
 #### Other Linux distributions:
-1. clone the projecct
+1. Clone the projecct
 2. cd project
 3. install `make` `qemu-system-x86` `nasm`
 4. cd `_linker_compiler_installer`
 5. make `compiler_and_linker_dependencies`
-6. in the case that it fails to run add the following to the bashrc PATH: "/usr/local/x86_64elfgcc/bin" with the command:
+6. In the case that it fails to run add the following to the bashrc PATH: "/usr/local/x86_64elfgcc/bin" with the command:
 `echo` 'export PATH="$PATH:/usr/local/x86_64elfgcc/bin"' >> ~/.bashrc;
 
 ### Running the project:
@@ -41,6 +41,11 @@
 1. `cd project`
 2. `make clean`
 
+### Creating new interrupts:
+1. Navigate to the file: `project/scripts/createIsrHandlerFiles.py`.
+2. Run the python script using your preferred method (e.g., command line or integrated development environment).
+3. Follow the prompts to enter the interrupt type and interrupt name.
+    - The interrupt name should be written in CamelCase convention. For example: `PageFault`, `Keyboard`.
 
 ## Current Goals:
 - [x] mbr

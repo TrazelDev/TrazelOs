@@ -10,7 +10,7 @@ typedef void (*InterruptInitFunction)();
 
 void initAllInterrupt()
 {
-    InterruptInitFunction interruptInits[] = 
+    InterruptInitFunction interruptInits[] =
     {
         &initKeyboardInterrupt
     };
