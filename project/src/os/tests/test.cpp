@@ -14,6 +14,7 @@ void testEverything()
 
     // testing virtual and physical memory:
     testMapping();
+    testPageFault();
 
     printf("current tests are successful\n");
 }
@@ -44,16 +45,17 @@ static void testHexToString()
 #define TEST_VALUE 0x5200
 static void testMapping()
 {
-    PhysicalAddress pAddr = requestUserPage();
+    PhysicalAddress pAddr1 = requestUserPage();
+    PhysicalAddress pAddr2 = requestUserPage();
     VirtualAddress vAddr1;
     VirtualAddress vAddr2;
 
-    vAddr1.raw = pAddr.raw;
-    vAddr2.raw = pAddr.raw + PAGE_SIZE;
+    vAddr1.raw = pAddr1.raw;
+    vAddr2.raw = pAddr2.raw;
 
     // mapping the two address:
-    ASSERT_PRINT_ERROR(mapMemory(pAddr, vAddr1), printf("Error: mapping failed\n"))
-    ASSERT_PRINT_ERROR(mapMemory(pAddr, vAddr2), printf("Error: mapping failed\n"))
+    ASSERT_PRINT_ERROR(mapMemory(pAddr1, vAddr1), printf("Error: mapping failed\n"))
+    ASSERT_PRINT_ERROR(mapMemory(pAddr1, vAddr2), printf("Error: mapping failed\n"))
 
 
     // testing that the mapping actually works:
@@ -61,6 +63,11 @@ static void testMapping()
     ASSERT_PRINT_ERROR(*(vAddr2.uint64Ptr) == TEST_VALUE,
         printf("Error: virtual address and physical address mappings test failed\n"));
 }
+static void testPageFault()
+{
+    PhysicalAddress pAddr = requestUserPage();
+    *(pAddr.uint64Ptr) = TEST_VALUE;
+    ASSERT(*(pAddr.uint64Ptr) == TEST_VALUE);
+}
 #undef TEST_VALUE
-
 #endif // DEBUG

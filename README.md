@@ -50,9 +50,9 @@
 ## Current Goals:
 - [x] mbr
 - [x] bootloader
-- [ ] idt
-- [ ] physical memory manager
-- [ ] virtual memory manager
+- [x] idt
+- [x] physical memory manager
+- [x] virtual memory manager
 - [ ] process free memory (heap)
 - [ ] process managemnt
 - [ ] filing system

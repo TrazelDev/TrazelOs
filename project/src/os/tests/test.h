@@ -11,5 +11,6 @@ static void testHexToString();
 
 // testing virtual memory functions:
 static void testMapping();
+static void testPageFault();
 
 #endif
