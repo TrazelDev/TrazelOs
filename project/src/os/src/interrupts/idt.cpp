@@ -39,4 +39,6 @@ void initIDT()
     initAllInterrupt();
 
     loadIDTRegister();
+
+    DEBUG_LOG("Initialized the IDT\n");
 }

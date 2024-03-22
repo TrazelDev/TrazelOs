@@ -7,6 +7,11 @@
 /// @brief creating page frame allocator of a bit map. this functions is called from outside of this file to initialize everything.
 void initPageFrameAllocator();
 
+/// @brief function that returns a physical address that is not taken and not identity mapped by the kernel
+PhysicalAddress requestUserPage();
+/// @brief this function returns a physical address that is identity mapped by the boot loader
+PhysicalAddress requestIdentityMappedPage();
+
 
 /// @brief setting the a bitMap class instance with the buffer of the bit map in the inputted address this bit map is used in
 /// a way that each bit represents one page in the system and it's says if the page is taken or not
@@ -38,11 +43,6 @@ static void changePageStatus(PhysicalAddress addr, bool releaseOrGrabPage, uint6
 */
 static void changePagesStatus(PhysicalAddress addr, bool releaseOrGrabPage, uint64_t* lockOrUnreserve, uint64_t pageCount);
 
-
-/// @brief function that returns a physical address that is not taken and not identity mapped by the kernel
-PhysicalAddress requestUserPage();
-/// @brief this function returns a physical address that is identity mapped by the boot loader
-PhysicalAddress requestIdentityMappedPage();
 
 static PhysicalAddress getPageWithinRange(uint64_t startingRange, uint64_t endRange);
 

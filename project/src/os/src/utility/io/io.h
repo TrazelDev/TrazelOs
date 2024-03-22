@@ -37,4 +37,8 @@ enum IO_PORTS
     // This port is used to read from or write to the VGA register selected by the previous write to port 0x3D4. 
     // If you write to port 0x3D5, you write data to the selected register, and if you read from port 0x3D5, you read data from the selected register.
     vga_data_port     = 0x3D5,
+
+
+    // ata primary port this is the port the the offsets from it are all of the ways to to interact with the main hard disk:
+    ata_primary_device_port = 0x1F0
 };

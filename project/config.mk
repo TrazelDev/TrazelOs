@@ -50,7 +50,8 @@ export SIMULATOR := qemu-system-x86_64
 RAM_SIZE   := -m 256M
 CPU_TYPE   := -cpu qemu64
 CLOCK_TIME := -rtc base=localtime
-export SIMULATOR_FLAGS $(RAM_SIZE) $(CPU_TYPE) $(CLOCK_TIME)
+DEVICE     := -device piix3-ide,id=ide -device ide-hd,drive=disk,bus=ide.0
+export SIMULATOR_FLAGS $(RAM_SIZE) $(CPU_TYPE) $(CLOCK_TIME) $(DEVICE)
 
 #echo colors: 
 export ECHO_GREEN_COLOR := \033[0;32m
@@ -63,6 +64,3 @@ export SECTORS_TO_LOAD ?= $(shell if [ -e "$(KERNEL_BIN)" ]; then echo $$((($(KE
 
 # this is the memory that is need to be padded so it will be exactly the right amount of memory that should be loaded:
 export MEMORY_PAD ?= $(shell if [ -e "$(KERNEL_BIN)" ]; then echo $$(($(SECTOR_SIZE) - ($(KERNEL_SIZE) % $(SECTOR_SIZE)))); fi)
-
-
-# $(SECTOR_SIZE) - ($(KERNEL_SIZE) % $(SECTOR_SIZE))

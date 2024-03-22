@@ -16,7 +16,7 @@ void testEverything()
     testMapping();
     testPageFault();
 
-    printf("current tests are successful\n");
+    DEBUG_LOG("current tests are successful\n");
 }
 
 // testing utility functions:
@@ -70,4 +70,5 @@ static void testPageFault()
     ASSERT(*(pAddr.uint64Ptr) == TEST_VALUE);
 }
 #undef TEST_VALUE
+
 #endif // DEBUG

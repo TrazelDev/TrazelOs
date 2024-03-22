@@ -36,6 +36,8 @@ void initPageFrameAllocator()
     lookKernelPages();
     lookSpecialDataPages();
     reserveReservedMemoryPages();
+
+    DEBUG_LOG("Initialized the page frame allocator\n");
 }
 static void initPageBitMap(PhysicalAddress bitmapStartingAddress, uint64_t bitMapSize)
 {

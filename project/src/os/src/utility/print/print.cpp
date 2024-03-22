@@ -1,10 +1,12 @@
 #include "print.h"
 #include "printVga.h"
 #include "utility/types/types.h"
+#include "utility/debug/debug.h"
 
 void initPrint()
 {
     setCursorPosition(postionFromCords(0, 0));
+    DEBUG_LOG("Initialized printf\n");
 }
 
 
