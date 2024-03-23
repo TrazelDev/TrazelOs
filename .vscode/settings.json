@@ -1,4 +1,6 @@
 {
+    "editor.errorHighlightForeground": "#000000",
+    "editor.warningHighlightForeground": "#000000",
     "cSpell.words": [
         "ABRT",
         "AMNF",
@@ -18,5 +20,7 @@
         "tuple": "cpp",
         "random": "cpp"
     },
-    "C_Cpp.dimInactiveRegions": false
+    "C_Cpp.dimInactiveRegions": false,
+    "editor.errorHighlight": false,
+    "editor.warningHighlight": false
 }
