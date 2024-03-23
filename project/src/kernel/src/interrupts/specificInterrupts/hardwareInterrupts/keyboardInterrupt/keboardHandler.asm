@@ -1,6 +1,6 @@
 [bits 64]
 
-%include "src/os/src/interrupts/specificInterrupts/popAndPushAll.inc"
+%include "src/kernel/src/interrupts/specificInterrupts/popAndPushAll.inc"
 
 [extern isrKeyboardHandler]
 asmIsrKeyboardHandler:

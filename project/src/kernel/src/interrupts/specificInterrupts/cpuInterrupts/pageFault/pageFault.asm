@@ -2,7 +2,7 @@
 [bits 64]
 REGISTER_COUNT          equ 15
 REGISTER_SIZE_IN_BYTES  equ 8
-%include "src/os/src/interrupts/specificInterrupts/popAndPushAll.inc"
+%include "src/kernel/src/interrupts/specificInterrupts/popAndPushAll.inc"
 
 [extern isrPageFaultHandler]
 asmIsrPageFaultHandler:

@@ -18,12 +18,4 @@ static void ataSelectDrive(DRIVE_NUMBER driveIndex);
 /// @brief waits until the status register is clear so the next command can be send 
 static void waitUntilDriveReady(DRIVE_NUMBER driveIndex);
 /// @brief waits for the ata io operations to be safely accessible again
-static void ataIOWait(DRIVE_NUMBER );
-
-// uint8_t ideReadSector(DRIVE_CHANEL_NUMBER chanelIndex, DEVICE_REGISTERS_OFFSETS regOffset);
-
-
-
-/// @brief Used for waiting the recommended amount of time to wait is 14 reads 
-/// from the port which should be equivalent to 420 nano seconds
-// static void ioWait();
+static void ataIOWait(DRIVE_NUMBER driveIndex);

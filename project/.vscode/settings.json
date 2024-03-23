@@ -1,4 +1,26 @@
 {
     "editor.errorHighlightForeground": "#000000",
-    "editor.warningHighlightForeground": "#000000"
+    "editor.warningHighlightForeground": "#000000",
+    "cSpell.words": [
+        "ABRT",
+        "AMNF",
+        "CMOS",
+        "DRDY",
+        "IDNF",
+        "IRQS",
+        "PDPI",
+        "PDPT"
+    ],
+    "files.associations": {
+        "type_traits": "cpp",
+        "utility": "cpp",
+        "system_error": "cpp",
+        "array": "cpp",
+        "functional": "cpp",
+        "tuple": "cpp",
+        "random": "cpp"
+    },
+    "C_Cpp.dimInactiveRegions": false,
+    "editor.errorHighlight": false,
+    "editor.warningHighlight": false
 }

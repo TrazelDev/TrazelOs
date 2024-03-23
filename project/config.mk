@@ -13,7 +13,7 @@ export ASSEMBLER_BOOT_LOADER_FLAGS := -f elf64 -o
 export ASSEMBLER_OS_FLAGS := -f elf64 -o
 # compiler flags:
 CURRENT_DIR                   := $(shell pwd)
-INCLUDE_DIRS                  := -I$(CURRENT_DIR)/src/os/ -I$(CURRENT_DIR)/src/os/src/
+INCLUDE_DIRS                  := -I$(CURRENT_DIR)/src/kernel/ -I$(CURRENT_DIR)/src/kernel/src/
 COMPILER_FLAGS                := -Ttext 0x9000 -ffreestanding -mno-red-zone -m64 $(INCLUDE_DIRS)
 export COMPILER_RELEASE_FLAGS := $(COMPILER_FLAGS) -O2
 export COMPILER_DEBUG_FLAGS   := $(COMPILER_FLAGS) -O0 -DDEBUG=1
@@ -36,8 +36,8 @@ export KERNEL_BIN      := $(BIN_DIR)kernel.bin
 
 # this removes the ./ prefix at the start:
 REMOVE_PREFIX := sed 's|^\./||'
-export CPP_FILES     := $(shell find . -name "*.cpp" | $(REMOVE_PREFIX))
-export ASM_FILES     := $(shell find src/os/ -name "*.asm" | $(REMOVE_PREFIX))
+export CPP_FILES     := $(shell find src/kernel/ -name "*.cpp" | $(REMOVE_PREFIX))
+export ASM_FILES     := $(shell find src/kernel/ -name "*.asm" | $(REMOVE_PREFIX))
 export OBJ_CPP_FILES := $(addprefix $(OBJ_DIR), $(CPP_FILES:.cpp=.o)   )
 export OBJ_ASM_FILES := $(addprefix $(OBJ_DIR), $(ASM_FILES:.asm=Asm.o))
 export ASM_CPP_FILES := $(addprefix $(ASM_DIR), $(CPP_FILES:.cpp=.asm) )

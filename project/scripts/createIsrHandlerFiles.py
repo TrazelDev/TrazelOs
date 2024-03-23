@@ -4,10 +4,10 @@ import os
 RED_ERROR_TEXT = '\033[91m'
 RESET_TEXT_COLOR = '\033[0m'
 
-SPECIFIC_INTERRUPTS_DIRECTORY_RELATIVE_TO_PROJECT = "project/src/os/src/interrupts/specificInterrupts"
+SPECIFIC_INTERRUPTS_DIRECTORY_RELATIVE_TO_PROJECT = "project/src/kernel/src/interrupts/specificInterrupts"
 ASM_FILE_CONTENT_TEMPLATE = """; this is an auto generated file
 [bits 64]
-%include "src/os/src/interrupts/specificInterrupts/popAndPushAll.inc"
+%include "src/kernel/src/interrupts/specificInterrupts/popAndPushAll.inc"
 
 [extern isr{}Handler]
 asmIsr{}Handler:
