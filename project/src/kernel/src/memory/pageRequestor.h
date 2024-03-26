@@ -4,5 +4,4 @@
 
 
 VirtualAddress requestPages(size_t pageCount);
-bool returnPages(VirtualAddress, size_t pageCount);
-
+void returnPages(VirtualAddress vAddr, size_t pageCount);

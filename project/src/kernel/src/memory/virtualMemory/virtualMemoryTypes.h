@@ -4,6 +4,7 @@
 
 
 #define PAGE_TABLE_MAX_LEVEL 4
+#define PAGING_LEVEL_MAX_PAGE_COUNT (512ULL * 512 * 512 * 512)
 #define VIRTUAL_ADDRESS_OFFSET addr.offset
 #define PT_INDEX               addr.ptIndex
 #define PD_INDEX               addr.pdIndex

@@ -102,7 +102,10 @@ PhysicalAddress requestIdentityMappedPage()
 {
     return getPageWithinRange(NULL, PAGES_WITH_IDENTITY_MAPPING);
 }
-
+void returnPhysicalPage(PhysicalAddress pAddr)
+{
+    freePage(pAddr);
+}
 
 static void changePageStatus(PhysicalAddress addr, bool releaseOrGrabPage, uint64_t* lockOrUnreserve)
 {

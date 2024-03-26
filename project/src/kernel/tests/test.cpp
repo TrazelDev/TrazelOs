@@ -2,8 +2,9 @@
 #include "utility/utility.h"
 #include "src/memory/virtualMemory/virtualMemoryManager.h"
 #include "src/memory/physicalMemory/pageFrameAllocator.h"
+#include "src/memory/pageRequestor.h"
 
-#ifdef DEBUG
+//#ifdef DEBUG
 
 void testEverything()
 {
@@ -16,8 +17,11 @@ void testEverything()
     testMapping();
     testTranslation();
     testUnmapMemory();
+    testOverrideMapping();
     testReadPageFault();
     testWritePageFault();
+    // this function makes a test that will make virtual address to physical address which are the same fail in the future:
+    testMemoryRequestor();
 
     DEBUG_LOG("current tests are successful\n");
 }
@@ -86,6 +90,18 @@ static void testUnmapMemory()
     unmapMemory(vAddr);
     ASSERT(mapMemory(pAddr, vAddr));
 }
+static void testOverrideMapping()
+{
+    PhysicalAddress pAddr = requestUserPage();
+    VirtualAddress  vAddr;
+    vAddr.raw = pAddr.raw;
+    mapMemory(pAddr, vAddr);
+
+    pAddr.raw += PAGE_SIZE;
+    ASSERT(mapMemory(pAddr, vAddr, true));
+    pAddr.raw += PAGE_SIZE;
+    ASSERT(!mapMemory(pAddr, vAddr));
+}
 static void testReadPageFault()
 {
     PhysicalAddress pAddr = requestUserPage();
@@ -98,6 +114,22 @@ static void testWritePageFault()
     *(pAddr.uint64Ptr) = TEST_VALUE;
     ASSERT(*(pAddr.uint64Ptr) == TEST_VALUE);
 }
+static void testMemoryRequestor()
+{
+    // created some padding from the other tests:
+    for(int i = 0; i < 0; i++)
+        requestUserPage();
+
+    VirtualAddress vAddr = requestPages(10);
+    for(int i = 0; i < 10; i++)
+    {
+        *vAddr.uint64Ptr = 10;
+        vAddr.raw += PAGE_SIZE;
+    }
+
+    vAddr.raw -= (PAGE_SIZE * 10);
+    returnPages(vAddr, 10);
+}
 #undef TEST_VALUE
 
-#endif // DEBUG
+//#endif // DEBUG

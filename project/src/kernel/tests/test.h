@@ -13,6 +13,8 @@ static void testHexToString();
 static void testMapping();
 static void testTranslation();
 static void testUnmapMemory();
+static void testOverrideMapping();
 static void testReadPageFault();
 static void testWritePageFault();
+static void testMemoryRequestor();
 #endif

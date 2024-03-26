@@ -11,7 +11,7 @@ void initPageFrameAllocator();
 PhysicalAddress requestUserPage();
 /// @brief this function returns a physical address that is identity mapped by the boot loader
 PhysicalAddress requestIdentityMappedPage();
-
+void returnPhysicalPage(PhysicalAddress);
 
 /// @brief setting the a bitMap class instance with the buffer of the bit map in the inputted address this bit map is used in
 /// a way that each bit represents one page in the system and it's says if the page is taken or not
