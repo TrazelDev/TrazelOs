@@ -17,4 +17,8 @@ static void testOverrideMapping();
 static void testReadPageFault();
 static void testWritePageFault();
 static void testMemoryRequestor();
+
+// testing malloc and free:
+void testMallocAndFree();
+
 #endif

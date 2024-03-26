@@ -25,8 +25,6 @@ bool mapMemory(PhysicalAddress pAddr, VirtualAddress vAddr, bool overrunTableEnt
 /// @param vAddr the virtual address that we want to unmap and make free
 void unmapMemory(VirtualAddress vAddr);
 
-VirtualAddress getFreeVirtualPage();
-
 /// @brief the function is getting a page index and returning the corrsponding page table that in this page index 
 static inline PageTable* getPageTable(uint64_t pageIndex);
 

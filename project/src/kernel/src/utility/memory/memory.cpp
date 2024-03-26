@@ -21,6 +21,7 @@ void memset(int16_t* pointer, int16_t value, uint64_t size) { return memset<int1
 void memset(int32_t* pointer, int32_t value, uint64_t size) { return memset<int32_t>(pointer, value, size);};
 void memset(int64_t* pointer, int64_t value, uint64_t size) { return memset<int64_t>(pointer, value, size);};
 
+void memset(void* pointer, int64_t value, uint64_t size) { return memset<int64_t>((int64_t*)pointer, value, size);};
 
 void pushAllRegisters()
 {

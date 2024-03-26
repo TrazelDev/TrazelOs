@@ -64,6 +64,18 @@ typedef PageTableEntry    PageDirectoryEntry;
 typedef PageTableEntry    PagePDPTEntry     ;
 typedef PageTableEntry    PagePML4Entry     ;
 
+inline VirtualAddress createVirtualAddr(void* ptr)
+{
+    VirtualAddress vAddr;
+    vAddr.voidPtr = ptr;
+    return vAddr;
+}
+inline VirtualAddress createVirtualAddr(uint64_t addr)
+{
+    VirtualAddress vAddr;
+    vAddr.raw = addr;
+    return vAddr;
+}
 
 
 // page table is a generic way to call the page table, page directory

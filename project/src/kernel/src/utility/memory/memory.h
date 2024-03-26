@@ -11,6 +11,7 @@ void memset(int8_t*  pointer, int8_t  value, uint64_t size);
 void memset(int16_t* pointer, int16_t value, uint64_t size);
 void memset(int32_t* pointer, int32_t value, uint64_t size);
 void memset(int64_t* pointer, int64_t value, uint64_t size);
+void memset(void* pointer, int64_t value, uint64_t size);
 
 /// @brief function to push all of the register so when something is switched then 
 // we can come back with the same registers to continue the commands normally.
