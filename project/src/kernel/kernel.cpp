@@ -2,6 +2,7 @@
 #include "src/interrupts/idt.h"
 #include "src/memory/physicalMemory/memoryMap.h"
 #include "src/memory/physicalMemory/pageFrameAllocator.h"
+#include "src/memory/virtualMemory/virtualMemoryManager.h"
 #include "tests/test.h"
 #include "src/filingSystem/ide.h"
 

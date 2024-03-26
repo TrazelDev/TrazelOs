@@ -5,3 +5,4 @@
 
 VirtualAddress requestPages(size_t pageCount);
 bool returnPages(VirtualAddress, size_t pageCount);
+

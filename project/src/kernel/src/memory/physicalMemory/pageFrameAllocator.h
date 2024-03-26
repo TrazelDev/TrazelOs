@@ -21,7 +21,7 @@ static void initPageBitMap(PhysicalAddress bitmapStartingAddress, uint64_t bitMa
 
 static void reserveReservedMemoryPages();
 static void lookKernelPages();
-static void lookSpecialDataPages(); 
+static void lookSpecialDataPages();
 
 /// @brief this function is changing the status of a specific page by changing it's value in the bit map
 /// and also updating the usedMemory, reservedMemory and freeMemory according to the options the user select
