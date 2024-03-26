@@ -14,7 +14,10 @@ void testEverything()
 
     // testing virtual and physical memory:
     testMapping();
-    testPageFault();
+    testTranslation();
+    testUnmapMemory();
+    testReadPageFault();
+    testWritePageFault();
 
     DEBUG_LOG("current tests are successful\n");
 }
@@ -63,7 +66,33 @@ static void testMapping()
     ASSERT_PRINT_ERROR(*(vAddr2.uint64Ptr) == TEST_VALUE,
         printf("Error: virtual address and physical address mappings test failed\n"));
 }
-static void testPageFault()
+static void testTranslation()
+{
+    PhysicalAddress pAddr = requestUserPage();
+    VirtualAddress  vAddr;
+    vAddr.raw = pAddr.raw;
+    mapMemory(pAddr, vAddr);
+    ASSERT(getPhysicalAddress(vAddr).raw == pAddr.raw);
+}
+static void testUnmapMemory()
+{
+    PhysicalAddress pAddr = requestUserPage();
+    VirtualAddress  vAddr;
+    vAddr.raw = pAddr.raw;
+    mapMemory(pAddr, vAddr);
+    
+    pAddr.raw += PAGE_SIZE;
+    ASSERT(!mapMemory(pAddr, vAddr));
+    unmapMemory(vAddr);
+    ASSERT(mapMemory(pAddr, vAddr));
+}
+static void testReadPageFault()
+{
+    PhysicalAddress pAddr = requestUserPage();
+    int value = *(pAddr.uint64Ptr);
+    // if does not crush everything is okay
+}
+static void testWritePageFault()
 {
     PhysicalAddress pAddr = requestUserPage();
     *(pAddr.uint64Ptr) = TEST_VALUE;

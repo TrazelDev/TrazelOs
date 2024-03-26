@@ -30,7 +30,7 @@ union
         uint64_t isExecutable     : 1;  
     } controlBits;
     
-    uint64_t raw; 
+    uint64_t raw;
 } typedef PageFaultErrorCode;
 
 

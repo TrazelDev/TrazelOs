@@ -53,7 +53,20 @@ bool mapMemory(PhysicalAddress pAddr, VirtualAddress vAddr, bool overrunTableEnt
 }
 void unmapMemory(VirtualAddress vAddr)
 {
+    uint64_t pageIndex = getPML4Address().addr.pageIndex;
+    uint64_t pageTableEntriesIndexes[PAGE_TABLE_MAX_LEVEL - 1] = { vAddr.PML4_INDEX, vAddr.PDPI_INDEX, vAddr.PD_INDEX };
+    bool isPageTableIndex = true;
+
+    for(uint64_t i = 0; i < PAGE_TABLE_MAX_LEVEL - 1; i++)
+    {
+        pageIndex = createOrFindNextPageIndex(pageIndex, pageTableEntriesIndexes[i], NULL, isPageTableIndex, false);
+    }
     
+    PageTable* pageTable = getPageTable(pageIndex);
+    pageTable->entries[vAddr.PT_INDEX].attributes.index   = 0;
+    pageTable->entries[vAddr.PT_INDEX].attributes.present = false;
+
+    FLUSH_BUFFER(vAddr.raw);
 }
 
 // internal utility functions:
