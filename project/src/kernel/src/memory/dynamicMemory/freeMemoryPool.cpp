@@ -85,19 +85,19 @@ void initMemoryPool()
     freePool = nullptr;
     freePoolLastNode = nullptr;
 }
-void* malloc(size_t blockSize)
+void* malloc_x(size_t blockSize)
 {
     void* userWantedBlock = getBlockFromFreePool(blockSize);
     if(!userWantedBlock) { userWantedBlock = getBlockFromMainPool(blockSize); }
     
     return userWantedBlock;
 }
-void free(void* blockPtr, size_t blockSize)
+void free_x(void* blockPtr, size_t blockSize)
 {
     MemoryBlock* freePoolNode = createMemoryBlock(createVirtualAddr(blockPtr), blockSize);
     if(!freePoolNode) 
     {
-        freePoolNode = (MemoryBlock*)malloc(blockSize); 
+        freePoolNode = (MemoryBlock*)malloc_x(blockSize); 
         freePoolNode->blockSize = blockSize;
         freePoolNode->blockStartingAddress = createVirtualAddr(blockPtr);
         freePoolNode->next = nullptr;

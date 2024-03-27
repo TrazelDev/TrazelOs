@@ -18,7 +18,10 @@
         "array": "cpp",
         "functional": "cpp",
         "tuple": "cpp",
-        "random": "cpp"
+        "random": "cpp",
+        "deque": "cpp",
+        "vector": "cpp",
+        "string_view": "cpp"
     },
     "C_Cpp.dimInactiveRegions": false,
     "editor.errorHighlight": false,

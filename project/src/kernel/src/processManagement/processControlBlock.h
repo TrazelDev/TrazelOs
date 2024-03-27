@@ -4,30 +4,24 @@
 
 struct CpuRegisters
 {
-    uint64_t rax;   // General purpose register (accumulator)
-    uint64_t rbx;   // General purpose register (base)
-    uint64_t rcx;   // General purpose register (counter)
-    uint64_t rdx;   // General purpose register (data)
-    uint64_t rsi;   // General purpose register (source index)
-    uint64_t rdi;   // General purpose register (destination index)
-    uint64_t rsp;   // Stack pointer
-    uint64_t rbp;   // Base pointer
-    uint64_t rip;   // Instruction pointer
-    uint64_t r8;    // General purpose register
-    uint64_t r9;    // General purpose register
-    uint64_t r10;   // General purpose register
-    uint64_t r11;   // General purpose register
-    uint64_t r12;   // General purpose register
-    uint64_t r13;   // General purpose register
-    uint64_t r14;   // General purpose register
-    uint64_t r15;   // General purpose register
-    uint64_t flags; // Status register
-    uint64_t cs;    // Code segment register
-    uint64_t ds;    // Data segment register
-    uint64_t es;    // Extra segment register
-    uint64_t fs;    // More extra segment register
-    uint64_t gs;    // Still more extra segment register
-    uint64_t ss;    // Stack segment register
+    uint64_t rax;   
+    uint64_t rbx;   
+    uint64_t rcx;   
+    uint64_t rdx;   
+    uint64_t rsi;   
+    uint64_t rdi;   
+    uint64_t rsp;   
+    uint64_t rbp;   
+    uint64_t rip;   
+    uint64_t r8;    
+    uint64_t r9;    
+    uint64_t r10;   
+    uint64_t r11;   
+    uint64_t r12;   
+    uint64_t r13;   
+    uint64_t r14;   
+    uint64_t r15;   
+    uint64_t flags;
 };
 
 enum class PROCESS_STATE
@@ -41,8 +35,6 @@ enum class PROCESS_STATE
 
 struct ProcessControlBlock
 {
-    ProcessControlBlock() = default;
-
     uint64_t       processId;
     uint64_t       programCounter;
     uint64_t       stackPointer;

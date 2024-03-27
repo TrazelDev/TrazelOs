@@ -24,8 +24,10 @@ void testEverything()
     // this function makes a test that will make virtual address to physical address which are the same fail in the future:
     testMemoryRequestor();
 
-    // testing malloc and free:
+    // testing malloc_x and free:
     testMallocAndFree();
+
+
     DEBUG_LOG("current tests are successful\n");
 }
 
@@ -135,19 +137,19 @@ static void testMemoryRequestor()
 }
 #undef TEST_VALUE
 
-// testing malloc and free:
+// testing malloc_x and free:
 void testMallocAndFree() 
 {
-    int* ptr1 = (int*)malloc(sizeof(int) * 4);
+    int* ptr1 = (int*)malloc_x(sizeof(int) * 4);
     ASSERT(ptr1);
     memset(ptr1, 0xFF, 4);
-    free(ptr1, sizeof(int) * 4);
+    free_x(ptr1, sizeof(int) * 4);
 
 
-    int* ptr2 = (int*)malloc(sizeof(int) * 4);
+    int* ptr2 = (int*)malloc_x(sizeof(int) * 4);
     ASSERT(ptr2);
     memset(ptr2, 0xAA, 4);
-    free(ptr2, sizeof(int) * 4);
+    free_x(ptr2, sizeof(int) * 4);
 }
 
 #endif // DEBUG

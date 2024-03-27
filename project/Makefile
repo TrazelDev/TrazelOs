@@ -3,7 +3,7 @@ include config.mk      # defintions of flags and methods that the project is usi
 
 # depends on the run so when we use just make we call this:
 all: #run
-	@echo "$(ASM_CPP_FILES)"
+	@echo "$(PROCESS_CPP_FILES)"
 
 # a configuration to generate asm files from the cpp files:
 compile_asm: $(ASM_CPP_FILES)
@@ -43,6 +43,9 @@ run: create_os_bin
 create_os_bin: link asm_mbr
 	cat $(MBR_BIN) $(KERNEL_BIN) $(MEMORY_PAD_BIN) > $(OS_BIN)
 
+compileProcess: $(OBJ_C_PROCESSES)
+
+
 # creating the master boot record and loading the correct amount of sectors
 asm_mbr: $(KERNEL_BIN)
 	@echo "${ECHO_GREEN_COLOR}creating the master boot record:${ECHO_NO_COLOR}"
@@ -51,6 +54,7 @@ asm_mbr: $(KERNEL_BIN)
 	$(ASM) -D MEMORY_TO_PAD=$(MEMORY_PAD) $(MEMORY_PAD_FILE) $(ASSEMBLER_MBR_FLAGS) $(MEMORY_PAD_BIN) 
 
 $(KERNEL_BIN): link
+
 
 # linking all of the cpp object files and the bootloader:
 link: asm_bootloader compile assemble
@@ -84,6 +88,12 @@ $(OBJ_DIR)%Asm.o: %.asm
 	$(ASM) $< $(ASSEMBLER_BOOT_LOADER_FLAGS) $@
 	@echo "\n"
 
+# tells the compiler how to compile c files which are files of process
+$(OBJ_DIR)%.o: %.c
+	@echo "${ECHO_GREEN_COLOR}compiling $<:${ECHO_NO_COLOR}"
+	mkdir -p $(dir $@) # creating the dir in the case that it is not created:
+	$(CC) $(COMPILER_RELEASE_FLAGS) -c $< -o $@
+	@echo "\n"
 
 
 # simple dependecies:

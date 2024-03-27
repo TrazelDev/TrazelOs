@@ -4,5 +4,5 @@
 
 
 void initMemoryPool();
-void* malloc(size_t blockSize);
-void free(void* blockPtr, size_t blockSize);
+void* malloc_x(size_t blockSize);
+void free_x(void* blockPtr, size_t blockSize);
