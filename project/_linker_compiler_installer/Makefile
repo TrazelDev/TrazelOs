@@ -1,5 +1,7 @@
 
 compiler_and_linker_dependencies:
+	sudo apt update
+	sudo apt install python3
 	sudo apt install build-essential
 	sudo apt install bison
 	sudo apt install flex

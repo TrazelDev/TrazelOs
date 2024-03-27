@@ -36,9 +36,9 @@ enum class PROCESS_STATE
 struct ProcessControlBlock
 {
     uint64_t       processId;
-    uint64_t       programCounter;
-    uint64_t       stackPointer;
-    PagePML4Table* pageTablePtr;
     CpuRegisters   cpuRegisters;
+    uint64_t       stackPointer;
+    uint64_t       instructionPointer;
+    PagePML4Table* pageTablePtr;
     PROCESS_STATE  processState;
 };

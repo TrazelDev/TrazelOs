@@ -2,8 +2,7 @@ include config.mk      # defintions of flags and methods that the project is usi
 
 
 # depends on the run so when we use just make we call this:
-all: #run
-	@echo "$(PROCESS_CPP_FILES)"
+all: clean run
 
 # a configuration to generate asm files from the cpp files:
 compile_asm: $(ASM_CPP_FILES)
@@ -43,7 +42,6 @@ run: create_os_bin
 create_os_bin: link asm_mbr
 	cat $(MBR_BIN) $(KERNEL_BIN) $(MEMORY_PAD_BIN) > $(OS_BIN)
 
-compileProcess: $(OBJ_C_PROCESSES)
 
 
 # creating the master boot record and loading the correct amount of sectors
@@ -57,13 +55,17 @@ $(KERNEL_BIN): link
 
 
 # linking all of the cpp object files and the bootloader:
-link: asm_bootloader compile assemble
+link: asm_bootloader compile compile_processes assemble 
 	@echo "${ECHO_GREEN_COLOR}linking everything:${ECHO_NO_COLOR}"
 	mkdir -p $(dir $(KERNEL_BIN))
-	$(LINKER) -T linker.ld -o $(KERNEL_BIN) $(BOOTLOADER_OBJ) $(OBJ_ASM_FILES) $(OBJ_CPP_FILES)
+	$(LINKER) -T linker.ld -o $(KERNEL_BIN) $(BOOTLOADER_OBJ) $(OBJ_ASM_FILES) $(OBJ_CPP_FILES) $(OBJ_PROCESSES)
 	@echo "\n"
 
+compile_processes: create_updated_process_map_file $(OBJ_PROCESSES)
 compile: $(OBJ_CPP_FILES) 
+
+create_updated_process_map_file: 
+	python3 scripts/createProcessMap.py
 
 assemble: $(OBJ_ASM_FILES)
 
@@ -88,7 +90,7 @@ $(OBJ_DIR)%Asm.o: %.asm
 	$(ASM) $< $(ASSEMBLER_BOOT_LOADER_FLAGS) $@
 	@echo "\n"
 
-# tells the compiler how to compile c files which are files of process
+
 $(OBJ_DIR)%.o: %.c
 	@echo "${ECHO_GREEN_COLOR}compiling $<:${ECHO_NO_COLOR}"
 	mkdir -p $(dir $@) # creating the dir in the case that it is not created:

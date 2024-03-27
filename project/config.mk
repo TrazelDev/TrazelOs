@@ -36,12 +36,13 @@ export KERNEL_BIN      := $(BIN_DIR)kernel.bin
 
 # this removes the ./ prefix at the start:
 REMOVE_PREFIX := sed 's|^\./||'
-export CPP_FILES         := $(shell find src/kernel/ -name "*.cpp" | $(REMOVE_PREFIX))
-export PROCESS_CPP_FILES := $(shell find src/processes/ -name "*.c" | $(REMOVE_PREFIX))
+export CPP_FILES         := $(shell find src/kernel/ -name "*.cpp" | $(REMOVE_PREFIX)) 
+export PROCESS_CPP_FILES := $(shell find src/processes/ -name "*.c" -o -name "*.cpp" | $(REMOVE_PREFIX))
 export ASM_FILES         := $(shell find src/kernel/ -name "*.asm" | $(REMOVE_PREFIX))
 export OBJ_CPP_FILES     := $(addprefix $(OBJ_DIR), $(CPP_FILES:.cpp=.o)   )
 export OBJ_ASM_FILES     := $(addprefix $(OBJ_DIR), $(ASM_FILES:.asm=Asm.o))
-export OBJ_C_PROCESSES   := $(addprefix $(OBJ_DIR), $(PROCESS_CPP_FILES:.c=.o))
+OBJ_PROCESSES            := $(addprefix $(OBJ_DIR), $(PROCESS_CPP_FILES:.c=.o))
+export OBJ_PROCESSES     := $(OBJ_PROCESSES:.cpp=.o)
 export ASM_CPP_FILES     := $(addprefix $(ASM_DIR), $(CPP_FILES:.cpp=.asm) )
 
 # simulator:
