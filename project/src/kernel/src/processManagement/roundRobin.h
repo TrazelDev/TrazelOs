@@ -1,16 +1,17 @@
 #pragma once
 #include "processControlBlock.h"
 
+struct Process
+{
+    ProcessControlBlock* process;
+};
+
 struct ProcessList
 {
     Process* process;
     ProcessList* next;
 };
 
-struct Process
-{
-    ProcessControlBlock* process;
-};
 
 void initScheduler();
 void addProcess(Process* process);
