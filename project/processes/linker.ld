@@ -1,10 +1,14 @@
 OUTPUT_FORMAT(binary)
 
-ENTRY (_start)
+ENTRY (main)
 
 SECTIONS
 {
-    . = 0x9000;
+    . = 0x0008;
+
+    .main_location : {
+        *(.main_location)
+    }
 
     .text : ALIGN(0x1000)
     {
@@ -22,10 +26,15 @@ SECTIONS
         *(COMMON)
         *(.bss)
     }
+    
     . = ALIGN(0x1000);
+    stack_region : {
+        . += 5 * 0x1000;
+    }
     _end = .;
 
-    .specific_address : {
-        *(.specific_address)
+    . = 0x0;
+    .process_size : {
+        QUAD(_end) 
     }
 }

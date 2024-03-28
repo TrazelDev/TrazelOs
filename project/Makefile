@@ -1,8 +1,9 @@
-include config.mk      # defintions of flags and methods that the project is using
-
+include processHandler.mk
 
 # depends on the run so when we use just make we call this:
 all: clean run
+test:
+	@echo "_end: $$(nm $@ | grep _end)"
 
 # a configuration to generate asm files from the cpp files:
 compile_asm: $(ASM_CPP_FILES)
@@ -28,7 +29,7 @@ debug: run
 
 # cleaning all of the object files and bin files:
 clean:
-	$(RM) -r $(BIN_DIR)* $(OBJ_DIR)* $(ASM_DIR)*
+	$(RM) -r $(BIN_DIR)* $(OBJ_DIR)* $(ASM_DIR)* $(PR) $(PROCESSES)code $(PROCESSES)obj
 
 
 
@@ -55,17 +56,14 @@ $(KERNEL_BIN): link
 
 
 # linking all of the cpp object files and the bootloader:
-link: asm_bootloader compile compile_processes assemble 
+link: asm_bootloader compile assemble 
 	@echo "${ECHO_GREEN_COLOR}linking everything:${ECHO_NO_COLOR}"
 	mkdir -p $(dir $(KERNEL_BIN))
-	$(LINKER) -T linker.ld -o $(KERNEL_BIN) $(BOOTLOADER_OBJ) $(OBJ_ASM_FILES) $(OBJ_CPP_FILES) $(OBJ_PROCESSES)
+	$(LINKER) -T linker.ld -o $(KERNEL_BIN) $(BOOTLOADER_OBJ) $(OBJ_ASM_FILES) $(OBJ_CPP_FILES)
 	@echo "\n"
 
-compile_processes: create_updated_process_map_file $(OBJ_PROCESSES)
 compile: $(OBJ_CPP_FILES) 
 
-create_updated_process_map_file: 
-	python3 scripts/createProcessMap.py
 
 assemble: $(OBJ_ASM_FILES)
 
@@ -89,14 +87,6 @@ $(OBJ_DIR)%Asm.o: %.asm
 	mkdir -p $(dir $@) # creating the dir in the case that it is not created:
 	$(ASM) $< $(ASSEMBLER_BOOT_LOADER_FLAGS) $@
 	@echo "\n"
-
-
-$(OBJ_DIR)%.o: %.c
-	@echo "${ECHO_GREEN_COLOR}compiling $<:${ECHO_NO_COLOR}"
-	mkdir -p $(dir $@) # creating the dir in the case that it is not created:
-	$(CC) $(COMPILER_RELEASE_FLAGS) -c $< -o $@
-	@echo "\n"
-
 
 # simple dependecies:
 dependencies:

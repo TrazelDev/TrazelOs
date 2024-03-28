@@ -13,7 +13,7 @@ struct ProcessList
 };
 
 
-void initScheduler();
+void initScheduler(size_t quantumTime);
 void addProcess(Process* process);
 Process* removeProcess(Process* process);
 Process* frontProcess(Process* process);

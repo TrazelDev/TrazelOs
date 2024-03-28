@@ -1,3 +1,4 @@
+# this script should not run at all currently
 # this script should not be ran manually
 import os
 import re

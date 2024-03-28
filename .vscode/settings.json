@@ -21,7 +21,8 @@
         "random": "cpp",
         "deque": "cpp",
         "vector": "cpp",
-        "string_view": "cpp"
+        "string_view": "cpp",
+        "*.ld" : "plaintext"
     },
     "C_Cpp.dimInactiveRegions": false,
     "editor.errorHighlight": false,

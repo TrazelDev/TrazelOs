@@ -4,10 +4,12 @@
 
 static ProcessList* m_processList;
 static ProcessList* m_processListEnd;
-void initScheduler()
+static size_t MaxQuantumTime;
+void initScheduler(size_t quantumTime)
 {
     m_processListEnd = nullptr;
     m_processList = nullptr;
+    quantumTime = quantumTime;
 }
 
 void addProcess(Process* process)
@@ -47,3 +49,4 @@ bool containsProcess()
 {
     return m_processList;
 }
+

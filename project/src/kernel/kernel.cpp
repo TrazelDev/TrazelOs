@@ -3,11 +3,27 @@
 #include "src/interrupts/idt.h"
 #include "src/memory/physicalMemory/pageFrameAllocator.h"
 #include "src/memory/dynamicMemory/freeMemoryPool.h"
-#include "src/processManagement/processesFunctions.h"
 
 
+void my_function() __attribute__((section(".specific_address")));
+void my_function() {
+    printf("hello world\n");
+}
+void testingFunction()
+{
+    // processesInSystem[1].func();
+    
+    uint64_t oldIp;
+    //asm volatile ("lea (%%rip), %0" : "=r" (oldIp));
+    // asm volatile ("pushq %0" : : "r" (oldIp + 16) : "memory");
+
+    //asm volatile("call  %0\n\t" : "=a"(newIp));
+    printf("test");
+}
 
 
+extern char _end[];
+typedef void (*Func)();
 extern "C" void _start()
 {
     initPrint();
@@ -16,5 +32,8 @@ extern "C" void _start()
     initMemoryPool();
 
     IF_DEBUG(testEverything());
-    processesInSystem[1].func();
+    printf("Address: %x\n", &_end);
+    printf("Address: %x\n", &my_function);
+    Func func = (Func)_end;
+    func();
 }

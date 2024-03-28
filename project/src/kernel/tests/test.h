@@ -21,6 +21,5 @@ static void testMemoryRequestor();
 // testing malloc and free:
 void testMallocAndFree();
 
-void testQueue();
 
 #endif
