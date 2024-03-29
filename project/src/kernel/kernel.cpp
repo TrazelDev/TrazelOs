@@ -5,10 +5,6 @@
 #include "src/memory/dynamicMemory/freeMemoryPool.h"
 
 
-void my_function() __attribute__((section(".specific_address")));
-void my_function(){
-    printf("hello world\n");
-}
 void testingFunction()
 {
     // processesInSystem[1].func();
@@ -23,7 +19,7 @@ void testingFunction()
 
 
 extern uint64_t _next_process[];
-typedef int (*Func)();
+typedef int (*ProcessFunc)();
 extern "C" void _start()
 {
     initPrint();
@@ -32,14 +28,19 @@ extern "C" void _start()
     initMemoryPool();
 
     IF_DEBUG(testEverything());
-    printf("%x,\n", _next_process);
-    printf("%x,\n", _next_process[0]);
 
-    void* addr = _next_process;
-    Func func_ptr = (Func)addr;
-    func_ptr();
-    printf("hello world");
-    // printf("%x,\n", _next_process + 2);
+
+
+    ProcessFunc processesPrint = (ProcessFunc)(void*)(_next_process + 1);
+    processesPrint();
+
+    //printf("%x,\n", _next_process);
+    //printf("%x,\n", _next_process + 1);
+    //printf("%x,\n", _next_process + 2);
+    //printf("%x,\n", _next_process + 3);
+
+    //asm volatile("call  %0\n\t" : "=a"(addr));
+    //printf("%x,\n", _next_process + 2);
 
     //printf("%x,\n", *(_end + 1));
     //printf("%x,\n", *((uint64_t*)0x74a0));

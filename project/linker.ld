@@ -1,5 +1,5 @@
 OUTPUT_FORMAT(binary)
-ENTRY (_start)
+ENTRY(_start)
 
 SECTIONS
 {
@@ -21,10 +21,11 @@ SECTIONS
         *(COMMON)
         *(.bss)
     }
-    . = ALIGN(0xFFE);
+
+    . = ALIGN(0x1000);
     .bss_end : ALIGN(0x1000)
     {
         BYTE(0)
     }
-    _next_process = . + 1;
+    _next_process = . - 1;
 }

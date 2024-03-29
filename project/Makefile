@@ -42,7 +42,9 @@ run: create_os_bin
 
 # adding togther the kernel and the master boot record:
 create_os_bin: link asm_mbr link_processes
-	cat $(MBR_BIN) $(KERNEL_BIN) bin/processes/printf.bin > $(OS_BIN)
+	$(eval PROCESSES_LIST    := $(addsuffix .bin, $(shell find $(PROCESSES)obj -maxdepth 1 -mindepth 1 -type d | sed 's|^$(PROCESSES)obj/|bin/processes/|')))
+
+	cat $(MBR_BIN) $(KERNEL_BIN) $(SRC_DIR)$(PROCESSES)processPadding $(PROCESSES_LIST) > $(OS_BIN)
 
 
 

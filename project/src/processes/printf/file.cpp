@@ -7,6 +7,9 @@ int func()
 int main()
 {
     *(VGA_MEMORY) = 'a';
-    //asm volatile("hlt");
-    //return 0;
+    // *(VGA_MEMORY) = 'b';
+    // *(VGA_MEMORY) = 'c';
+
+    //asm volatile("hlt");      
+    return 0;
 }

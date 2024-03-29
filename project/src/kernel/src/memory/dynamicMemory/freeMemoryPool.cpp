@@ -52,6 +52,8 @@ void* getBlockFromMainPool(size_t requestMemorySize)
         }
         currBlock = currBlock->next;
     }
+
+    ASSERT_PRINT_ERROR(false, printf("Error: there is a problem with the main pool of the free memory pool\n"))
 }
 void* getBlockFromFreePool(size_t requestMemorySize)
 {
