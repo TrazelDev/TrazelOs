@@ -1,5 +1,4 @@
 OUTPUT_FORMAT(binary)
-
 ENTRY (_start)
 
 SECTIONS
@@ -22,10 +21,10 @@ SECTIONS
         *(COMMON)
         *(.bss)
     }
-    . = ALIGN(0x1000);
-    _end = .;
-
-    .specific_address : {
-        *(.specific_address)
+    . = ALIGN(0xFFE);
+    .bss_end : ALIGN(0x1000)
+    {
+        BYTE(0)
     }
+    _next_process = . + 1;
 }

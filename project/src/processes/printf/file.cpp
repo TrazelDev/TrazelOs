@@ -1,8 +1,12 @@
+#define VGA_MEMORY (unsigned char*)0xB8000
+
 int func()
 {
     return 0;
 }
 int main()
 {
-    return 0;
+    *(VGA_MEMORY) = 'a';
+    //asm volatile("hlt");
+    //return 0;
 }

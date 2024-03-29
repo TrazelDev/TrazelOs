@@ -37,11 +37,12 @@ clean:
 
 # running the os:
 run: create_os_bin
-	$(SIMULATOR) -drive file=$(OS_BIN),format=raw $(SIMULATOR_FLAGS)
+	$(SIMULATOR) -drive file=$(OS_BIN),format=raw $(SIMULATOR_FLAGS) -serial file:output.txt
+
 
 # adding togther the kernel and the master boot record:
-create_os_bin: link asm_mbr
-	cat $(MBR_BIN) $(KERNEL_BIN) $(MEMORY_PAD_BIN) > $(OS_BIN)
+create_os_bin: link asm_mbr link_processes
+	cat $(MBR_BIN) $(KERNEL_BIN) bin/processes/printf.bin > $(OS_BIN)
 
 
 

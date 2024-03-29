@@ -66,7 +66,7 @@ export ECHO_NO_COLOR    := \033[97m
 
 KERNEL_SIZE ?= $(shell wc -c < $(KERNEL_BIN))
 SECTOR_SIZE := 512
-export SECTORS_TO_LOAD ?= $(shell if [ -e "$(KERNEL_BIN)" ]; then echo $$((($(KERNEL_SIZE) / $(SECTOR_SIZE)) + 1)); fi)
+export SECTORS_TO_LOAD ?= $(shell if [ -e "$(KERNEL_BIN)" ]; then echo $$((($(KERNEL_SIZE) / $(SECTOR_SIZE)) + 2)); fi)
 
 # this is the memory that is need to be padded so it will be exactly the right amount of memory that should be loaded:
 export MEMORY_PAD ?= $(shell if [ -e "$(KERNEL_BIN)" ]; then echo $$(($(SECTOR_SIZE) - ($(KERNEL_SIZE) % $(SECTOR_SIZE)))); fi)

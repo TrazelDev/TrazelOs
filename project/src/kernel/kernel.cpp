@@ -6,7 +6,7 @@
 
 
 void my_function() __attribute__((section(".specific_address")));
-void my_function() {
+void my_function(){
     printf("hello world\n");
 }
 void testingFunction()
@@ -22,8 +22,8 @@ void testingFunction()
 }
 
 
-extern char _end[];
-typedef void (*Func)();
+extern uint64_t _next_process[];
+typedef int (*Func)();
 extern "C" void _start()
 {
     initPrint();
@@ -32,8 +32,44 @@ extern "C" void _start()
     initMemoryPool();
 
     IF_DEBUG(testEverything());
-    printf("Address: %x\n", &_end);
-    printf("Address: %x\n", &my_function);
-    Func func = (Func)_end;
-    func();
+    printf("%x,\n", _next_process);
+    printf("%x,\n", _next_process[0]);
+
+    void* addr = _next_process;
+    Func func_ptr = (Func)addr;
+    func_ptr();
+    printf("hello world");
+    // printf("%x,\n", _next_process + 2);
+
+    //printf("%x,\n", *(_end + 1));
+    //printf("%x,\n", *((uint64_t*)0x74a0));
+    //int flag = 0;
+    //for(uint64_t i = 0;;i--)
+    //{
+    //    if(_end[i])
+    //    {
+    //        printf("%d, %x, %x\n", i, _end[i], _end + i);
+    //        if(flag == 5) { break; }
+    //        flag++;
+    //    }
+    //}
+
+    //for(int i = 0; i < 1000000000; i++)
+    //{
+        //if(_end[i] == 1) {printf("%x\n", i); }
+        //{
+        //    printf("%x, %x\n", i, (uint64_t*)(_end));
+//
+        //    break;
+        //}
+    //}
+    // printf("Address: %x\n", &my_function);
+
 }
+
+/*
+0x10160: 0x30 , 0x78, 0x30, 0x00, 0x30, 0x30, 0x30, 0x00
+0xf2a8: 0x01, 7 * 0x0
+0x11398
+
+*/

@@ -33,3 +33,6 @@ bin/processes/%.bin:
 	mkdir -p $(dir $@)
 	$(LINKER) -T $(PROCESSES)linker.ld -o $@ $(PROCESS_OBJ_FILES)
 	
+
+
+	

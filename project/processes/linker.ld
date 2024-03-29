@@ -4,8 +4,7 @@ ENTRY (main)
 
 SECTIONS
 {
-    . = 0x0008;
-
+    . = 0x0;
     .main_location : {
         *(.main_location)
     }
@@ -27,14 +26,14 @@ SECTIONS
         *(.bss)
     }
     
-    . = ALIGN(0x1000);
+    stack_start = .;
     stack_region : {
         . += 5 * 0x1000;
     }
-    _end = .;
-
-    . = 0x0;
-    .process_size : {
-        QUAD(_end) 
+    
+    .bss_end : ALIGN(01000)
+    {
+        BYTE(0)
     }
+    _end = . - 1;
 }

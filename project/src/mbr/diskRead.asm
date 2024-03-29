@@ -12,12 +12,13 @@ readDisk:
 	mov cl, 0x02             ; the number of the first sector
 	int 0x13                 ; the bios disk service in interrupt
 
+
 	; saving the size of the kenel in terms of sectors for later:
 	mov di, ADDRESS_WITH_THE_AMOUNT_OF_SECTORES_KERNEL_TAKES
 	mov ax, SECTORS_TO_LOAD
 	mov [di], ax
-
 	jc diskReadFailed
+
 	ret
 
 BOOT_DISK: db 0
