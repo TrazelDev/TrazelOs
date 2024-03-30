@@ -2,8 +2,8 @@
 #include "utility/utility.h"
 #include "src/interrupts/idt.h"
 #include "src/memory/physicalMemory/pageFrameAllocator.h"
+#include "src/memory/pageRequestor.h"
 #include "src/memory/dynamicMemory/freeMemoryPool.h"
-
 
 void testingFunction()
 {
@@ -18,7 +18,7 @@ void testingFunction()
 }
 
 
-extern uint64_t _next_process[];
+extern uint64_t* _next_process;
 typedef int (*ProcessFunc)();
 extern "C" void _start()
 {
@@ -30,11 +30,33 @@ extern "C" void _start()
     IF_DEBUG(testEverything());
 
 
+    VirtualAddress vAddr = requestPages(3);
+    printf("%x\n", vAddr);
+    vAddr.raw += (PAGE_SIZE * 3) - 8;
+    printf("%x\n", vAddr);
 
-    ProcessFunc processesPrint = (ProcessFunc)(void*)(_next_process + 1);
+    /*ProcessFunc processesPrint = (ProcessFunc)(void*)(&_next_process + 2);
     processesPrint();
 
-    //printf("%x,\n", _next_process);
+    printf("%x\n", &_next_process);
+    printf("%x\n", _next_process);*/
+//
+    //uint64_t val = (uint64_t)(_next_process) + (uint64_t)(&_next_process);
+    //uint64_t* ptr = (uint64_t*)val;
+    //printf("%x\n", ptr);
+    
+    //processesPrint = (ProcessFunc)(void*)(ptr + 1);
+    //processesPrint();
+//
+    //val = (uint64_t)(ptr) + ((uint64_t)(val) / 8);
+    //ptr = (uint64_t*)val;
+    //
+    //processesPrint = (ProcessFunc)(void*)(ptr + 1);
+    //processesPrint();
+    //printf("%x\n", ptr);
+
+    //printf("%x\n", *((uint64_t*)(0x16000)));
+
     //printf("%x,\n", _next_process + 1);
     //printf("%x,\n", _next_process + 2);
     //printf("%x,\n", _next_process + 3);
@@ -67,10 +89,3 @@ extern "C" void _start()
     // printf("Address: %x\n", &my_function);
 
 }
-
-/*
-0x10160: 0x30 , 0x78, 0x30, 0x00, 0x30, 0x30, 0x30, 0x00
-0xf2a8: 0x01, 7 * 0x0
-0x11398
-
-*/

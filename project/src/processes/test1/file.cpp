@@ -6,7 +6,7 @@ int func()
 }
 int main()
 {
-    //*(VGA_MEMORY) = 'n';
+    *(VGA_MEMORY) = 'n';
     // *(VGA_MEMORY) = 'b';
     // *(VGA_MEMORY) = 'c';
 

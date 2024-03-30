@@ -2,6 +2,7 @@
 import os
 import shutil
 from typing import Dict, List
+PROCESS_BINARIES_FOLDER : str = "bin/processes/"
 
 def get_files_in_folders(folder_path: str) -> Dict[str, List[str]]:
     process_files: Dict[str, List[str]] = {}
@@ -61,9 +62,14 @@ def copy_all_file(process_dict: Dict[str, List[str]], old_relative_path: str, ne
             
             create_file_duplicate(new_file_full_file_path, file_content)
             
+def remove_processes_binaries():
+    if os.path.exists(PROCESS_BINARIES_FOLDER):
+        shutil.rmtree(PROCESS_BINARIES_FOLDER)
 
 processes_src_path: str = 'src/processes/'
 processes_dst_path: str = 'processes/code/'
 
+
 process_files_dict: Dict[str, List[str]] = get_files_in_folders(processes_src_path)
 copy_all_file(process_files_dict, processes_src_path, processes_dst_path)
+remove_processes_binaries()

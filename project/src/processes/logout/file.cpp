@@ -6,6 +6,11 @@ int func()
 
 int main()
 {
-    *(VGA_MEMORY) = 'a';
+    *(VGA_MEMORY)     = 'a';
+    *(VGA_MEMORY + 2) = 'b';
+    *(VGA_MEMORY + 4) = ' ';
+    *(VGA_MEMORY + 6) = ' ';
+    *(VGA_MEMORY + 8) = ' ';
+
     return 0;
 }

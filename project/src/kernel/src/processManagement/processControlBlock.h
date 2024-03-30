@@ -22,6 +22,29 @@ struct CpuRegisters
     uint64_t r14;   
     uint64_t r15;   
     uint64_t flags;
+
+    // generating all zero cpu registers:
+    CpuRegisters()
+    {
+        rax    = 0;
+        rbx    = 0;
+        rcx    = 0;
+        rdx    = 0;
+        rsi    = 0;
+        rdi    = 0;
+        rsp    = 0;
+        rbp    = 0;
+        rip    = 0;
+        r8     = 0; 
+        r9     = 0; 
+        r10    = 0;
+        r11    = 0;
+        r12    = 0;
+        r13    = 0;
+        r14    = 0;
+        r15    = 0;
+        flags  = 0;
+    }
 };
 
 enum class PROCESS_STATE

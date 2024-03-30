@@ -1,9 +1,10 @@
 #pragma once
 #include "processControlBlock.h"
 
+#define PROCESS_STACK_PAGE_COUNT 3
 struct Process
 {
-    ProcessControlBlock* process;
+    ProcessControlBlock* pcb;
 };
 
 struct ProcessList
@@ -12,9 +13,14 @@ struct ProcessList
     ProcessList* next;
 };
 
-
 void initScheduler(size_t quantumTime);
+Process* createProcess(size_t processesSize, uint64_t processesStartingAddress);
 void addProcess(Process* process);
-Process* removeProcess(Process* process);
+void removeProcess(Process* process);
 Process* frontProcess(Process* process);
 bool containsProcess();
+
+uint64_t generateUniqueProcessId();
+VirtualAddress generateStackPages(size_t pagesCount);
+VirtualAddress getStackLastAddress(VirtualAddress stackStartingAddress);
+uint64_t generateProcessPageTable();

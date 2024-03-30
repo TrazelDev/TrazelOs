@@ -16,7 +16,7 @@ CURRENT_DIR                   := $(shell pwd)
 INCLUDE_DIRS                  := -I$(CURRENT_DIR)/src/kernel/ -I$(CURRENT_DIR)/src/kernel/src/
 COMPILER_FLAGS                := -ffreestanding -mno-red-zone -m64 $(INCLUDE_DIRS)
 export COMPILER_RELEASE_FLAGS := $(COMPILER_FLAGS) -O2
-export COMPILER_DEBUG_FLAGS   := $(COMPILER_FLAGS) -O0 -DDEBUG=1
+export COMPILER_DEBUG_FLAGS   := $(COMPILER_FLAGS) -O2 -DDEBUG=1
 
 # locations:
 export BIN_DIR     := bin/
@@ -34,6 +34,7 @@ export BOOTLOADER_FILE := src/boot_loader/bootloader.asm
 export BOOTLOADER_OBJ  := $(OBJ_DIR)bootloader.o
 export OS_BIN          := $(BIN_DIR)os.iso
 export KERNEL_BIN      := $(BIN_DIR)kernel.bin
+export PROCESS_PADDING := $(SRC_DIR)$(PROCESSES)processPadding
 
 # this removes the ./ prefix at the start:
 REMOVE_PREFIX := sed 's|^\./||'
@@ -44,7 +45,7 @@ export OBJ_ASM_FILES     := $(addprefix $(OBJ_DIR), $(ASM_FILES:.asm=Asm.o))
 export ASM_CPP_FILES     := $(addprefix $(ASM_DIR), $(CPP_FILES:.cpp=.asm) )
 
 # process files
-export PROCESSES_LIST    := 
+export PROCESSES_LIST    ?= $(addsuffix .bin, $(shell find $(PROCESSES)obj -maxdepth 1 -mindepth 1 -type d | sed 's|^$(PROCESSES)obj/|bin/processes/|'))
 export PROCESS_CPP_FILES := 
 export OBJ_PROCESSES     := 
 
@@ -64,9 +65,12 @@ export ECHO_GREEN_COLOR := \033[0;32m
 export ECHO_NO_COLOR    := \033[97m
 
 
-KERNEL_SIZE ?= $(shell wc -c < $(KERNEL_BIN))
-SECTOR_SIZE := 512
-export SECTORS_TO_LOAD ?= $(shell if [ -e "$(KERNEL_BIN)" ]; then echo $$((($(KERNEL_SIZE) / $(SECTOR_SIZE)) + 2)); fi)
+SECTOR_SIZE             := 512
+PAGE_SIZE               := 0x1000
+KERNEL_SIZE             ?= $(shell wc -c < $(KERNEL_BIN))
+PROCESSES_COMBINED_SIZE ?= $$(du -cb $(PROCESSES_LIST) | awk 'END{print $$1}')
+ALL_BINARIES_SIZE       ?= $$(($(KERNEL_SIZE) + $(PROCESSES_COMBINED_SIZE)))
+export SECTORS_TO_LOAD  ?= $(shell if [ -e "$(KERNEL_BIN)" ]; then echo $$((($(ALL_BINARIES_SIZE) / $(SECTOR_SIZE)))); fi)
 
 # this is the memory that is need to be padded so it will be exactly the right amount of memory that should be loaded:
 export MEMORY_PAD ?= $(shell if [ -e "$(KERNEL_BIN)" ]; then echo $$(($(SECTOR_SIZE) - ($(KERNEL_SIZE) % $(SECTOR_SIZE)))); fi)

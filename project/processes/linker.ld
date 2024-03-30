@@ -4,37 +4,40 @@ ENTRY (main)
 SECTIONS
 {
     . = 0x0;
-    /* main_location section */
-    .main_location : ALIGN(0x6) {
+    .startingAddress :
+    {
+        QUAD(_next_process);
+        QUAD(0);
+    }
+
+    . = 0x8;
+    .main_location :
+    {
         *(.main_location)
     }
 
-    /* .text section */
-    .text : ALIGN(0x1000)
+    .text : ALIGN(0x500)
     {
         . = . + SIZEOF_HEADERS;
         *(.text)
     }
 
-
-    /* Set location for other sections */
-    /* Adjust as per your requirements */
-
-    /* .data section */
-    .data : ALIGN(0x1000)
+    .data : ALIGN(0x200)
     {
         *(.data)
     }
 
-    /* .bss section */
-    .bss : ALIGN(0x1000)
+    .bss : ALIGN(0x200)
     {
         *(COMMON)
         *(.bss)
     }
 
-    /* Set stack_start */
-    stack_start = .;
-    
-    /* Additional sections and settings */
+
+    .bss_end : ALIGN(0x1000)
+    {
+        BYTE(0)
+        . = (. + 0x1000 - 1);
+    }
+    _next_process = .;
 }

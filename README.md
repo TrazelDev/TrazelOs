@@ -47,12 +47,16 @@
 3. Follow the prompts to enter the interrupt type and interrupt name.
     - The interrupt name should be written in CamelCase convention. For example: `PageFault`, `Keyboard`.
 
+### creating asm files:
+1. `cd project`
+2. `make compile_asm`
+
 ## Current Goals:
 - [x] mbr
 - [x] bootloader
 - [x] idt
 - [x] physical memory manager
 - [x] virtual memory manager
-- [ ] process free memory (heap)
+- [x] process free memory (heap)
 - [ ] process managemnt
 - [ ] filing system

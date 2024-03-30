@@ -3,7 +3,7 @@ include processHandler.mk
 # depends on the run so when we use just make we call this:
 all: clean run
 test:
-	@echo "_end: $$(nm $@ | grep _end)"
+	@echo "$(PROCESSES_COMBINED_SIZE) $(ALL_BINARIES_SIZE) $(KERNEL_SIZE)"
 
 # a configuration to generate asm files from the cpp files:
 compile_asm: $(ASM_CPP_FILES)
@@ -37,19 +37,18 @@ clean:
 
 # running the os:
 run: create_os_bin
-	$(SIMULATOR) -drive file=$(OS_BIN),format=raw $(SIMULATOR_FLAGS) -serial file:output.txt
+	$(SIMULATOR) -drive file=$(OS_BIN),format=raw $(SIMULATOR_FLAGS)
 
 
 # adding togther the kernel and the master boot record:
-create_os_bin: link asm_mbr link_processes
-	$(eval PROCESSES_LIST    := $(addsuffix .bin, $(shell find $(PROCESSES)obj -maxdepth 1 -mindepth 1 -type d | sed 's|^$(PROCESSES)obj/|bin/processes/|')))
-
-	cat $(MBR_BIN) $(KERNEL_BIN) $(SRC_DIR)$(PROCESSES)processPadding $(PROCESSES_LIST) > $(OS_BIN)
+create_os_bin: link asm_mbr
+	$(eval PROCESSES_LIST := $(addsuffix .bin, $(shell find $(PROCESSES)obj -maxdepth 1 -mindepth 1 -type d | sed 's|^$(PROCESSES)obj/|bin/processes/|')))
+	cat $(MBR_BIN) $(KERNEL_BIN) $(PROCESSES_LIST) > $(OS_BIN)
 
 
 
 # creating the master boot record and loading the correct amount of sectors
-asm_mbr: $(KERNEL_BIN)
+asm_mbr: $(KERNEL_BIN) link_processes
 	@echo "${ECHO_GREEN_COLOR}creating the master boot record:${ECHO_NO_COLOR}"
 	mkdir -p $(dir $(MBR_BIN))
 	$(ASM) -D SECTORS_TO_LOAD=$(SECTORS_TO_LOAD) $(MBR_FILE) $(ASSEMBLER_MBR_FLAGS) $(MBR_BIN)

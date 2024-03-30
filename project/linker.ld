@@ -26,6 +26,7 @@ SECTIONS
     .bss_end : ALIGN(0x1000)
     {
         BYTE(0)
+        . = (. + 0x1000 - 1);
     }
-    _next_process = . - 1;
+    _next_process = .;
 }
