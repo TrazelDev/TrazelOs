@@ -22,6 +22,7 @@ Process* createProcess(size_t processesSize, uint64_t processesStartingAddress)
     newProcess->pcb->cpuRegisters = CpuRegisters(); // creating cpu register which contain the value 0
     
     VirtualAddress stackStartingAddress = generateStackPages(PROCESS_STACK_PAGE_COUNT);
+    // newProcess->pcb->pageTablePtr       = ge
     newProcess->pcb->stackPointer       = getStackLastAddress(stackStartingAddress).raw;
     newProcess->pcb->instructionPointer = processesStartingAddress;
 }
