@@ -2,16 +2,16 @@
 #include "src/memory/physicalMemory/pageFrameAllocator.h"
 
 // functions for use outside:
-inline PhysicalAddress getPML4Address()
+PhysicalAddress getPML4Address()
 {
     PhysicalAddress addr; 
     asm volatile("movq %%cr3, %0" : "=r"(addr.raw));
     return addr;
 }
-PhysicalAddress getPhysicalAddress(VirtualAddress vAddr)
+PhysicalAddress getPhysicalAddress(VirtualAddress vAddr, PhysicalAddress plm4Address)
 {
     // getting the page index of the first table the pml4 table:
-    uint64_t pageIndex = getPML4Address().addr.pageIndex;
+    uint64_t pageIndex = plm4Address.addr.pageIndex;
     // an array that has all entree indexes of every page table:
     uint64_t pageTableEntriesIndexes[PAGE_TABLE_MAX_LEVEL] = { vAddr.PML4_INDEX, vAddr.PDPI_INDEX, vAddr.PD_INDEX, vAddr.PT_INDEX }; 
     
@@ -29,10 +29,10 @@ PhysicalAddress getPhysicalAddress(VirtualAddress vAddr)
     pAddress.addr.offset    = vAddr.VIRTUAL_ADDRESS_OFFSET;
     return pAddress;
 }
-bool mapMemory(PhysicalAddress pAddr, VirtualAddress vAddr, bool overrunTableEntry)
+bool mapMemory(PhysicalAddress pAddr, VirtualAddress vAddr, bool overrunTableEntry, PhysicalAddress plm4Address)
 {
     // getting the page index of the first table the pml4
-    uint64_t pageIndex = getPML4Address().addr.pageIndex;
+    uint64_t pageIndex = plm4Address.addr.pageIndex;
     uint64_t pageTableEntriesIndexes[PAGE_TABLE_MAX_LEVEL] = { vAddr.PML4_INDEX, vAddr.PDPI_INDEX, vAddr.PD_INDEX, vAddr.PT_INDEX }; 
     bool isPageTableIndex = true; // this value says if the entry in the current page table is the page index of another page table or the index of the physical address  
 
@@ -83,6 +83,8 @@ static inline uint64_t createOrFindNextPageIndex(uint64_t pageIndex, uint64_t en
         setNewPageEntry(pageTable, entryIndex, isPageTableIndex, physicalPageIndex);
     }
 
+    pageTable->entries[entryIndex].attributes.present  = true;
+    pageTable->entries[entryIndex].attributes.writable = true;
     return pageTable->entries[entryIndex].attributes.index;
 }
 static inline void setNewPageEntry(PageTable* currentPageTable, uint64_t entryIndex, bool isPageTableIndex, uint64_t physicalPageIndex)
@@ -97,8 +99,7 @@ static inline void setNewPageEntry(PageTable* currentPageTable, uint64_t entryIn
     ASSERT_PRINT_ERROR(pageAddress.raw != NULL,
         printf("Error: there are no more identity mapped pages and the page table couldn't have been created\n"))
 
-    currentPageTable->entries[entryIndex].attributes.present  = true; // making the page present in the system
-    currentPageTable->entries[entryIndex].attributes.writable = true; // making the page read and write through
+    
     currentPageTable->entries[entryIndex].attributes.index = pageAddress.addr.pageIndex; // setting the index of the next page table
 }
 static inline PageTable* getPageTable(uint64_t pageIndex)

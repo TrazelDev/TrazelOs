@@ -4,22 +4,14 @@
 #include "src/memory/physicalMemory/pageFrameAllocator.h"
 #include "src/memory/pageRequestor.h"
 #include "src/memory/dynamicMemory/freeMemoryPool.h"
+#include "src/processManagement/roundRobin.h"
 
-void testingFunction()
-{
-    // processesInSystem[1].func();
-    
-    uint64_t oldIp;
-    //asm volatile ("lea (%%rip), %0" : "=r" (oldIp));
-    // asm volatile ("pushq %0" : : "r" (oldIp + 16) : "memory");
-
-    //asm volatile("call  %0\n\t" : "=a"(newIp));
-    printf("test");
-}
 
 
 extern uint64_t* _next_process;
+extern uint64_t* _contextSwitch_addr;
 typedef int (*ProcessFunc)();
+typedef void (*ContextFunc)(Process* process);
 extern "C" void _start()
 {
     initPrint();
@@ -28,18 +20,21 @@ extern "C" void _start()
     initMemoryPool();
 
     IF_DEBUG(testEverything());
+    
+    ContextFunc func = (ContextFunc)(void*)(&_contextSwitch_addr);
+    printf("%x", (&_next_process + 2));
+    func(createProcess((uint64_t)_next_process, (uint64_t)(&_next_process + 2)));
 
+    //printf("herllo");
+    //ProcessFunc processesPrint = (ProcessFunc)(void*)(&_next_process + 1);
+    //processesPrint();
+    //printf("he");
+    //
+    //uint64_t val = (uint64_t)_next_process;
+    //printf("%x\n", val);
+    //printf("%x\n", (&_next_process + 1));
 
-    VirtualAddress vAddr = requestPages(3);
-    printf("%x\n", vAddr);
-    vAddr.raw += (PAGE_SIZE * 3) - 8;
-    printf("%x\n", vAddr);
-
-    /*ProcessFunc processesPrint = (ProcessFunc)(void*)(&_next_process + 2);
-    processesPrint();
-
-    printf("%x\n", &_next_process);
-    printf("%x\n", _next_process);*/
+    //printf("%x\n", _next_process);*/
 //
     //uint64_t val = (uint64_t)(_next_process) + (uint64_t)(&_next_process);
     //uint64_t* ptr = (uint64_t*)val;

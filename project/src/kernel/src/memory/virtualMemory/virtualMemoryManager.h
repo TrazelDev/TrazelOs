@@ -7,10 +7,10 @@
 #define FLUSH_BUFFER(addr) asm volatile("invlpg (%0)" ::"r" (addr) : "memory")
 
 /// @brief returning the value in cr3 register that is a pointer to the plm4 table 
-inline PhysicalAddress getPML4Address();
+PhysicalAddress getPML4Address();
 
 /// @brief the function is getting a virtual address and converts it back to a physical one
-PhysicalAddress getPhysicalAddress(VirtualAddress vAddr);
+PhysicalAddress getPhysicalAddress(VirtualAddress vAddr, PhysicalAddress plm4Address = getPML4Address());
 
 /// @brief the function is getting a physical address and a virtual address and makes it so the entire page that the virtual address 
 /// points to, will be mapped to the entire page that the physical address points to.
@@ -18,7 +18,7 @@ PhysicalAddress getPhysicalAddress(VirtualAddress vAddr);
 /// @param vAddr some virtual address inside of a specific page we want to map
 /// @param overrunTableEntry defines what is happening in the case that the last page table entree ( in the actual pte ) is already mapped to another page
 /// @return whether the mapping succeeded or not
-bool mapMemory(PhysicalAddress pAddr, VirtualAddress vAddr, bool overrunTableEntry = false);
+bool mapMemory(PhysicalAddress pAddr, VirtualAddress vAddr, bool overrunTableEntry = false, PhysicalAddress plm4Address = getPML4Address());
 
 
 /// @brief function to unmap the memory from the physical memory by making the page not physical and pointing to null

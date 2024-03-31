@@ -21,6 +21,15 @@ SECTIONS
         *(COMMON)
         *(.bss)
     }
+    
+    . = ALIGN(0x1000);
+    _contextSwitch_addr = .;
+    .contextSwitch_location : ALIGN(0x1000)
+    {
+        *(.contextSwitch_location)
+        *(.globalPCB_location)
+    }
+
 
     . = ALIGN(0x1000);
     .bss_end : ALIGN(0x1000)

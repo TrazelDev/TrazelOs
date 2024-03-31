@@ -16,18 +16,18 @@ SECTIONS
         *(.main_location)
     }
 
-    .text : ALIGN(0x500)
+    .text : ALIGN(0x1000)
     {
         . = . + SIZEOF_HEADERS;
         *(.text)
     }
 
-    .data : ALIGN(0x200)
+    .data : ALIGN(0x1000)
     {
         *(.data)
     }
 
-    .bss : ALIGN(0x200)
+    .bss : ALIGN(0x1000)
     {
         *(COMMON)
         *(.bss)
