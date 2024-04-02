@@ -11,19 +11,18 @@
 extern uint64_t* _next_process;
 extern uint64_t* _contextSwitch_addr;
 typedef int (*ProcessFunc)();
-typedef void (*ContextFunc)(Process* process);
 extern "C" void _start()
 {
     initPrint();
+    printf("\n");
     initPageFrameAllocator();
     initIDT();
     initMemoryPool();
 
     IF_DEBUG(testEverything());
     
-    ContextFunc func = (ContextFunc)(void*)(&_contextSwitch_addr);
-    printf("%x", (&_next_process + 2));
-    func(createProcess((uint64_t)_next_process, (uint64_t)(&_next_process + 2)));
+    contextSwitch(createProcess((uint64_t)_next_process, (uint64_t)(&_next_process + 1)));
+    printf("%x\n", (&_next_process + 1));
 
     //printf("herllo");
     //ProcessFunc processesPrint = (ProcessFunc)(void*)(&_next_process + 1);

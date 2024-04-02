@@ -23,6 +23,6 @@ bool containsProcess();
 uint64_t generateUniqueProcessId();
 VirtualAddress generateStackPages(size_t pagesCount);
 VirtualAddress getStackLastAddress(VirtualAddress stackStartingAddress);
-uint64_t generateProcessPageTable(VirtualAddress stackStartingVAddress, size_t stackPageCount, size_t processStartingAddress, size_t processPageCount);
+uint64_t generateProcessPageTable(VirtualAddress stackStartingVAddress, size_t stackPageCount, size_t processStartingAddress, size_t processPageCount, ProcessControlBlock* processPCB);
 
 void contextSwitch(Process* process) __attribute__((section(".contextSwitch_location")));

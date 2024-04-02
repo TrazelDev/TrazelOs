@@ -28,6 +28,8 @@ SECTIONS
     {
         *(.contextSwitch_location)
         *(.globalPCB_location)
+        *(.kernelPCB_location)
+        *(.plm4TablePtr_location)
     }
 
 

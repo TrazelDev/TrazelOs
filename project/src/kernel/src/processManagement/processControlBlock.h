@@ -43,36 +43,6 @@ struct CpuRegisters
     }
 };
 
-inline __attribute__((always_inline)) void replaceCpuRegisters(CpuRegisters& regs)
-{
-    asm volatile (
-        "movq %0, %%rax\n\t"
-        "movq %1, %%rbx\n\t"
-        "movq %2, %%rcx\n\t"
-        "movq %3, %%rdx\n\t"
-        "movq %4, %%rsi\n\t"
-        "movq %5, %%rdi\n\t"
-        "movq %6, %%rbp\n\t"
-        "movq %7, %%r8\n\t"
-        "movq %8, %%r9\n\t"
-        "movq %9, %%r10\n\t"
-        "movq %10, %%r11\n\t"
-        "movq %11, %%r12\n\t"
-        "movq %12, %%r13\n\t"
-        "movq %13, %%r14\n\t"
-        "movq %14, %%r15\n\t"
-        "pushfq\n\t"
-        "popq %15\n\t"
-        : 
-        : "m"(regs.rax), "m"(regs.rbx), "m"(regs.rcx), "m"(regs.rdx),
-        "m"(regs.rsi), "m"(regs.rdi), "m"(regs.rbp), "m"(regs.r8),
-        "m"(regs.r9), "m"(regs.r10), "m"(regs.r11), "m"(regs.r12),
-        "m"(regs.r13), "m"(regs.r14), "m"(regs.r15), "m"(regs.flags)
-        : "memory"
-    );
-
-
-}
 
 enum class PROCESS_STATE
 {
