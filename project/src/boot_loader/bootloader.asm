@@ -79,4 +79,7 @@ start64Bit:
 	rep stosq
 
 	call _start
-	jmp $
+
+	pauseCpu:
+		hlt
+		jmp pauseCpu

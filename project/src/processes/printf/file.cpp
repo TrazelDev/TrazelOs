@@ -6,10 +6,6 @@ int func()
 }
 int main()
 {
-    //*(VGA_MEMORY) = 'n';
-    // *(VGA_MEMORY) = 'b';
-    // *(VGA_MEMORY) = 'c';
-
-    //asm volatile("hlt");      
+    *(VGA_MEMORY + 44) = '!'; 
     return 0;
 }

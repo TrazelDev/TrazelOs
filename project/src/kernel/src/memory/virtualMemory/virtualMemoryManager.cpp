@@ -1,4 +1,5 @@
 #include "virtualMemoryManager.h"
+#include "src/memory/pageRequestor.h"
 #include "src/memory/physicalMemory/pageFrameAllocator.h"
 
 // functions for use outside:
@@ -91,14 +92,24 @@ static inline void setNewPageEntry(PageTable* currentPageTable, uint64_t entryIn
 {
     // checking if the next page has to be an identity mapped page because this is a page that is going to be used for 
     // a page table or we should use the index that is being provided because we map it to the requested physical address:
-    PhysicalAddress pageAddress; 
-    if(isPageTableIndex) { pageAddress                = requestIdentityMappedPage(); }
-    else                 { pageAddress.addr.pageIndex = physicalPageIndex          ; }
+    PhysicalAddress pageAddress;
 
 
-    ASSERT_PRINT_ERROR(pageAddress.raw != NULL,
-        printf("Error: there are no more identity mapped pages and the page table couldn't have been created\n"))
+    if(isPageTableIndex) 
+    { 
+        pageAddress                = requestIdentityMappedPage();
+        if(!pageAddress.raw)
+        {
+            //createPhysicalAddr(requestPages(1).raw);
+        }
 
+        ASSERT_PRINT_ERROR(pageAddress.raw != NULL,
+            printf("Error: there are no more identity mapped pages and the page table couldn't have been created\n"))
+    }
+    else pageAddress.addr.pageIndex = physicalPageIndex;
+
+
+    
     
     currentPageTable->entries[entryIndex].attributes.index = pageAddress.addr.pageIndex; // setting the index of the next page table
 }

@@ -127,6 +127,7 @@ uint64_t generateProcessPageTable(VirtualAddress stackStartingVAddress, size_t s
 typedef int (*ProcessFunc)();
 void contextSwitch(Process* process)
 {
+    printf("instruction ptr: %x \n", process->pcb->instructionPointer);
     PUSH_ALL_REGISTERS();
     SAVE_STACK_PTR(stackPtr);
     SAVE_PLM4_TABLE(plm4TablePtr);
