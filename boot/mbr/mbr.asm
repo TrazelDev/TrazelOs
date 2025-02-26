@@ -11,9 +11,8 @@ mov sp, bp
 call readDisk
 jmp PROGRAM_SPACE
 
-; including some src files:
-%include "src/mbr/print.asm"
-%include "src/mbr/diskRead.asm"
+%include "print.asm"
+%include "diskRead.asm"
 
 errorString: db 'failed', 0 
 
