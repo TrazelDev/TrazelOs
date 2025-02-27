@@ -2,15 +2,14 @@
 
 
 ; in the start of the programm we are the driver number is in dl so we save it for later use
-mov [BOOT_DISK], dl 
+mov [BOOT_DISK], dl
 
 mov bp, 0x7c00
 mov sp, bp
 
 ; reading some sectors from the disk in order for us to load the bootloader
 call readDisk
-jmp $
-; jmp PROGRAM_SPACE
+jmp PROGRAM_SPACE
 
 %include "print.asm"
 %include "diskRead.asm"

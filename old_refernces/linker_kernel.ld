@@ -21,8 +21,8 @@ SECTIONS
         *(COMMON)
         *(.bss)
     }
-    
     . = ALIGN(0x1000);
+
     _contextSwitch_addr = .;
     .contextSwitch_location : ALIGN(0x1000)
     {

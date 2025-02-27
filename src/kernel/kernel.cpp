@@ -17,7 +17,6 @@ extern "C" void _start()
     initMemoryPool();
 
     contextSwitch(createProcess(GET_PROCESS_SIZE(_next_process), GET_PROCESS_STARTING_ADDRESS(_next_process)));
-    
     uint64_t* printProcess = GET_NEXT_PROCESS(_next_process);
     contextSwitch(createProcess(*printProcess, (uint64_t)(printProcess + 1)));
     IF_DEBUG(testEverything());
