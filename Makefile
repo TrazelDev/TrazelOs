@@ -1,4 +1,7 @@
+include commons.mk
+
 SUBDIRS := boot/mbr
+COMMONS_PATH := $(abspath commons.mk)
 
 all: build
 build: build_submodules
@@ -6,5 +9,5 @@ build: build_submodules
 
 build_submodules: 
 	@for dir in $(SUBDIRS); do \
-		$(MAKE) -C $$dir BIN_PATH=$(BIN_PATH); \
+		$(MAKE) -C $$dir COMMONS_PATH=$(COMMONS_PATH); \
 	done
