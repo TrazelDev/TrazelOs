@@ -1,5 +1,1 @@
-project/bin
-project/obj
-project/my_asm
-project/processes/code
-project/processes/obj
+bin/
