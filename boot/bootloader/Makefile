@@ -7,4 +7,4 @@ include $(COMMONS_PATH)
 all: build
 
 build:
-	$(ASM) bootloader.asm -f bin -o $(BIN_DIR)/stage2_boot.bin
+	$(ASM) bootloader.asm -f bin -o $(BIN_DIR)/bootloader.bin
