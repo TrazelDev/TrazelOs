@@ -9,6 +9,7 @@ build: build_submodules
 
 
 build_submodules:
+	mkdir -p bin
 	@for dir in $(SUBDIRS); do \
 		$(MAKE) -C $$dir COMMONS_PATH=$(COMMONS_PATH); \
 	done
