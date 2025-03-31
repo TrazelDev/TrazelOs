@@ -12,7 +12,7 @@ clean:
 
 
 build: build_submodules
-	cat bin/mbr.bin bin/bootloader.bin > bin/os.iso
+	cat $(MBR_BIN) $(BOOTLOADER_BIN) > bin/os.iso
 
 
 build_submodules:

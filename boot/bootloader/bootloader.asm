@@ -1,4 +1,3 @@
-[org 0x9000]
 jmp EnterProtectedMode
 
 errorString: db 'failed', 0
@@ -45,7 +44,7 @@ startProtectedMode:
     jmp codeseg:start64Bit ; preforming far jump which is necessary because the cpu needs to switch to a new code segment after switching to 64 bit
 
 [bits 64]
-
+[extern _entry]
 start64Bit:
 	; cleaning the text and changing the text color to green
 	mov edi, 0xb8000
@@ -53,8 +52,8 @@ start64Bit:
 	mov ecx, 500
 	rep stosq
 	
-	jmp $
-	
+	; jmp _entry
+	jmp $	
 	pauseCpu:
 		hlt
 		jmp pauseCpu

@@ -7,4 +7,4 @@ include $(COMMONS_PATH)
 all: build
 
 build:
-	$(ASM) mbr.asm -f bin -o $(BIN_DIR)/mbr.bin
+	$(ASM) mbr.asm -f bin -o $(MBR_BIN)
