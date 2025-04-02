@@ -28,20 +28,21 @@ enableA20:
 %include "identityPaging.asm"
 
 startProtectedMode:
-    mov ax, dataseg
+	mov ax, dataseg
 	mov ds, ax
 	mov ss, ax
 	mov es, ax
 	mov fs, ax
 	mov gs, ax
 
-    call checkCpuId           ; making sure that the cpu that we are working with supports the cpuid instrecution
+    	call checkCpuId           ; making sure that the cpu that we are working with supports the cpuid instrecution
 	call detectLongMode       ; make sure that the cpu supports long mode
 	call setUpIdentityPaging  ; setting up identity paging for the first 512 pages
 	call editGDT              ; chaning the gdt so it will now be in protected mode
+
 	
 	; switching to long mode:
-    jmp codeseg:start64Bit ; preforming far jump which is necessary because the cpu needs to switch to a new code segment after switching to 64 bit
+    	jmp codeseg:start64Bit ; preforming far jump which is necessary because the cpu needs to switch to a new code segment after switching to 64 bit
 
 [bits 64]
 [extern _entry]
@@ -52,7 +53,7 @@ start64Bit:
 	mov ecx, 500
 	rep stosq
 	
-	; jmp _entry
+	jmp _entry
 	jmp $	
 	pauseCpu:
 		hlt

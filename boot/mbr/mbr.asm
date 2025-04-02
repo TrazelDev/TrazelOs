@@ -9,11 +9,11 @@ mov sp, bp
 
 ; Load bootloader:
 call readDisk
-jmp bootloader_addr
+jmp [bootloader_addr]
 
 %include "print.asm"
 %include "diskRead.asm"
-stack_ptr_addr: dw 0x8000
+stack_ptr_addr: dw 0x7000
 
 
 ; Padding mbr to be a full sector:

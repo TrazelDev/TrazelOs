@@ -45,3 +45,6 @@ ENV PATH="$PATH:/mnt/cross_compiler/compiler/bin"
 # mounting the actuall project:
 RUN mkdir /mnt/TrazelOs
 WORKDIR /mnt/TrazelOs
+
+# Extra dependencies:
+RUN apt-get install -y fdisk

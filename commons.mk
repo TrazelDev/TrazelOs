@@ -12,3 +12,4 @@ CURR_DIR := $(strip $(CURR_DIR))
 export BIN_DIR := $(CURR_DIR)bin
 export MBR_BIN := $(BIN_DIR)/mbr.bin
 export BOOTLOADER_BIN := $(BIN_DIR)/bootloader.bin
+export OS_IMG := $(BIN_DIR)/os.img
