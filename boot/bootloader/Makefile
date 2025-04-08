@@ -1,4 +1,4 @@
-# making sure that binnary path is specified
+# Making sure that binnary path is specified
 ifndef COMMONS_PATH
 $(error COMMONS_PATH must be specified)
 endif
