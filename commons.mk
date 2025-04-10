@@ -1,12 +1,15 @@
+# Path of this directory:
+CURR_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
+CURR_DIR := $(strip $(CURR_DIR))
+
 # Tools:
 export ASM = nasm
 export CC = x86_64-elf-gcc
 export LD = x86_64-elf-ld
 
+# compiler global setting:
+export GLOBAL_INCLUDE_DIR = $(CURR_DIR)utility
 
-# Path of this directory:
-CURR_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
-CURR_DIR := $(strip $(CURR_DIR))
 
 # binnaries path
 export BIN_DIR := $(CURR_DIR)bin
