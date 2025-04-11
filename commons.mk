@@ -8,8 +8,8 @@ export CC = x86_64-elf-gcc
 export LD = x86_64-elf-ld
 
 # compiler global setting:
-export GLOBAL_INCLUDE_DIR = $(CURR_DIR)utility
-
+export GLOBAL_INCLUDE_DIR := $(CURR_DIR)include
+export DRIVERS_DIR := $(CURR_DIR)drivers
 
 # binnaries path
 export BIN_DIR := $(CURR_DIR)bin
