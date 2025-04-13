@@ -12,3 +12,7 @@ typedef char       int8_t ;
 typedef short      int16_t;
 typedef int        int32_t;
 typedef long long  int64_t;
+
+#define bool _Bool;
+#define true 1
+#define false 0
