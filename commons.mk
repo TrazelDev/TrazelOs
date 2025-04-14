@@ -11,6 +11,14 @@ export LD = x86_64-elf-ld
 export GLOBAL_INCLUDE_DIR := $(CURR_DIR)include
 export DRIVERS_DIR := $(CURR_DIR)drivers
 
+# Common compiler flags:
+# ------------------------------------------------------------------
+# -ffreestanding - says that there are no stanard libs
+# -mno-red-zone - something with stack just in gcc, man it
+# -m64 - size of values like int long and so on
+export CC_FLAGS := -ffreestanding -mno-red-zone -m64 -I $(GLOBAL_INCLUDE_DIR)
+# ------------------------------------------------------------------
+
 # binnaries path
 export BIN_DIR := $(CURR_DIR)bin
 export MBR_BIN := $(BIN_DIR)/mbr.bin
