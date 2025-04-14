@@ -23,4 +23,5 @@ export CC_FLAGS := -ffreestanding -mno-red-zone -m64 -I $(GLOBAL_INCLUDE_DIR)
 export BIN_DIR := $(CURR_DIR)bin
 export MBR_BIN := $(BIN_DIR)/mbr.bin
 export BOOTLOADER_BIN := $(BIN_DIR)/bootloader.bin
+export DRIVERS_BIN_DIR := $(BIN_DIR)/drivers
 export OS_IMG := $(BIN_DIR)/os.img
