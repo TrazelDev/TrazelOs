@@ -1,6 +1,6 @@
 include commons.mk
 
-SUBDIRS := boot/mbr boot/bootloader drivers/
+SUBDIRS := boot/mbr boot/bootloader drivers utils
 COMMONS_PATH := $(abspath commons.mk)
 
 # The main options:

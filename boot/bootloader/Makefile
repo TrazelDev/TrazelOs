@@ -1,9 +1,3 @@
-# Making sure that project common settings are specified:
-ifndef COMMONS_PATH
-$(error COMMONS_PATH must be specified)
-endif
-include $(COMMONS_PATH)
-
 BOOT_BIN_DIR := $(BIN_DIR)/boot
 
 all: build

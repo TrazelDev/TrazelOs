@@ -1,6 +1,7 @@
 # Path of this directory:
 CURR_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
 CURR_DIR := $(strip $(CURR_DIR))
+unexport CURR_DIR
 
 # Tools:
 export ASM = nasm
@@ -18,6 +19,7 @@ export DRIVERS_DIR := $(CURR_DIR)drivers
 # -m64 - size of values like int long and so on
 export CC_FLAGS := -ffreestanding -mno-red-zone -m64 -I $(GLOBAL_INCLUDE_DIR)
 # ------------------------------------------------------------------
+
 
 # binnaries path
 export BIN_DIR := $(CURR_DIR)bin
