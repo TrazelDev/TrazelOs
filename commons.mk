@@ -1,16 +1,11 @@
-# Path of this directory:
-CURR_DIR != pwd
+DIR_CURR != pwd
 
-# Tools:
+# tools:
 export ASM = nasm
 export CC = x86_64-elf-gcc
 export LD = x86_64-elf-ld
 
-# compiler global setting:
-export GLOBAL_INCLUDE_DIR := $(CURR_DIR)/include
-export DRIVERS_DIR := $(CURR_DIR)/drivers
-
-# Common compiler flags:
+# common compiler flags:
 # ------------------------------------------------------------------
 # -ffreestanding - says that there are no stanard libs
 # -mno-red-zone - something with stack just in gcc, man it
@@ -18,11 +13,17 @@ export DRIVERS_DIR := $(CURR_DIR)/drivers
 export CC_FLAGS := -ffreestanding -mno-red-zone -m64 -I $(GLOBAL_INCLUDE_DIR)
 # ------------------------------------------------------------------
 
+# important directories:
+export DIR_MBR := $(DIR_CURR)/boot/mbr
+export DIR_DRIVERS := $(DIR_CURR)/drivers
+export DIR_INCLUDS := $(DIR_CURR)/include
 
-# binnaries path
-export BIN_DIR := $(CURR_DIR)/bin
-export MBR_BIN := $(BIN_DIR)/mbr.bin
-export BOOTLOADER_BIN := $(BIN_DIR)/bootloader.bin
-export DRIVERS_BIN_DIR := $(BIN_DIR)/drivers
-export UTILS_BIN_DIR := $(BIN_DIR)/utils
-export OS_IMG := $(BIN_DIR)/os.img
+# bin dirs:
+export DIR_BIN := $(DIR_CURR)/bin
+export DIR_BIN_DRIVERS := $(DIR_BIN)/drivers
+export DIR_BIN_UTILS := $(DIR_BIN)/utils
+
+# bin files:
+export OS_IMG := $(DIR_BIN)/os.img
+export BIN_MBR := $(DIR_BIN)/mbr.bin
+export BIN_BOOTLOADER := $(DIR_BIN)/bootloader.bin

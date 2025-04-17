@@ -1,25 +1,20 @@
 include commons.mk
-
-SUBDIRS := boot/mbr boot/bootloader drivers utils
-COMMONS_PATH := $(abspath commons.mk)
+.PHONY: clean run build
 
 # The main options:
-all: build
+build: $(OS_IMG)
 run:
 	sudo qemu-system-x86_64 $(OS_IMG)
 clean:
 	rm -rf bin
 
 
-build: build_submodules
+$(OS_IMG): $(BIN_MBR)
 	dd if=/dev/zero of=$(OS_IMG) count=100
-	dd if=$(MBR_BIN) of=$(OS_IMG) count=1 conv=notrunc
-	dd if=$(BOOTLOADER_BIN) of=$(OS_IMG) seek=1 conv=notrunc
+	dd if=$(BIN_MBR) of=$(OS_IMG) count=1 conv=notrunc
+# dd if=$(BIN_BOOTLOADER) of=$(OS_IMG) seek=1 conv=notrunc
 	echo ', 5, L, *' | sfdisk $(OS_IMG)
 
 
-build_submodules:
-	mkdir -p bin
-	@for dir in $(SUBDIRS); do \
-		$(MAKE) -C $$dir COMMONS_PATH=$(COMMONS_PATH); \
-	done
+$(BIN_MBR):
+	$(MAKE) -C $(DIR_MBR)
