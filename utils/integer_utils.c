@@ -5,11 +5,11 @@
 /*
  * takes a number and returns the corrsponding ascii value:
  * 0-9: ascii of 0-9
- * 10-15: ascii of A-F 
+ * 10-15: ascii of A-F
  */
 char number_to_base_digit(uint8_t digit) {
 	if (digit < 10) return digit + '0';
-	return digit + 'A' - 10; 
+	return digit + 'A' - 10;
 }
 
 
