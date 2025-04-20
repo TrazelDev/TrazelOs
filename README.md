@@ -1,26 +1,26 @@
 # Trazel operating system - specializes mainly in managing memory
 
-## OS that mainly focuses on managing memory using paging, virtual memory, and a free memory pool for dynamic allocation of memory.
+## An operating system focused on memory management using paging, virtual memory, and a dynamic memory pool (heap).
 > [!Note]
-> The project is currently under bootloader refactor therefor the kernel is not loaded currently
+> The project is currently undergoing a bootloader refactor; the kernel is not loaded at this stage.
 
 ## Building:
 > [!NOTE]
-> The project only supports linux build
+> The project only supports Linux build process.
 
-### Dependecies:
+### Dependencies:
 * Make
 * Qemu
 * Docker
 
 ### Build commands:
-* Run the `build` script to spawn a docker container with all the tools
-* Inside of the docker run `make build`
+* Run the `build` script to spawn a docker container with all the tools.
+* Inside of the docker run `make build`.
 
 ## Running:
 * `make run`
 > [!NOTE]
-> If the docker uses `sudo` privileges you must use `sudo make run`
+> If the docker uses `sudo` privileges you must use `sudo make run`.
 
 ## Cleaning:
 * `make clean`
@@ -32,5 +32,5 @@
 - [x] physical memory manager
 - [x] virtual memory manager
 - [x] process free memory (heap)
-- [ ] process managemnt
-- [ ] filing system
+- [ ] process management
+- [ ] file system
