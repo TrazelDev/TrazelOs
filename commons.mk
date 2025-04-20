@@ -25,6 +25,7 @@ export BIN_IO := $(DIR_BIN_DRIVERS)/io.o
 export ASM = nasm
 export CC = x86_64-elf-gcc
 export LD = x86_64-elf-ld
+export AR = x86_64-elf-ar
 
 # common compiler flags:
 # ------------------------------------------------------------------
