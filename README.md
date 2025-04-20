@@ -15,12 +15,12 @@
 
 ### Build commands:
 * Run the `build` script to spawn a docker container with all the tools
-* Inside of the docker run `make build
+* Inside of the docker run `make build`
 
 ## Running:
 * `make run`
-> [!NOTE] 
-> If the docker uses sudo privileges you must you use `sudo make run`
+> [!NOTE]
+> If the docker uses `sudo` privileges you must use `sudo make run`
 
 ## Cleaning:
 * `make clean`
