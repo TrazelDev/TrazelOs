@@ -9,6 +9,7 @@ export DIR_UTILS := $(DIR_CURR)/utils
 
 # bin dirs:
 export DIR_BIN := $(DIR_CURR)/bin
+export DIR_BIN_BOOT := $(DIR_BIN)/boot
 export DIR_BIN_DRIVERS := $(DIR_BIN)/drivers
 export DIR_BIN_UTILS := $(DIR_BIN)/utils
 
