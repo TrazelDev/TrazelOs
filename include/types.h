@@ -1,4 +1,4 @@
-#pragma once 
+#pragma once
 
 // unsigned types:
 typedef unsigned char      uint8_t ;
@@ -16,3 +16,5 @@ typedef long long  int64_t;
 #define bool _Bool;
 #define true 1
 #define false 0
+
+#define NULL 0
