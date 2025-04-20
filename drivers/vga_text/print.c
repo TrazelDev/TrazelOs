@@ -1,22 +1,22 @@
 #include <types.h>
+#include <io.h>
 #include "print.h"
 
 #define PRINT_BUFFER_MAX 40
 static uint64_t global_cursor_position = 0;
 
-void set_cursor_position(uint16_t position)
-{
+void set_cursor_position(uint16_t position) {
     // tell the VGA controller that we're setting the low byte of the cursor position
-    outb(IO_PORTS::vga_register_port, 0x0F);
+    outb(IO_vga_register_port, 0x0F);
 
     // set the low byte of the cursor position
-    outb(IO_PORTS::vga_data_port, POSITION_LOWER_BYTES(position));
+    outb(IO_vga_data_port, POSITION_LOWER_BYTES(position));
 
     // tell the VGA controller that we're setting the high byte of the cursor position
-    outb(IO_PORTS::vga_register_port, 0x0E);
+    outb(IO_vga_register_port, 0x0E);
 
     // set the high byte of the cursor position
-    outb(IO_PORTS::vga_data_port, POSITION_UPPER_BYTES(position));
+    outb(IO_vga_data_port, POSITION_UPPER_BYTES(position));
  
     // updating the position variable:
     global_cursor_position = position;
@@ -58,8 +58,7 @@ void print_string(const char* str) {
         strIndex++;
     }
 
-    // updating the cursor position:
-    setCursorPosition(index);
+    set_cursor_position(index);
 }
 
 
