@@ -32,6 +32,6 @@ unsigned char inb(unsigned short port)
         in al, dx
         mov val, eax
     */
-    
+
     return returnValue;
 }
