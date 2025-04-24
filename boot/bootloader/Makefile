@@ -1,7 +1,7 @@
 ASM_BIN := $(DIR_BIN_BOOT)/asm_bootloader.o
 C_BIN := $(DIR_BIN_BOOT)/c_bootloader.o
 
-$(BIN_BOOTLOADER): $(ASM_BIN) $(C_BIN)
+$(BIN_BOOTLOADER): $(ASM_BIN) $(C_BIN) $(BIN_DRIVER_PRINT_VGA)
 	$(LD) -T linker.ld -o $(BIN_BOOTLOADER) $^
 
 $(ASM_BIN): bootloader.asm $(DIR_BIN_BOOT)
@@ -12,3 +12,6 @@ $(C_BIN): bootloader.c $(DIR_BIN_BOOT)
 
 $(DIR_BIN_BOOT):
 	mkdir -p $(DIR_BIN_BOOT)
+
+$(BIN_DRIVER_PRINT_VGA):
+	$(MAKE) $(BIN_DRIVER_PRINT_VGA) -C $(DIR_DRIVERS)

@@ -1,6 +1,6 @@
 #include <types.h>
 #include <io.h>
-#include "print.h"
+#include "drivers/vga_text.h"
 
 #define PRINT_BUFFER_MAX 40
 static uint64_t global_cursor_position = 0;

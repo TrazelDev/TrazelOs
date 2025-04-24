@@ -1,5 +1,7 @@
+#include <drivers/vga_text.h>
+
 void bootloader_entry() {
-	char* addr = (char*)0xB8000;
-	*(addr) = 'A';
+	set_cursor_position(position_to_cordinates(0, 0));
+	print_string("Hello world from bootloader");
 	asm volatile("hlt");
 }

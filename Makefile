@@ -1,3 +1,4 @@
+include drivers.mk
 include commons.mk
 .PHONY: clean run build
 
