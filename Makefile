@@ -1,6 +1,6 @@
 include drivers.mk
 include commons.mk
-.PHONY: clean run build
+.PHONY: clean run build $(BIN_MBR) $(BIN_BOOTLOADER)
 
 # The main options:
 build: $(OS_IMG)

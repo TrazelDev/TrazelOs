@@ -14,22 +14,22 @@ void remapPics();
 #define LAST_INDEX_OF_SLAVE_PIC  IRQ::secondary_ata_hard_disk
 enum class IRQ
 {
-    pit = 0,
-    keyboard,
-    cascade,   // this interrupt is used to connect the master and slave pics ( it is never raised in the idt )
-    com2,
-    com1,
-    lpt2,
-    floppy_disk,
-    lpt1,
-    cmos_rtc,
-    free_for_peripherals1,
-    free_for_peripherals2,
-    free_for_peripherals3,
-    ps2_mouse,
-    fpu,
-    primary_ata_hard_disk,
-    secondary_ata_hard_disk,
+	pit = 0,
+	keyboard,
+	cascade,   // this interrupt is used to connect the master and slave pics ( it is never raised in the idt )
+	com2,
+	com1,
+	lpt2,
+	floppy_disk,
+	lpt1,
+	cmos_rtc,
+	free_for_peripherals1,
+	free_for_peripherals2,
+	free_for_peripherals3,
+	ps2_mouse,
+	fpu,
+	primary_ata_hard_disk,
+	secondary_ata_hard_disk,
 };
 
 // an updated bit mask of all of the new hardware interrupts
@@ -41,6 +41,6 @@ void enableHardwareInterrupt(IRQ irqNumber);
 #define END_OF_INTERRUPT 0x20 
 /**
  * @brief the function is getting an irq number and signals that the hardware
- *  interrupt has ended and another hardware interrupt can now be executed
+ *	interrupt has ended and another hardware interrupt can now be executed
 */
 void picSendEOI(IRQ irqNumber);

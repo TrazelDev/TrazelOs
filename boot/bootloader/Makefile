@@ -1,3 +1,5 @@
+.PHONY: $(BIN_DRIVER_PRINT_VGA)
+
 ASM_BIN := $(DIR_BIN_BOOT)/asm_bootloader.o
 C_BIN := $(DIR_BIN_BOOT)/c_bootloader.o
 

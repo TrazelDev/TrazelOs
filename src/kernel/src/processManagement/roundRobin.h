@@ -4,13 +4,13 @@
 #define PROCESS_STACK_PAGE_COUNT 3
 struct Process
 {
-    ProcessControlBlock* pcb;
+	ProcessControlBlock* pcb;
 };
 
 struct ProcessList
 {
-    Process* process;
-    ProcessList* next;
+	Process* process;
+	ProcessList* next;
 };
 
 void initScheduler(size_t quantumTime);

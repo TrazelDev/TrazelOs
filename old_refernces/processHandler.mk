@@ -1,8 +1,8 @@
-include config.mk      # defintions of flags and methods that the project is using
+include config.mk	   # defintions of flags and methods that the project is using
 
 .PHONY: link_processes compile_processes build_processes create_process_lists
 link_processes: compile_processes
-	$(eval PROCESSES_LIST    := $(addsuffix .bin, $(shell find $(PROCESSES)obj -maxdepth 1 -mindepth 1 -type d | sed 's|^$(PROCESSES)obj/|bin/processes/|')))
+	$(eval PROCESSES_LIST	 := $(addsuffix .bin, $(shell find $(PROCESSES)obj -maxdepth 1 -mindepth 1 -type d | sed 's|^$(PROCESSES)obj/|bin/processes/|')))
 	@$(MAKE) $(PROCESSES_LIST)
 
 compile_processes: create_process_lists
@@ -10,7 +10,7 @@ compile_processes: create_process_lists
 
 create_process_lists: build_processes
 	$(eval PROCESS_CPP_FILES := $(shell find $(PROCESSES) -name "*.cpp" | $(REMOVE_PREFIX)))
-	$(eval OBJ_PROCESSES     := $(subst .cpp,.o,$(subst code/,obj/,$(PROCESS_CPP_FILES))))
+	$(eval OBJ_PROCESSES	 := $(subst .cpp,.o,$(subst code/,obj/,$(PROCESS_CPP_FILES))))
 
 build_processes:
 	python3 scripts/copyAllProcesses.py
@@ -24,9 +24,9 @@ $(PROCESSES)obj/%.o: $(PROCESSES)code/%.cpp
 
 
 bin/processes/%.bin:
-	$(eval PROCESSES_LIST    := $(addsuffix .bin, $(shell find $(PROCESSES)obj -maxdepth 1 -mindepth 1 -type d | sed 's|^$(PROCESSES)obj/|bin/processes/|')))
+	$(eval PROCESSES_LIST	 := $(addsuffix .bin, $(shell find $(PROCESSES)obj -maxdepth 1 -mindepth 1 -type d | sed 's|^$(PROCESSES)obj/|bin/processes/|')))
 	$(eval PROCESS_CPP_FILES := $(shell find $(PROCESSES) -name "*.cpp" | $(REMOVE_PREFIX)))
-	$(eval OBJ_PROCESSES     := $(subst .cpp,.o,$(subst code/,obj/,$(PROCESS_CPP_FILES))))
+	$(eval OBJ_PROCESSES	 := $(subst .cpp,.o,$(subst code/,obj/,$(PROCESS_CPP_FILES))))
 	$(eval PROCESS_OBJ_FILES := $(foreach obj,$(OBJ_PROCESSES),$(if $(findstring $*,$(obj)),$(obj))))
 	
 	@echo "${ECHO_GREEN_COLOR}linking $@:${ECHO_NO_COLOR}"

@@ -8,60 +8,60 @@ setUpIdentityPaging:
 	; setting the cr3 register to the plm4 table entry ( cr3 register cannot be set with an immediate value so we set it using another register )
 	mov edi, PageTableEntry   ; also setting the edi to the second page ( index 1 ) to set values for memory
 	mov cr3, edi			  
-    
-    ; here we are setting the second page in the system to be for pml4 ( page map level 4 )
+	
+	; here we are setting the second page in the system to be for pml4 ( page map level 4 )
 	mov dword [edi], 0x2003 ; setting the the first entry of the plm4 to have the index 2 ( which is the third page and the place we have the pdpt table)
-    add edi, 0x1000         ; increasing the value by 0x1000 ( 4k ) to get to the next page
+	add edi, 0x1000			; increasing the value by 0x1000 ( 4k ) to get to the next page
 
 
-    mov dword [edi], 0x3003 ; setting the first entry in the pdpt to point to the fourth page where pd is in
-    add edi, 0x1000         ; increasing the value by 0x1000 ( 4k ) to get to the next page    
+	mov dword [edi], 0x3003 ; setting the first entry in the pdpt to point to the fourth page where pd is in
+	add edi, 0x1000			; increasing the value by 0x1000 ( 4k ) to get to the next page    
 
 
-    mov dword [edi], 0x4003 ; setting the first entry in the pd to point to the pt
-    add edi, 0x1000         ; increasing the value by 0x1000 ( 4k ) to get to the next page         
+	mov dword [edi], 0x4003 ; setting the first entry in the pd to point to the pt
+	add edi, 0x1000			; increasing the value by 0x1000 ( 4k ) to get to the next page			
 
-    ; now we are a going in a loop and setting all 512 page tables entries of this page table to point to the first 512 pages in the system: 
-    mov ebx, 0x00000003         
-    mov ecx, 512                
+	; now we are a going in a loop and setting all 512 page tables entries of this page table to point to the first 512 pages in the system: 
+	mov ebx, 0x00000003			
+	mov ecx, 512				
 	.SetEntry:
-		mov dword [edi], ebx    
-		add ebx, 0x1000         
-		add edi, 8              
-		loop .SetEntry          
+		mov dword [edi], ebx	
+		add ebx, 0x1000			
+		add edi, 8				
+		loop .SetEntry			
 
 	; Enable 4-MB pages by setting the CR4.PSE bit
-    mov eax, cr4
-    or eax, 1 << 5             ; Set the CR4.PSE bit ( page size extention )
-    mov cr4, eax
+	mov eax, cr4
+	or eax, 1 << 5			   ; Set the CR4.PSE bit ( page size extention )
+	mov cr4, eax
 
 	; Enable global pages by modifying the MSR
-    ; creating automatic tlb chashing for pages that are frequently used
-    mov ecx, 0xC0000080         ; address of the MSR_IA32_MCG_CAP register
-    rdmsr                       ; Read the MSR
-    or eax, 1 << 8              ; set the global pages (G) bit
-    wrmsr                       ; write the MSR
+	; creating automatic tlb chashing for pages that are frequently used
+	mov ecx, 0xC0000080			; address of the MSR_IA32_MCG_CAP register
+	rdmsr						; Read the MSR
+	or eax, 1 << 8				; set the global pages (G) bit
+	wrmsr						; write the MSR
 
-    ; Enable paging by setting the CR0.PG bit
-    ; cr0 is a register that contains bits that allowe certain opertaions
-    mov eax, cr0
-    or eax, 1 << 31            ; Set the CR0.PG bit
-    mov cr0, eax
+	; Enable paging by setting the CR0.PG bit
+	; cr0 is a register that contains bits that allowe certain opertaions
+	mov eax, cr0
+	or eax, 1 << 31			   ; Set the CR0.PG bit
+	mov cr0, eax
 
 	ret
 
 
 
-; __  __                            _        _          _  _                               
-;|  \/  |  ___   _ __  ___       __| |  ___ | |_  __ _ (_)| | ___                          
-;| |\/| | / _ \ | '__|/ _ \     / _` | / _ \| __|/ _` || || |/ __|                         
-;| |  | || (_) || |  |  __/    | (_| ||  __/| |_| (_| || || |\__ \                         
-;|_|  |_|_\___/ |_|   \___|   _ \__,_| \___|_\__|\__,_||_||_||___/_                        
-;  __ _ | |__    ___   _   _ | |_     | |_ | |__    ___      / _|| |  __ _   __ _  ___   _ 
-; / _` || '_ \  / _ \ | | | || __|    | __|| '_ \  / _ \    | |_ | | / _` | / _` |/ __| (_)
-;| (_| || |_) || (_) || |_| || |_     | |_ | | | ||  __/    |  _|| || (_| || (_| |\__ \  _ 
-; \__,_||_.__/  \___/  \__,_| \__|     \__||_| |_| \___|    |_|  |_| \__,_| \__, ||___/ (_)
-;                                                                           |___/          
+; __  __							_		 _			_  _							   
+;|	\/	|  ___	 _ __  ___		 __| |	___ | |_  __ _ (_)| | ___						   
+;| |\/| | / _ \ | '__|/ _ \		/ _` | / _ \| __|/ _` || || |/ __|						   
+;| |  | || (_) || |  |	__/    | (_| ||  __/| |_| (_| || || |\__ \						   
+;|_|  |_|_\___/ |_|   \___|   _ \__,_| \___|_\__|\__,_||_||_||___/_						   
+;  __ _ | |__	 ___   _   _ | |_	  | |_ | |__	___		 / _|| |  __ _	 __ _  ___	 _ 
+; / _` || '_ \	/ _ \ | | | || __|	  | __|| '_ \  / _ \	| |_ | | / _` | / _` |/ __| (_)
+;| (_| || |_) || (_) || |_| || |_	  | |_ | | | ||  __/	|  _|| || (_| || (_| |\__ \  _ 
+; \__,_||_.__/	\___/  \__,_| \__|	   \__||_| |_| \___|	|_|  |_| \__,_| \__, ||___/ (_)
+;																			|___/		   
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Present (P): Bit 0
 ; Indicates whether the page is present in physical memory.

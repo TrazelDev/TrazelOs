@@ -4,11 +4,11 @@ readDisk:
 	mov ah, 0x02 ; Bios disk read number
 	mov bx, [bootloader_addr] ; Bootloader load addr
 	mov al, [bootloader_size] ; Sectors to load
-	mov dl, [boot_disk]       ; Drive number
+	mov dl, [boot_disk]		  ; Drive number
 	mov ch, [bootloader_start_cylinder] ; Cylinder num
-	mov dh, [bootloader_start_head]     ; Head num
-	mov cl, [bootloader_start_sector]   ; Sector num
-	int 0x13                  ; Bios disk interrupt
+	mov dh, [bootloader_start_head]		; Head num
+	mov cl, [bootloader_start_sector]	; Sector num
+	int 0x13				  ; Bios disk interrupt
 
 
 	jc diskReadFailed

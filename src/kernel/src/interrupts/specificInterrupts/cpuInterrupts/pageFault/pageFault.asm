@@ -1,7 +1,7 @@
 ; this is an auto generated file
 [bits 64]
-REGISTER_COUNT          equ 15
-REGISTER_SIZE_IN_BYTES  equ 8
+REGISTER_COUNT			equ 15
+REGISTER_SIZE_IN_BYTES	equ 8
 %include "src/kernel/src/interrupts/specificInterrupts/popAndPushAll.inc"
 
 [extern isrPageFaultHandler]

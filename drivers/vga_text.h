@@ -3,8 +3,8 @@
 
 enum SPECIAL_CHARS
 {
-    NEW_LINE = '\n',
-    BACK_SPACE = '\b'
+	NEW_LINE = '\n',
+	BACK_SPACE = '\b'
 };
 
 void set_cursor_position(uint16_t position);

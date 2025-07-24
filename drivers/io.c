@@ -13,25 +13,25 @@
 */
 void outb(unsigned short port, unsigned char val)
 {
-    asm volatile ("outb %0, %1" : : "a"(val), "Nd"(port));
-    // in asm it will look something like this:
-    /*
-        mov eax, val
-        mov dx, port
-        out dx, al
-    */
+	asm volatile ("outb %0, %1" : : "a"(val), "Nd"(port));
+	// in asm it will look something like this:
+	/*
+		mov eax, val
+		mov dx, port
+		out dx, al
+	*/
 }
 
 unsigned char inb(unsigned short port)
 {
-    unsigned char returnValue;
-    asm volatile("inb %1, %0" : "=a"(returnValue): "Nd"(port));
-    // will look something like this:
-    /*
-        mov dx, port
-        in al, dx
-        mov val, eax
-    */
+	unsigned char returnValue;
+	asm volatile("inb %1, %0" : "=a"(returnValue): "Nd"(port));
+	// will look something like this:
+	/*
+		mov dx, port
+		in al, dx
+		mov val, eax
+	*/
 
-    return returnValue;
+	return returnValue;
 }

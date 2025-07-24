@@ -2,7 +2,7 @@
 #include "utility/types/types.h"
 
 
-void memset(uint8_t*  pointer, uint8_t  value, uint64_t size);
+void memset(uint8_t*  pointer, uint8_t	value, uint64_t size);
 void memset(uint16_t* pointer, uint16_t value, uint64_t size);
 void memset(uint32_t* pointer, uint32_t value, uint64_t size);
 void memset(uint64_t* pointer, uint64_t value, uint64_t size);

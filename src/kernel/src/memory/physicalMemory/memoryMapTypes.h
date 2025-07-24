@@ -2,7 +2,7 @@
 #include "utility/utility.h"
 
 #define MAX_AMOUNT_OF_USABLE_MEMORY_REGIONS 20
-#define MAX_AMOUNT_OF_REGIONS_IN_MEMORY     20
+#define MAX_AMOUNT_OF_REGIONS_IN_MEMORY		20
 /*
 Memory Map Types:
 Usable RAM (Type 1):
@@ -27,17 +27,17 @@ Use: These regions are typically avoided for memory
 */
 enum MemoryRegion
 {
-    UsableRAM      = 1,
-    Reserved       = 2,
-    Reclaimable    = 3,
-    NonReclaimable = 4,
-    Unusable       = 5,
+	UsableRAM	   = 1,
+	Reserved	   = 2,
+	Reclaimable    = 3,
+	NonReclaimable = 4,
+	Unusable	   = 5,
 };
 
 struct MemoryMapEntry
 {
-    uint64_t baseAddress;
-    uint64_t regionLength;
-    uint32_t regionType;
-    uint32_t extendedAttributes;
+	uint64_t baseAddress;
+	uint64_t regionLength;
+	uint32_t regionType;
+	uint32_t extendedAttributes;
 };

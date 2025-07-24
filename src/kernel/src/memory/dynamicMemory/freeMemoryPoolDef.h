@@ -5,9 +5,9 @@
 
 typedef struct MemoryBlock
 {
-    VirtualAddress blockStartingAddress;
-    size_t         blockSize;
-    MemoryBlock*   next;
+	VirtualAddress blockStartingAddress;
+	size_t		   blockSize;
+	MemoryBlock*   next;
 } MemoryBlock;
 
 MemoryBlock* createMainPoolBlock(VirtualAddress block, size_t blockSize);

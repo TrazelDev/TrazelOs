@@ -43,9 +43,9 @@ compiler_and_linker_dependencies:
 	sudo make install-target-libgcc
 
 	# making it so all of the things that have been installed will accessible from everywhere
-    @if ! grep -Fxq "export PATH=\"$$PATH:/usr/local/x86_64elfgcc/bin\"" ~/.bashrc; then \
-        echo 'export PATH="$$PATH:/usr/local/x86_64elfgcc/bin"' >> ~/.bashrc; \
-    fi
+	@if ! grep -Fxq "export PATH=\"$$PATH:/usr/local/x86_64elfgcc/bin\"" ~/.bashrc; then \
+		echo 'export PATH="$$PATH:/usr/local/x86_64elfgcc/bin"' >> ~/.bashrc; \
+	fi
 
 	# pls restart your terminal. 
 	# run this command after finishing the make setup: 

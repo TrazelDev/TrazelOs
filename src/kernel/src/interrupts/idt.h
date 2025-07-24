@@ -11,8 +11,8 @@ void initIDT();
 // the first 2 bytes ( dw ) are the size of the idt, and the second 8 bytes ( dq ) are the first address of the idt
 typedef struct 
 {
-    uint16_t size;
-    uint64_t idtAddress;
+	uint16_t size;
+	uint64_t idtAddress;
 } __attribute__((packed)) IdtRegister;
 
 /// @brief the function loads the interrupt register to memory which loads the interrupt descriptor table to memory.

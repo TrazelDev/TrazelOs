@@ -2,10 +2,10 @@
 
 int func()
 {
-    return 0;
+	return 0;
 }
 int main()
 {
-    *(VGA_MEMORY + 44) = '!'; 
-    return 0;
+	*(VGA_MEMORY + 44) = '!'; 
+	return 0;
 }

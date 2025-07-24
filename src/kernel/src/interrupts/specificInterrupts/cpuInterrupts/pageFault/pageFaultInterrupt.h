@@ -16,21 +16,21 @@
 */
 union
 {
-    struct
-    {
-        uint64_t present          : 1;
-        uint64_t writable         : 1;
-        uint64_t kernelOrUserMode : 1;
-        uint64_t reserved1        : 1;
-        uint64_t isInstruction    : 1;
-        uint64_t sgx              : 1;
-        uint64_t reserved2        : 6;
-        uint64_t physicalAddress  : 40;
-        uint64_t reserved3        : 11;
-        uint64_t isExecutable     : 1;  
-    } controlBits;
-    
-    uint64_t raw;
+	struct
+	{
+		uint64_t present		  : 1;
+		uint64_t writable		  : 1;
+		uint64_t kernelOrUserMode : 1;
+		uint64_t reserved1		  : 1;
+		uint64_t isInstruction	  : 1;
+		uint64_t sgx			  : 1;
+		uint64_t reserved2		  : 6;
+		uint64_t physicalAddress  : 40;
+		uint64_t reserved3		  : 11;
+		uint64_t isExecutable	  : 1;	
+	} controlBits;
+	
+	uint64_t raw;
 } typedef PageFaultErrorCode;
 
 
