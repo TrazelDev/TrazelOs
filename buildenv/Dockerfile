@@ -1,5 +1,5 @@
 # Getting the base ubntu image:
-FROM ubuntu:latest
+FROM ubuntu:22.04
 
 # Updating the system and installing essentials:
 RUN apt-get update && apt-get install -y build-essential
@@ -42,9 +42,11 @@ RUN make install-target-libgcc
 ENV PATH="$PATH:/mnt/cross_compiler/compiler/bin"
 
 
+# Extra dependencies:
+RUN apt-get install -y fdisk
+RUN apt-get install -y qemu qemu-system
+RUN apt-get install -y mesa-utils mesa-utils-extra libgl1 libgl1-mesa-dri
+
 # mounting the actuall project:
 RUN mkdir /mnt/TrazelOs
 WORKDIR /mnt/TrazelOs
-
-# Extra dependencies:
-RUN apt-get install -y fdisk

@@ -5,7 +5,7 @@ include commons.mk
 # The main options:
 build: $(OS_IMG)
 run:
-	sudo qemu-system-x86_64 $(OS_IMG)
+	qemu-system-x86_64 -drive format=raw,file=$(OS_IMG)
 clean:
 	rm -rf bin
 
