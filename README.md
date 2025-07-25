@@ -12,6 +12,7 @@
 
 ### Dependencies:
 * Docker
+* xhost
 
 ### Build commands:
 * Run the `build.sh` script to spawn a docker container with all the tools.
