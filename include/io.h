@@ -5,6 +5,7 @@
 #define ENABLE_INTERRUPTS()  asm volatile("sti")
 
 void outb(unsigned short port, unsigned char val);
+void outw(unsigned short port, unsigned short val);
 unsigned char inb(unsigned short port);
 unsigned short inw(unsigned short port);
 

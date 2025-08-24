@@ -10,11 +10,15 @@ clean:
 	rm -rf bin
 
 
+
+# caclualted at run time:
+BIN_BOOTLOADER_SECTOR_SIZE = $(shell stat --format='%s' $(BIN_BOOTLOADER) | awk '{print int(($$1+511)/512)}')
+
 $(OS_IMG): $(BIN_MBR) $(BIN_BOOTLOADER)
 	dd if=/dev/zero of=$(OS_IMG) count=100 status=none
 	dd if=$(BIN_MBR) of=$(OS_IMG) count=1 conv=notrunc status=none
 	dd if=$(BIN_BOOTLOADER) of=$(OS_IMG) seek=1 conv=notrunc status=none
-	echo ', 5, L, *' | sfdisk $(OS_IMG) >/dev/null
+	echo ", $(BIN_BOOTLOADER_SECTOR_SIZE), L, *" | sfdisk $(OS_IMG) >/dev/null \
 
 
 $(BIN_MBR):

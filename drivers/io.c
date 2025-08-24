@@ -22,6 +22,17 @@ void outb(unsigned short port, unsigned char val)
 	*/
 }
 
+void outw(unsigned short port, unsigned short val)
+{
+	asm volatile ("out %0, %1" : : "a"(val), "Nd"(port));
+	// in asm it will look something like this:
+	/*
+		mov eax, val
+		mov dx, port
+		out dx, al
+	*/
+}
+
 unsigned char inb(unsigned short port)
 {
 	unsigned char returnValue;

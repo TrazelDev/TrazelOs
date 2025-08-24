@@ -6,8 +6,8 @@ struct DEVICE {
 	unsigned short dev_ctl;
 };
 
-void ata_lba_read(struct DEVICE* ctrl, uint64_t lba_addressing, uint64_t sectors_to_read, char* buf) {
-	// setting up what sectors are read:
+void prepare_sectors_for_operation(struct DEVICE* ctrl, uint64_t lba_addressing, uint64_t sectors_to_read, char* buf) {
+	// setting up the sectors will operated on:
 	uint8_t drive_register_value = ((lba_addressing >> 24) & 0x0F) | 0b11100000;
 	outb(ctrl->base + 6, drive_register_value);
 
@@ -23,7 +23,13 @@ void ata_lba_read(struct DEVICE* ctrl, uint64_t lba_addressing, uint64_t sectors
 
 	uint8_t cylinder_high_register_value = (lba_addressing >> 16) & 0xFF;
 	outb(ctrl->base + 5, cylinder_high_register_value);
+}
 
+
+void ata_lba_read(struct DEVICE* ctrl, uint64_t lba_addressing, uint64_t sectors_to_read, char* buf) {
+	prepare_sectors_for_operation(ctrl, lba_addressing, sectors_to_read, buf);	
+	
+	// Selecting the read operation
 	uint16_t command_port = ctrl->base + 7;
 	outb(command_port, 0x20);
 
@@ -39,3 +45,24 @@ void ata_lba_read(struct DEVICE* ctrl, uint64_t lba_addressing, uint64_t sectors
 		buffer[i] = inw(data_port);
 	}
 }
+
+
+void ata_lba_write(struct DEVICE* ctrl, uint64_t lba_addressing, uint64_t sectors_to_read, char* buf) {
+	prepare_sectors_for_operation(ctrl, lba_addressing, sectors_to_read, buf);	
+
+	// selecting the write operation
+	uint16_t command_port = ctrl->base + 7;
+	outb(command_port, 0x30);
+
+
+	// waiting until the sector buffer is ready: 
+	while (!(inb(command_port) & 8));
+	
+
+	uint16_t data_port = ctrl->base;
+	unsigned short* buffer = (unsigned short*)buf;
+	for (uint64_t i = 0; i < sectors_to_read * 256; i++) {
+		outw(data_port, buffer[i]);
+	}
+}
+
