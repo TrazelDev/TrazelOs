@@ -35,3 +35,16 @@ unsigned char inb(unsigned short port)
 
 	return returnValue;
 }
+
+unsigned short inw(unsigned short port) {
+	unsigned short returnValue;
+	asm volatile("in %1, %0" : "=a"(returnValue): "Nd"(port));
+	// will look something like this:
+	/*
+		mov dx, port
+		in ax, dx
+		mov val, eax
+	*/
+
+	return returnValue;
+}
