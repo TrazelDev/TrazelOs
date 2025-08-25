@@ -1,6 +1,8 @@
-$(DIR_BIN_DRIVERS)/%.a: $(BIN_IO)
-	$(MAKE) $@ -C $*
+.PHONY: force
+force: ;
 
+$(DIR_BIN_DRIVERS)/%.a: $(BIN_IO) force
+	$(MAKE) $@ -C $*
 
 $(BIN_IO): $(DIR_DRIVERS)/io.c
 	mkdir -p $(DIR_BIN_DRIVERS)
