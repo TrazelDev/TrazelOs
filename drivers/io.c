@@ -11,8 +11,7 @@
  * (this is known as an “immediate” operand). 
  * So, the edx register is not actually used here, and the port value is embedded directly into the instruction.
 */
-void outb(unsigned short port, unsigned char val)
-{
+void outb(unsigned short port, unsigned char val) {
 	asm volatile ("outb %0, %1" : : "a"(val), "Nd"(port));
 	// in asm it will look something like this:
 	/*
@@ -22,8 +21,7 @@ void outb(unsigned short port, unsigned char val)
 	*/
 }
 
-void outw(unsigned short port, unsigned short val)
-{
+void outw(unsigned short port, unsigned short val) {
 	asm volatile ("out %0, %1" : : "a"(val), "Nd"(port));
 	// in asm it will look something like this:
 	/*
@@ -33,8 +31,7 @@ void outw(unsigned short port, unsigned short val)
 	*/
 }
 
-unsigned char inb(unsigned short port)
-{
+unsigned char inb(unsigned short port) {
 	unsigned char returnValue;
 	asm volatile("inb %1, %0" : "=a"(returnValue): "Nd"(port));
 	// will look something like this:
