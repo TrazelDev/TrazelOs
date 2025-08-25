@@ -1,7 +1,3 @@
-# TODO create the actual ata pio mode driver makefile than link the binnary 
-# into to the bootloader and test it
-
-
 SOURCE_FILES != find *.c
 OBJ_FILES := $(addprefix $(DIR_BIN_DRIVER_ATA_PIO)/, $(SOURCE_FILES:.c=.o))
 DEP_FILES := $(addprefix $(DIR_BIN_DRIVER_ATA_PIO)/, $(SOURCE_FILES:.c=.d))
