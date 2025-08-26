@@ -19,11 +19,12 @@ char* itoa_unsigned(uint64_t value, char* buffer, enum Base base) {
 	int base_digit_count = base_to_digits_table[base];
 	int buffer_index = 0;
 
-	while (value) {
-		buffer[buffer_index] = number_to_base_digit(value % base_digit_count);
+	do {
+		buffer[buffer_index++] = number_to_base_digit(value % base_digit_count);
 		value /= base_digit_count;
-	}
+	} while (value);
 
+	buffer[buffer_index] = NULL;
 	string_reverse(buffer);
 	return buffer;
 }
