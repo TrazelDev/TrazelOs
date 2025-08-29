@@ -46,6 +46,7 @@ ENV PATH="$PATH:/mnt/cross_compiler/compiler/bin"
 RUN apt-get install -y fdisk
 RUN apt-get install -y qemu qemu-system
 RUN apt-get install -y mesa-utils mesa-utils-extra libgl1 libgl1-mesa-dri
+RUN apt-get install -y mtools dosfstools
 
 # mounting the actuall project:
 RUN mkdir /mnt/TrazelOs

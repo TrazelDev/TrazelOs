@@ -1,10 +1,14 @@
-jmp EnterProtectedMode
+jmp skipVBR
+times 0x200-($-$$) db 0
+
+skipVBR: ; skip volume boot sector 
+jmp enterProtectedMode
 
 errorString: db 'failed', 0
 %include "gdt.asm"
 %include "memoryMap.asm"
 
-EnterProtectedMode:
+enterProtectedMode:
 	call detectMemory
 	call enableA20
 	cli						   ; clearing the interrupt flag
