@@ -1,38 +1,39 @@
-#include "partion_table.h"
-
 #include <drivers/ata_pio.h>
 #include <drivers/vga_text.h>
 #include <integer_utils.h>
 
-struct mbr_partion_table get_drive_mbr_partion_table() {
+#include "partition_table.h"
+
+struct mbr_partition_table get_drive_mbr_partition_table() {
 	unsigned char mbr_sector_buf[512];
 	ata_pio_read(0, 1, mbr_sector_buf);
 
-	return *(struct mbr_partion_table*)(mbr_sector_buf + 0x1BE);
+	return *(struct mbr_partition_table*)(mbr_sector_buf + 0x1BE);
 }
 
-void print_mbr_partion_table(struct mbr_partion_table mbr_table) {
+void print_mbr_partition_table(struct mbr_partition_table mbr_table) {
 	char tempbuf[100];
-	print_string("partion num | boot | start | end | sectors | ID\n");
+	print_string("partition num | boot | start | end | sectors | ID\n");
 
 	bool bootflag = false;
 	uint64_t start_sector = 0;
 	uint64_t total_sectors = 0;
 	uint64_t end_sector = 0;
 	uint64_t system_id = 0;
-	for (uint8_t i = 0; i < MBR_MAX_PARTION_TABLE_COUNT; i++) {
+	for (uint8_t i = 0; i < MBR_MAX_PARTITION_TABLE_COUNT; i++) {
 		// Making sure that the entire entry is not empty:
-		if ((*(uint64_t*)(&mbr_table.partions[i])) == 0 &&
-			(*(uint64_t*)(((uint8_t*)&mbr_table.partions[i]) + 8)) == 0)
+		if ((*(uint64_t*)(&mbr_table.partitions[i])) == 0 &&
+			(*(uint64_t*)(((uint8_t*)&mbr_table.partitions[i]) + 8)) == 0) {
 			continue;
+		}
 
-		bootflag = mbr_table.partions[i].drive_attributes & 0x80;
-		start_sector = mbr_table.partions[i].relative_sectors_lba_start;
-		total_sectors = mbr_table.partions[i].total_sectors;
+		bootflag = mbr_table.partitions[i].drive_attributes & 0x80;
+		start_sector = mbr_table.partitions[i].relative_sectors_lba_start;
+		total_sectors = mbr_table.partitions[i].total_sectors;
 		end_sector = start_sector + total_sectors - 1;
-		system_id = mbr_table.partions[i].system_id;
+		system_id = mbr_table.partitions[i].system_id;
 
-		// partion num:
+		// partition num:
 		print_string(itoa_unsigned(i, tempbuf, DECIMAL));
 		print_string("           |");
 

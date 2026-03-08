@@ -15,7 +15,7 @@ $(ASM_BIN): bootloader.asm $(DIR_BIN_BOOT)
 $(C_BIN): bootloader.c $(DIR_BIN_BOOT)
 	$(CC) $(CC_FLAGS) -c $< -o $@
 
-$(PARTION_TABLE_BIN): partion_table.c $(DIR_BIN_BOOT)
+$(PARTION_TABLE_BIN): partition_table.c $(DIR_BIN_BOOT)
 	$(CC) $(CC_FLAGS) -c $< -o $@
 
 $(DIR_BIN_BOOT):

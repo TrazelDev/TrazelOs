@@ -11,7 +11,7 @@ uint64_t strlen(char* str) {
 }
 
 void string_reverse(char* str) {
-	int str_len = strlen(str);
+	int str_len = (int)strlen(str);
 	char temp = 0;
 
 	for (int i = 0; i < str_len / 2; i++) {

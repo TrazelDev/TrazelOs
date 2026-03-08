@@ -16,31 +16,31 @@ static uint64_t global_cursor_position = 0;
 
 void set_cursor_position(uint16_t position) {
 	// tell the VGA controller that we're setting the low byte of the cursor position
-	outb(IO_vga_register_port, 0x0F);
+	outb(IO_VGA_REGISTER_PORT, 0x0F);
 
 	// set the low byte of the cursor position
-	outb(IO_vga_data_port, POSITION_LOWER_BYTES(position));
+	outb(IO_VGA_DATA_PORT, POSITION_LOWER_BYTES(position));
 
 	// tell the VGA controller that we're setting the high byte of the cursor position
-	outb(IO_vga_register_port, 0x0E);
+	outb(IO_VGA_REGISTER_PORT, 0x0E);
 
 	// set the high byte of the cursor position
-	outb(IO_vga_data_port, POSITION_UPPER_BYTES(position));
+	outb(IO_VGA_DATA_PORT, POSITION_UPPER_BYTES(position));
 
 	// updating the position variable:
 	global_cursor_position = position;
 }
 
-uint16_t position_to_cordinates(uint8_t x, uint8_t y) { return (y * VGA_WIDTH) + x; }
+uint16_t position_to_coordinates(uint8_t x, uint8_t y) { return (y * VGA_WIDTH) + x; }
 
 void print_string(const char* str) {
 	uint16_t index = global_cursor_position;
-	int strIndex = 0;
+	int str_index = 0;
 
-	while (str[strIndex] != '\0') {
+	while (str[str_index] != '\0') {
 		// using a switch to check if it is a normal char or there is a special char that needs to
 		// be printed:
-		switch (str[strIndex]) {
+		switch (str[str_index]) {
 			case NEW_LINE:
 				// *(VGA_MEMORY + (index * 2)) = ' ';
 				index += VGA_WIDTH;
@@ -52,13 +52,13 @@ void print_string(const char* str) {
 				index--;
 				break;
 			default:
-				*(VGA_MEMORY + (index * 2)) = str[strIndex];
+				*(VGA_MEMORY + (index * 2)) = str[str_index];
 				break;
 		}
 
 		// going to the next char
 		index++;
-		strIndex++;
+		str_index++;
 	}
 
 	set_cursor_position(index);

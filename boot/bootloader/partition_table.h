@@ -1,7 +1,7 @@
 #pragma once
 #include <types.h>
 
-#define MBR_MAX_PARTION_TABLE_COUNT 4
+#define MBR_MAX_PARTITION_TABLE_COUNT 4
 
 struct chs_address {
 	uint8_t head;
@@ -9,7 +9,7 @@ struct chs_address {
 	uint16_t cylinder : 10;
 } __attribute__((packed));
 
-struct mbr_partion_table_entry {
+struct mbr_partition_table_entry {
 	uint8_t drive_attributes;
 	struct chs_address start_addr;
 	uint8_t system_id;
@@ -18,9 +18,9 @@ struct mbr_partion_table_entry {
 	uint32_t total_sectors;
 } __attribute__((packed));
 
-struct mbr_partion_table {
-	struct mbr_partion_table_entry partions[MBR_MAX_PARTION_TABLE_COUNT];
+struct mbr_partition_table {
+	struct mbr_partition_table_entry partitions[MBR_MAX_PARTITION_TABLE_COUNT];
 } __attribute__((packed));
 
-struct mbr_partion_table get_drive_mbr_partion_table();
-void print_mbr_partion_table(struct mbr_partion_table mbr_table);
+struct mbr_partition_table get_drive_mbr_partition_table();
+void print_mbr_partition_table(struct mbr_partition_table mbr_table);
