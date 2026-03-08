@@ -3,10 +3,10 @@
 ASM_BIN := $(DIR_BIN_BOOT)/asm_bootloader.o
 C_BIN := $(DIR_BIN_BOOT)/c_bootloader.o
 C_DEP := $(DIR_BIN_BOOT)/c_bootloader.d
-PARTION_TABLE_BIN := $(DIR_BIN_BOOT)/partion_table.o
-PARTION_TABLE_DEP := $(DIR_BIN_BOOT)/partion_table.d
+PARTITION_TABLE_BIN := $(DIR_BIN_BOOT)/partition_table.o
+PARTITION_TABLE_DEP := $(DIR_BIN_BOOT)/partition_table.d
 
-$(BIN_BOOTLOADER): $(ASM_BIN) $(C_BIN) $(PARTION_TABLE_BIN) $(BIN_DRIVER_PRINT_VGA) $(BIN_DRIVER_ATA_PIO) $(BIN_LIB_LIBCTZ)
+$(BIN_BOOTLOADER): $(ASM_BIN) $(C_BIN) $(PARTITION_TABLE_BIN) $(BIN_DRIVER_PRINT_VGA) $(BIN_DRIVER_ATA_PIO) $(BIN_LIB_LIBCTZ)
 	$(LD) -T linker.ld -o $(BIN_BOOTLOADER) $^
 
 $(ASM_BIN): bootloader.asm $(DIR_BIN_BOOT)
@@ -15,7 +15,7 @@ $(ASM_BIN): bootloader.asm $(DIR_BIN_BOOT)
 $(C_BIN): bootloader.c $(DIR_BIN_BOOT)
 	$(CC) $(CC_FLAGS) -c $< -o $@
 
-$(PARTION_TABLE_BIN): partition_table.c $(DIR_BIN_BOOT)
+$(PARTITION_TABLE_BIN): partition_table.c $(DIR_BIN_BOOT)
 	$(CC) $(CC_FLAGS) -c $< -o $@
 
 $(DIR_BIN_BOOT):
@@ -30,4 +30,4 @@ $(BIN_DRIVER_ATA_PIO):
 $(BIN_LIB_LIBCTZ):
 	$(MAKE) $(BIN_LIB_LIBCTZ) -C $(DIR_UTILS)
 
--include $(C_DEP) $(PARTION_TABLE_DEP)
+-include $(C_DEP) $(PARTITION_TABLE_DEP)
