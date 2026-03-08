@@ -1,0 +1,40 @@
+---
+Checks: 'bugprone-*,clang-analyzer-*,cert-*,readability-*,-clang-analyzer-security.insecureAPI.*'
+CheckOptions:
+  # Functions & Variables (Standard C snake_case)
+  - key:   readability-identifier-naming.FunctionCase
+    value: lower_case
+  - key:   readability-identifier-naming.VariableCase
+    value: lower_case
+  - key:   readability-identifier-naming.GlobalVariableCase
+    value: lower_case
+  - key:   readability-identifier-naming.LocalVariableCase
+    value: lower_case
+  - key:   readability-identifier-naming.StaticVariableCase
+    value: lower_case
+  - key:   readability-identifier-naming.ParameterCase
+    value: lower_case
+
+  # Struct/Union/Enum tags (Standard C snake_case)
+  - key:   readability-identifier-naming.StructCase
+    value: lower_case
+  - key:   readability-identifier-naming.UnionCase
+    value: lower_case
+  - key:   readability-identifier-naming.EnumCase
+    value: lower_case
+
+  # Members/fields (Standard C snake_case)
+  - key:   readability-identifier-naming.MemberCase
+    value: lower_case
+
+  # Macros & Constants (Standard C UPPER_CASE)
+  - key:   readability-identifier-naming.EnumConstantCase
+    value: UPPER_CASE
+  - key:   readability-identifier-naming.MacroDefinitionCase
+    value: UPPER_CASE
+  - key:   readability-identifier-naming.ConstantCase
+    value: UPPER_CASE
+
+  # Typedefs (Kernel heavily discourages custom typedefs)
+  - key:   readability-identifier-naming.TypeAliasCase
+    value: lower_case

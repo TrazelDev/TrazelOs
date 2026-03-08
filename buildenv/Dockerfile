@@ -50,6 +50,7 @@ RUN apt-get install -y mesa-utils mesa-utils-extra libgl1 libgl1-mesa-dri
 RUN apt-get install -y mtools dosfstools
 RUN apt-get install -y bear
 RUN apt-get install -y clangd
+RUN apt-get install -y clang-tidy
 
 # mounting the actuall project:
 RUN mkdir /mnt/TrazelOs
