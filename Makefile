@@ -4,15 +4,18 @@ include utils.mk
 .PHONY: clean run build $(BIN_MBR) $(BIN_BOOTLOADER)
 
 # The main options:
-build: $(OS_IMG)
-run:
+run: build
 	qemu-system-x86_64 -drive format=raw,file=$(OS_IMG)
+build: $(OS_IMG)
+rebuild:
+	$(MAKE) clean
+	$(MAKE) build
 clean:
 	rm -rf bin
 
 
 
-# caclualted at run time:
+# calculated at run time:
 BIN_BOOTLOADER_SECTOR_SIZE = $(shell stat --format='%s' $(BIN_BOOTLOADER) | awk '{print int(($$1+511)/512)}')
 BIN_BOOT_PARTITION_SECTOR_SIZE = $(shell stat --format='%s' $(BIN_BOOT_PARTITION_IMG) | awk '{print int(($$1+511)/512)}')
 
@@ -28,7 +31,7 @@ $(BIN_BOOT_PARTITION_IMG): $(BIN_BOOTLOADER)
 	# Creating the partition and filing system:
 	dd if=/dev/zero of=$(BIN_BOOT_PARTITION_IMG) count=128 status=none
 	mkfs.fat -F 12 -R $(BIN_BOOTLOADER_SECTOR_SIZE) $(BIN_BOOT_PARTITION_IMG)
-	# Coppying the bootloader binnary into the reserved sectors:
+	# Copying the bootloader binary into the reserved sectors:
 	dd if=$(BIN_BOOTLOADER) of=$(BIN_BOOT_PARTITION_IMG) bs=512 skip=1 seek=1 conv=notrunc status=none
 	dd if=$(BIN_BOOTLOADER) of=$(BIN_BOOT_PARTITION_IMG) bs=1 count=3 conv=notrunc status=none
 
