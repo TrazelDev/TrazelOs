@@ -43,10 +43,13 @@ ENV PATH="$PATH:/mnt/cross_compiler/compiler/bin"
 
 
 # Extra dependencies:
+RUN apt-get update
 RUN apt-get install -y fdisk
 RUN apt-get install -y qemu qemu-system
 RUN apt-get install -y mesa-utils mesa-utils-extra libgl1 libgl1-mesa-dri
 RUN apt-get install -y mtools dosfstools
+RUN apt-get install -y bear
+RUN apt-get install -y clangd
 
 # mounting the actuall project:
 RUN mkdir /mnt/TrazelOs
