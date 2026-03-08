@@ -1,7 +1,6 @@
 #pragma once
 #include <types.h>
 
-
 /*
  * The bases that are supported
  */
@@ -10,7 +9,6 @@ enum Base {
 	DECIMAL = 1,
 	OCTAL = 2,
 };
-
 
 /*
  * Int to string unsinged, takes an int and converts to a string in a desired base.

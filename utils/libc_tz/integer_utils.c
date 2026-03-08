@@ -1,7 +1,6 @@
 #include <integer_utils.h>
 #include <strings.h>
 
-
 /*
  * takes a number and returns the corrsponding ascii value:
  * 0-9: ascii of 0-9
@@ -12,10 +11,9 @@ char number_to_base_digit(uint8_t digit) {
 	return digit + 'A' - 10;
 }
 
-
 char* itoa_unsigned(uint64_t value, char* buffer, enum Base base) {
 	// Table that takes a Base enum value and returns the number of digits in that base
-	static int base_to_digits_table[] = { 16, 10, 8 };
+	static int base_to_digits_table[] = {16, 10, 8};
 	int base_digit_count = base_to_digits_table[base];
 	int buffer_index = 0;
 
@@ -29,9 +27,9 @@ char* itoa_unsigned(uint64_t value, char* buffer, enum Base base) {
 	return buffer;
 }
 
-
 char* itoa_signed(int64_t value, char* buffer, enum Base base) {
-	// Making place for the negative sign cause part of convertion function is doing a string reverse
+	// Making place for the negative sign cause part of convertion function is doing a string
+	// reverse
 	bool negative_flag = false;
 	if (value < 0) {
 		negative_flag = true;

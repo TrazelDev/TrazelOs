@@ -1,4 +1,5 @@
 #include "partion_table.h"
+
 #include <drivers/ata_pio.h>
 #include <drivers/vga_text.h>
 #include <integer_utils.h>
@@ -9,7 +10,6 @@ struct mbr_partion_table get_drive_mbr_partion_table() {
 
 	return *(struct mbr_partion_table*)(mbr_sector_buf + 0x1BE);
 }
-
 
 void print_mbr_partion_table(struct mbr_partion_table mbr_table) {
 	char tempbuf[100];
@@ -22,10 +22,9 @@ void print_mbr_partion_table(struct mbr_partion_table mbr_table) {
 	uint64_t system_id = 0;
 	for (uint8_t i = 0; i < MBR_MAX_PARTION_TABLE_COUNT; i++) {
 		// Making sure that the entire entry is not empty:
-		if (
-			(*(uint64_t*)(&mbr_table.partions[i])) == 0 &&
-			(*(uint64_t*)(((uint8_t*)&mbr_table.partions[i]) + 8)) == 0
-		) continue; 
+		if ((*(uint64_t*)(&mbr_table.partions[i])) == 0 &&
+			(*(uint64_t*)(((uint8_t*)&mbr_table.partions[i]) + 8)) == 0)
+			continue;
 
 		bootflag = mbr_table.partions[i].drive_attributes & 0x80;
 		start_sector = mbr_table.partions[i].relative_sectors_lba_start;
@@ -58,4 +57,3 @@ void print_mbr_partion_table(struct mbr_partion_table mbr_table) {
 		print_char('\n');
 	}
 }
-

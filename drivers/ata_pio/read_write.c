@@ -3,7 +3,6 @@
 // The following dcoumention was used: https://wiki.osdev.org/ATA_PIO_Mode
 // in order to create this driver
 
-
 struct DEVICE {
 	unsigned short base;
 	unsigned short dev_ctl;
@@ -29,29 +28,24 @@ enum COMMAND_PORT_VALUES {
 /**
  * Sets up the sectors for read or write operations
  * lba_addressing - starting sector number that the operation will happen on
- * sectors_to_operate - amount of sectors that will be used in the read or write 
-*/
+ * sectors_to_operate - amount of sectors that will be used in the read or write
+ */
 void ata_pio_prepare_for_opeartions(uint64_t lba_addressing, uint64_t sectors_to_operate);
-
-
 
 void ata_pio_init() {
 	s_ctrl.base = 0x1F0;
 	s_ctrl.dev_ctl = 0x3F6;
 }
 
-
 void ata_pio_read(uint64_t lba_addressing, uint64_t sectors_to_read, char* buf) {
 	ata_pio_prepare_for_opeartions(lba_addressing, sectors_to_read);
-	
+
 	// Selecting the read operation
 	uint16_t command_port = s_ctrl.base + status_or_command_register;
 	outb(command_port, command_port_read_value);
 
-	
-	// waiting until the sector buffer is ready: 
+	// waiting until the sector buffer is ready:
 	while (!(inb(command_port) & 8));
-
 
 	// Reading into the buffer:
 	uint16_t data_port = s_ctrl.base + data_register;
@@ -63,15 +57,13 @@ void ata_pio_read(uint64_t lba_addressing, uint64_t sectors_to_read, char* buf) 
 
 void ata_pio_write(uint64_t lba_addressing, uint64_t sectors_to_write, char* buf) {
 	ata_pio_prepare_for_opeartions(lba_addressing, sectors_to_write);
-	
+
 	// Selecting the read operation
 	uint16_t command_port = s_ctrl.base + status_or_command_register;
 	outb(command_port, command_port_write_value);
 
-	
-	// waiting until the sector buffer is ready: 
+	// waiting until the sector buffer is ready:
 	while (!(inb(command_port) & 8));
-
 
 	// Reading into the buffer:
 	uint16_t data_port = s_ctrl.base + data_register;
@@ -81,7 +73,6 @@ void ata_pio_write(uint64_t lba_addressing, uint64_t sectors_to_write, char* buf
 	}
 }
 
-
 bool ata_pio_min_test() {
 	char buf[512];
 	for (int i = 0; i < 512; i++) {
@@ -90,7 +81,6 @@ bool ata_pio_min_test() {
 
 	ata_pio_read(0, 1, buf);
 	if (buf[84] != 'G') return false;
-
 
 	buf[0] = 'A';
 	ata_pio_write(0, 1, buf);
