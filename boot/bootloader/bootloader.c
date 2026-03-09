@@ -20,7 +20,7 @@ void bootloader_entry() {
 	allocator.init((void*)0x20000, (void*)0x20500);
 	char* addr = allocator.malloc(0x100);
 	addr = allocator.malloc(200);
-	itoa_unsigned(addr, addr, HEX);
+	itoa_unsigned((uint64_t)addr, addr, HEX);
 	print_string("allocated addr: 0x");
 	print_string(addr);
 	print_string("\n");

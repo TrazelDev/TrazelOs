@@ -6,13 +6,14 @@ static uint64_t s_buffer_size;
 
 void init_alloc(void* heap_start, void* heap_end);
 void* malloc(uint64_t alloc_size);
-void* realloc(uint64_t alloc_size);
+void free(void* ptr);
 void* free_allocator(void);
 
 struct basic_allocator get_bootloader_basic_allocator(void) {
 	struct basic_allocator allocator;
 	allocator.init = init_alloc;
 	allocator.malloc = malloc;
+	allocator.free = free;
 	allocator.free_allocator = free_allocator;
 	return allocator;
 }
@@ -30,6 +31,10 @@ void* malloc(uint64_t alloc_size) {
 	void* allocated_memory = (void*)(s_buffer + s_buffer_offset);
 	s_buffer_offset += alloc_size;
 	return allocated_memory;
+}
+
+void free(void* ptr) {
+	// the free does nothing in this allocator but exists to satisfy the interface
 }
 
 void* free_allocator(void) { return (void*)s_buffer; }
