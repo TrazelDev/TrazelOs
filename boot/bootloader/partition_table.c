@@ -21,9 +21,7 @@ void print_mbr_partition_table(struct mbr_partition_table mbr_table) {
 	uint64_t end_sector = 0;
 	uint64_t system_id = 0;
 	for (uint8_t i = 0; i < MBR_MAX_PARTITION_TABLE_COUNT; i++) {
-		// Making sure that the entire entry is not empty:
-		if ((*(uint64_t*)(&mbr_table.partitions[i])) == 0 &&
-			(*(uint64_t*)(((uint8_t*)&mbr_table.partitions[i]) + 8)) == 0) {
+		if (mbr_table.partitions[i].system_id == 0x00) {
 			continue;
 		}
 
