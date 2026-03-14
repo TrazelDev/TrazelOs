@@ -1,13 +1,13 @@
-#include <drivers/ata_pio.h>
+#include <drivers/block_device.h>
 #include <drivers/vga_text.h>
 #include <integer_utils.h>
 
 #include "partition_table.h"
 
-struct mbr_partition_table get_drive_mbr_partition_table() {
+struct mbr_partition_table get_drive_mbr_partition_table(struct block_device* blk_device) {
 	unsigned char mbr_sector_buf[512];
-	ata_pio_read(0, 1, mbr_sector_buf);
-
+	// ata_pio_read(0, 1, mbr_sector_buf);
+	blk_device->read_block(blk_device, 0, mbr_sector_buf);
 	return *(struct mbr_partition_table*)(mbr_sector_buf + 0x1BE);
 }
 

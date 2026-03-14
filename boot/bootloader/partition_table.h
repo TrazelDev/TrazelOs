@@ -22,5 +22,8 @@ struct mbr_partition_table {
 	struct mbr_partition_table_entry partitions[MBR_MAX_PARTITION_TABLE_COUNT];
 } __attribute__((packed));
 
-struct mbr_partition_table get_drive_mbr_partition_table();
+struct mbr_partition_table get_drive_mbr_partition_table(struct block_device* blk_device);
 void print_mbr_partition_table(struct mbr_partition_table mbr_table);
+static inline bool is_partition_bootable(struct mbr_partition_table_entry* entry) {
+	return entry->drive_attributes & 0x80;
+}

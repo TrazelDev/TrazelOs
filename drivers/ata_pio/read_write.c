@@ -1,13 +1,47 @@
 #include <drivers/ata_pio.h>
+#include <drivers/block_device.h>
 #include <io.h>
+
 // The following dcoumention was used: https://wiki.osdev.org/ATA_PIO_Mode
 // in order to create this driver
 
+#define SECTOR_SIZE 512
 struct DEVICE {
 	unsigned short base;
 	unsigned short dev_ctl;
 };
+
 static struct DEVICE s_ctrl;
+static struct block_device s_block_device;
+static bool driver_initlized = false;
+
+static void ata_pio_read(uint64_t lba_addressing, uint64_t sectors_to_read, char* buf);
+static void ata_pio_write(uint64_t lba_addressing, uint64_t sectors_to_write, char* buf);
+static ssize_t ata_pio_read_sector(struct block_device* blk_device, size_t lba, uint8_t* buffer) {
+	ata_pio_read(lba, 1, (char*)buffer);
+	return SECTOR_SIZE;
+}
+static ssize_t ata_pio_write_sector(struct block_device* blk_device, size_t lba, uint8_t* buffer) {
+	ata_pio_write(lba + blk_device->partition_offset, 1, (char*)buffer);
+	return SECTOR_SIZE;
+}
+struct block_device* ata_pio_init() {
+	if (driver_initlized) {
+		return &s_block_device;
+	}
+
+	driver_initlized = true;
+	s_ctrl.base = 0x1F0;
+	s_ctrl.dev_ctl = 0x3F6;
+
+	s_block_device.block_size = SECTOR_SIZE;
+	s_block_device.blocks_count = 0;  // Not yet implemented so 0 for now
+	s_block_device.partition_offset = 0;
+	s_block_device.read_block = ata_pio_read_sector;
+	s_block_device.write_block = ata_pio_write_sector;
+
+	return &s_block_device;
+}
 
 enum base_registers_offset {
 	DATA_REGISTER = 0,
@@ -30,12 +64,7 @@ enum command_port_values {
  * lba_addressing - starting sector number that the operation will happen on
  * sectors_to_operate - amount of sectors that will be used in the read or write
  */
-void ata_pio_prepare_for_operations(uint64_t lba_addressing, uint64_t sectors_to_operate);
-
-void ata_pio_init() {
-	s_ctrl.base = 0x1F0;
-	s_ctrl.dev_ctl = 0x3F6;
-}
+static void ata_pio_prepare_for_operations(uint64_t lba_addressing, uint64_t sectors_to_operate);
 
 void ata_pio_read(uint64_t lba_addressing, uint64_t sectors_to_read, char* buf) {
 	ata_pio_prepare_for_operations(lba_addressing, sectors_to_read);
@@ -73,6 +102,29 @@ void ata_pio_write(uint64_t lba_addressing, uint64_t sectors_to_write, char* buf
 	}
 }
 
+void ata_pio_prepare_for_operations(uint64_t lba_addressing, uint64_t sectors_to_operate) {
+	uint8_t drive_register_value = ((lba_addressing >> 24) & 0x0F) | 0b11100000;
+	outb(s_ctrl.base + DRIVE_OR_HEAD_REGISTER, drive_register_value);
+
+	outb(s_ctrl.base + ERROR_OR_FEATURE_REGISTER, NULL);
+
+	outb(s_ctrl.base + SECTOR_COUNT_REGISTER, sectors_to_operate);
+
+	uint8_t sector_number_register_value = lba_addressing & 0x0FF;
+	outb(s_ctrl.base + SECTOR_NUMBER_REGISTER, sector_number_register_value);
+
+	uint8_t cylinder_low_register_value = (lba_addressing >> 8) & 0xFF;
+	outb(s_ctrl.base + CYLINDER_LOW_REGISTER, cylinder_low_register_value);
+
+	uint8_t cylinder_high_register_value = (lba_addressing >> 16) & 0xFF;
+	outb(s_ctrl.base + CYLINDER_HIGH_REGISTER, cylinder_high_register_value);
+}
+
+/*
+ * Tests that the driver is working
+ * WARNING: This test breaks the bootsector, so run the os and than rebuild it
+ * after so it will work
+ */
 bool ata_pio_min_test() {
 	char buf[512];
 	for (int i = 0; i < 512; i++) {
@@ -96,22 +148,4 @@ bool ata_pio_min_test() {
 	}
 
 	return true;
-}
-
-void ata_pio_prepare_for_operations(uint64_t lba_addressing, uint64_t sectors_to_operate) {
-	uint8_t drive_register_value = ((lba_addressing >> 24) & 0x0F) | 0b11100000;
-	outb(s_ctrl.base + DRIVE_OR_HEAD_REGISTER, drive_register_value);
-
-	outb(s_ctrl.base + ERROR_OR_FEATURE_REGISTER, NULL);
-
-	outb(s_ctrl.base + SECTOR_COUNT_REGISTER, sectors_to_operate);
-
-	uint8_t sector_number_register_value = lba_addressing & 0x0FF;
-	outb(s_ctrl.base + SECTOR_NUMBER_REGISTER, sector_number_register_value);
-
-	uint8_t cylinder_low_register_value = (lba_addressing >> 8) & 0xFF;
-	outb(s_ctrl.base + CYLINDER_LOW_REGISTER, cylinder_low_register_value);
-
-	uint8_t cylinder_high_register_value = (lba_addressing >> 16) & 0xFF;
-	outb(s_ctrl.base + CYLINDER_HIGH_REGISTER, cylinder_high_register_value);
 }
