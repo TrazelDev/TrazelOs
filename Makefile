@@ -34,6 +34,8 @@ $(BIN_BOOT_PARTITION_IMG): $(BIN_BOOTLOADER)
 	# Copying the bootloader binary into the reserved sectors:
 	dd if=$(BIN_BOOTLOADER) of=$(BIN_BOOT_PARTITION_IMG) bs=512 skip=1 seek=1 conv=notrunc status=none
 	dd if=$(BIN_BOOTLOADER) of=$(BIN_BOOT_PARTITION_IMG) bs=1 count=3 conv=notrunc status=none
+	echo "hello world, I see a file" > bin/file.txt
+	mcopy -i $(BIN_BOOT_PARTITION_IMG) bin/file.txt ::file.txt
 
 $(BIN_MBR):
 	$(MAKE) $(BIN_MBR) -C $(DIR_MBR)

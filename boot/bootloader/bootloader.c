@@ -19,11 +19,25 @@ void bootloader_entry() {
 	struct block_device prt_blk_dev = get_bootable_partition_blk_device();
 	struct basic_allocator dev_alloc = get_blk_dev_allocator();
 
-	// FAT12Header fat12_header;
-	// FAT12Info fat12_info;
-	// init_fat12(&prt_blk_dev, &dev_alloc);
-	// load_fat12_header(&fat12_header);
-	// load_fat12_info(&fat12_info, &fat12_header);
+	FAT12Header fat12_header;
+	FAT12Info fat12_info;
+	init_fat12(&prt_blk_dev, &dev_alloc);
+	load_fat12_header(&fat12_header);
+	load_fat12_info(&fat12_info, &fat12_header);
+
+	char** names;
+	uint32_t name_count = get_root_file_names(&names, &fat12_info);
+	for (size_t i = 0; i < name_count; i++) {
+		print_string(names[i]);
+		print_string("\n");
+	}
+
+	FAT12DirectoryEntry* dir_entries;
+	char* file_content;
+	get_root_directory_entries(&dir_entries, &fat12_info);
+	get_file_content((uint8_t**)&file_content, dir_entries, &fat12_info);
+	print_string("File content: ");
+	print_string(file_content);
 
 	dev_alloc.free_allocator();
 	asm volatile("hlt");
@@ -51,7 +65,7 @@ struct block_device get_bootable_partition_blk_device() {
 
 struct basic_allocator get_blk_dev_allocator() {
 	struct basic_allocator allocator = get_bootloader_basic_allocator();
-	allocator.init((void*)0x100000, (void*)0x200000);
+	allocator.init((void*)0x180000, (void*)0x200000);
 
 	return allocator;
 }
