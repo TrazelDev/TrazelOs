@@ -17,7 +17,7 @@ static bool driver_initlized = false;
 static void ata_pio_read(uint64_t lba_addressing, uint64_t sectors_to_read, char* buf);
 static void ata_pio_write(uint64_t lba_addressing, uint64_t sectors_to_write, char* buf);
 static ssize_t ata_pio_read_sector(struct block_device* blk_device, size_t lba, uint8_t* buffer) {
-	ata_pio_read(lba, 1, (char*)buffer);
+	ata_pio_read(lba + blk_device->partition_offset, 1, (char*)buffer);
 	return SECTOR_SIZE;
 }
 static ssize_t ata_pio_write_sector(struct block_device* blk_device, size_t lba, uint8_t* buffer) {
