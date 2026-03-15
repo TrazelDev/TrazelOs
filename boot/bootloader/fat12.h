@@ -1,9 +1,10 @@
 #pragma once
+#include <drivers/block_device.h>
 #include <include/types.h>
 
 #include "bootloader_alloc.h"
 
-void init_fat12(struct basic_allocator* allocator, uint64_t starting_lba_addressing);
+void init_fat12(struct block_device* blk_dev, struct basic_allocator* alloc);
 
 typedef struct FAT12Header {
 	// BPB:

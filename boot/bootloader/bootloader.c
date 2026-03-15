@@ -19,6 +19,11 @@ void bootloader_entry() {
 	struct block_device prt_blk_dev = get_bootable_partition_blk_device();
 	struct basic_allocator dev_alloc = get_blk_dev_allocator();
 
+	// FAT12Header fat12_header;
+	// FAT12Info fat12_info;
+	// init_fat12(&prt_blk_dev, &dev_alloc);
+	// load_fat12_header(&fat12_header);
+	// load_fat12_info(&fat12_info, &fat12_header);
 
 	dev_alloc.free_allocator();
 	asm volatile("hlt");

@@ -1,4 +1,6 @@
 #include <drivers/ata_pio.h>
+#include <drivers/block_device.h>
+#include <drivers/vga_text.h>
 #include <include/ctype.h>
 #include <include/mem_utils.h>
 #include <include/types.h>
@@ -8,35 +10,18 @@
 
 static void* (*xmalloc)();
 static void (*free)(void*);
-static uint64_t fat12_starting_lba_address;
+static struct block_device* s_blk_dev;
 
-void init_fat12(struct basic_allocator* allocator, uint64_t starting_lba_addressing) {
-	xmalloc = allocator->malloc;
-	free = allocator->free;
-	fat12_starting_lba_address = starting_lba_addressing;
+void init_fat12(struct block_device* blk_dev, struct basic_allocator* alloc) {
+	xmalloc = alloc->malloc;
+	free = alloc->free;
+	s_blk_dev = blk_dev;
 }
 
 void pread_device(uint8_t* buffer, uint64_t read_bytes, int64_t offset) {
-	// int deviceFileDescriptor = open(loopDevicePath, O_RDONLY);
-	// if (deviceFileDescriptor == -1) {
-	// 	perror("Error opening loop device file");
-	// 	exit(-1);
-	// }
-
-	// ssize_t bytesRead = pread(deviceFileDescriptor, buffer, readBytes, offset);
-	// if (bytesRead == -1) {
-	// 	perror("File failed to be read");
-	// 	close(deviceFileDescriptor);
-	// 	exit(-1);
-	// }
-	// if (bytesRead < readBytes) {
-	// 	(void)fprintf(stderr, "pread: file short (%lu out of %lu bytes read)\n", bytesRead,
-	// 				  readBytes);
-	// 	close(deviceFileDescriptor);
-	// 	exit(-1);
-	// }
-
-	// close(deviceFileDescriptor);
+	if (!read_blk_device_bytes(s_blk_dev, offset, buffer, read_bytes)) {
+		print_string("\nFailed to read from the device\n");
+	}
 }
 
 FAT12Header* load_fat12_header(FAT12Header* fat12_header) {
