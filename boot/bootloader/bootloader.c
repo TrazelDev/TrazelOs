@@ -6,14 +6,26 @@
 #include <types.h>
 
 #include "bootloader_alloc.h"
+#include "fat12.h"
 #include "partition_table.h"
+
+struct block_device get_bootable_partition_blk_device();
+struct basic_allocator get_blk_dev_allocator();
 
 void bootloader_entry() {
 	set_cursor_position(position_to_coordinates(0, 0));
 	print_string("Bootloader stage 2\n");
 
-	struct block_device* blk_device = ata_pio_init();
+	struct block_device prt_blk_dev = get_bootable_partition_blk_device();
+	struct basic_allocator dev_alloc = get_blk_dev_allocator();
 
+
+	dev_alloc.free_allocator();
+	asm volatile("hlt");
+}
+
+struct block_device get_bootable_partition_blk_device() {
+	struct block_device* blk_device = ata_pio_init();
 	struct mbr_partition_table mbr_table = get_drive_mbr_partition_table(blk_device);
 	print_mbr_partition_table(mbr_table);
 
@@ -27,18 +39,14 @@ void bootloader_entry() {
 			break;
 		}
 	}
-	create_partition_wrapper(&prt_blk_device, blk_device, blk_lba_start, blk_partition_size, "");
-	asm volatile("hlt");
+
+	create_partition_wrapper(&prt_blk_device, blk_device, blk_lba_start, "t", blk_partition_size);
+	return prt_blk_device;
 }
 
-/* void small_test_alloc() {
+struct basic_allocator get_blk_dev_allocator() {
 	struct basic_allocator allocator = get_bootloader_basic_allocator();
-	allocator.init((void*)0x20000, (void*)0x20500);
-	char* addr = allocator.malloc(0x100);
-	addr = allocator.malloc(200);
-	itoa_unsigned((uint64_t)addr, addr, HEX);
-	print_string("allocated addr: 0x");
-	print_string(addr);
-	print_string("\n");
-	allocator.free_allocator();
-} */
+	allocator.init((void*)0x100000, (void*)0x200000);
+
+	return allocator;
+}
