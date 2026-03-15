@@ -5,7 +5,6 @@
 // The following dcoumention was used: https://wiki.osdev.org/ATA_PIO_Mode
 // in order to create this driver
 
-#define SECTOR_SIZE 512
 struct DEVICE {
 	unsigned short base;
 	unsigned short dev_ctl;

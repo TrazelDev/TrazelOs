@@ -19,7 +19,7 @@ export BIN_MBR := $(DIR_BIN)/mbr.bin
 export BIN_BOOTLOADER := $(DIR_BIN)/bootloader.bin
 export BIN_BOOT_PARTITION_IMG := $(DIR_BIN)/boot_partition.img
 export BIN_IO := $(DIR_BIN_DRIVERS)/io.o
-
+export BIN_BLOCK_DEVICE := $(DIR_BIN_DRIVERS)/block_device.o
 
 
 # tools:
