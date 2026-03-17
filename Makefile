@@ -41,9 +41,8 @@ $(BIN_BOOT_PARTITION_IMG): $(BIN_BOOTLOADER) $(BIN_KERNEL)
 	dd if=$(BIN_BOOTLOADER) of=$(BIN_BOOT_PARTITION_IMG) bs=1 count=3 conv=notrunc status=none
 	mcopy -i $(BIN_BOOT_PARTITION_IMG) $(BIN_KERNEL) ::kernel.bin
 
-$(BIN_KERNEL): kernel/kmain.c
-	$(CC) $(CC_FLAGS) -ggdb3 -c kernel/kmain.c -o kernel/kmain.o
-	$(LD) -T kernel/kernel_linker.ld -z max-page-size=0x1000 -o $(BIN_KERNEL) kernel/kmain.o
+$(BIN_KERNEL):
+	$(MAKE) $(BIN_KERNEL) -C $(DIR_KERNEL)
 	
 $(BIN_MBR):
 	$(MAKE) $(BIN_MBR) -C $(DIR_MBR)

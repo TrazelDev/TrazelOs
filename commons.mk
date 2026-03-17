@@ -3,6 +3,7 @@ DIR_CURR != pwd
 # important directories:
 export DIR_MBR := $(DIR_CURR)/boot/mbr
 export DIR_BOOTLOADER := $(DIR_CURR)/boot/bootloader
+export DIR_KERNEL := $(DIR_CURR)/kernel
 export DIR_DRIVERS := $(DIR_CURR)/drivers
 export DIR_INCLUDS := $(DIR_CURR)/include
 export DIR_UTILS := $(DIR_CURR)/utils
@@ -12,6 +13,7 @@ export DIR_BIN := $(DIR_CURR)/bin
 export DIR_BIN_BOOT := $(DIR_BIN)/boot
 export DIR_BIN_DRIVERS := $(DIR_BIN)/drivers
 export DIR_BIN_UTILS := $(DIR_BIN)/utils
+export DIR_BIN_KERNEL := $(DIR_BIN)/kernel
 
 # bin files:
 export OS_IMG := $(DIR_BIN)/os.img
