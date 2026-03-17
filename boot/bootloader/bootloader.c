@@ -1,12 +1,13 @@
 #include <drivers/ata_pio.h>
 #include <drivers/block_device.h>
 #include <drivers/vga_text.h>
-#include <integer_utils.h>
-#include <strings.h>
-#include <types.h>
+#include <include/integer_utils.h>
+#include <include/strings.h>
+#include <include/types.h>
 
 #include "bootloader_alloc.h"
 #include "fat12.h"
+#include "kernel_elf_loader.h"
 #include "partition_table.h"
 
 struct block_device get_bootable_partition_blk_device();
@@ -35,9 +36,9 @@ void bootloader_entry() {
 	FAT12DirectoryEntry* dir_entries;
 	char* file_content;
 	get_root_directory_entries(&dir_entries, &fat12_info);
-	get_file_content((uint8_t**)&file_content, dir_entries, &fat12_info);
-	print_string("File content: ");
-	print_string(file_content);
+
+	uint64_t file_size = get_file_content((uint8_t**)&file_content, dir_entries, &fat12_info);
+	int kernel_return_value = load_and_jump_kernel(file_content, file_size);
 
 	dev_alloc.free_allocator();
 	asm volatile("hlt");

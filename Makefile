@@ -1,7 +1,7 @@
 include drivers.mk
 include commons.mk
 include utils.mk
-.PHONY: clean run build $(BIN_MBR) $(BIN_BOOTLOADER)
+.PHONY: clean run build $(BIN_MBR) $(BIN_BOOTLOADER) $(BIN_KERNEL)
 
 # The main options:
 run: build
@@ -27,16 +27,19 @@ $(OS_IMG): $(BIN_MBR) $(BIN_BOOT_PARTITION_IMG)
 	# 1 - means FAT12 filing system in the the partition
 	# * - means bootable partition 
 
-$(BIN_BOOT_PARTITION_IMG): $(BIN_BOOTLOADER)
+$(BIN_BOOT_PARTITION_IMG): $(BIN_BOOTLOADER) $(BIN_KERNEL)
 	# Creating the partition and filing system:
 	dd if=/dev/zero of=$(BIN_BOOT_PARTITION_IMG) count=128 status=none
 	mkfs.fat -F 12 -R $(BIN_BOOTLOADER_SECTOR_SIZE) $(BIN_BOOT_PARTITION_IMG)
 	# Copying the bootloader binary into the reserved sectors:
 	dd if=$(BIN_BOOTLOADER) of=$(BIN_BOOT_PARTITION_IMG) bs=512 skip=1 seek=1 conv=notrunc status=none
 	dd if=$(BIN_BOOTLOADER) of=$(BIN_BOOT_PARTITION_IMG) bs=1 count=3 conv=notrunc status=none
-	echo "hello world, I see a file" > bin/file.txt
-	mcopy -i $(BIN_BOOT_PARTITION_IMG) bin/file.txt ::file.txt
+	mcopy -i $(BIN_BOOT_PARTITION_IMG) $(BIN_KERNEL) ::kernel.bin
 
+$(BIN_KERNEL): kernel/kmain.c
+	$(CC) $(CC_FLAGS) -c kernel/kmain.c -o kernel/kmain.o
+	$(LD) -T kernel/kernel_linker.ld -z max-page-size=0x1000 -o $(BIN_KERNEL) kernel/kmain.o
+	
 $(BIN_MBR):
 	$(MAKE) $(BIN_MBR) -C $(DIR_MBR)
 

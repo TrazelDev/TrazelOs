@@ -9,9 +9,11 @@ ALLOCATOR_BIN := $(DIR_BIN_BOOT)/bootloader_alloc.o
 ALLOCATOR_DEP := $(DIR_BIN_BOOT)/bootloader_alloc.d
 FAT12_BIN := $(DIR_BIN_BOOT)/fat12.o
 FAT12_DEP := $(DIR_BIN_BOOT)/fat12.d
+ELF_LOADER_BIN := $(DIR_BIN_BOOT)/kernel_elf_loader.o
+ELF_LOADER_DEP := $(DIR_BIN_BOOT)/kernel_elf_loader.d
 
 
-$(BIN_BOOTLOADER): $(ASM_BIN) $(C_BIN) $(PARTITION_TABLE_BIN) $(ALLOCATOR_BIN) $(FAT12_BIN) $(BIN_DRIVER_PRINT_VGA) $(BIN_DRIVER_ATA_PIO) $(BIN_LIB_LIBCTZ)
+$(BIN_BOOTLOADER): $(ASM_BIN) $(C_BIN) $(PARTITION_TABLE_BIN) $(ALLOCATOR_BIN) $(FAT12_BIN) $(ELF_LOADER_BIN) $(BIN_DRIVER_PRINT_VGA) $(BIN_DRIVER_ATA_PIO) $(BIN_LIB_LIBCTZ) 
 	$(LD) -T linker.ld -o $(BIN_BOOTLOADER) $^
 
 $(ASM_BIN): bootloader.asm $(DIR_BIN_BOOT)
@@ -29,6 +31,9 @@ $(ALLOCATOR_BIN): bootloader_alloc.c $(DIR_BIN_BOOT)
 $(FAT12_BIN): fat12.c $(DIR_BIN_BOOT)
 	$(CC) $(CC_FLAGS) -c $< -o $@
 
+$(ELF_LOADER_BIN): kernel_elf_loader.c $(DIR_BIN_BOOT)
+	$(CC) $(CC_FLAGS) -c $< -o $@
+
 $(DIR_BIN_BOOT):
 	mkdir -p $(DIR_BIN_BOOT)
 
@@ -40,5 +45,5 @@ $(BIN_DRIVER_ATA_PIO):
 
 $(BIN_LIB_LIBCTZ):
 	$(MAKE) $(BIN_LIB_LIBCTZ) -C $(DIR_UTILS)
-
--include $(C_DEP) $(PARTITION_TABLE_DEP) $(ALLOCATOR_DEP) $(FAT12_DEP)
+	
+-include $(C_DEP) $(PARTITION_TABLE_DEP) $(ALLOCATOR_DEP) $(FAT12_DEP) $(ELF_LOADER_DEP)

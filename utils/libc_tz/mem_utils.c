@@ -12,3 +12,14 @@ void* memcpy(void* dest, void* src, uint64_t n) {
 
 	return (void*)dest;
 }
+
+void* memset(void* dest, uint8_t src, uint64_t n) {
+	uint8_t* curr_dest = (uint8_t*)dest;
+
+	for (uint64_t i = 0; i < n; i++) {
+		*curr_dest = src;
+		curr_dest++;
+	}
+
+	return (void*)dest;
+}

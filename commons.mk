@@ -16,6 +16,7 @@ export DIR_BIN_UTILS := $(DIR_BIN)/utils
 # bin files:
 export OS_IMG := $(DIR_BIN)/os.img
 export BIN_MBR := $(DIR_BIN)/mbr.bin
+export BIN_KERNEL := $(DIR_BIN)/kernel.bin
 export BIN_BOOTLOADER := $(DIR_BIN)/bootloader.bin
 export BIN_BOOT_PARTITION_IMG := $(DIR_BIN)/boot_partition.img
 export BIN_IO := $(DIR_BIN_DRIVERS)/io.o
