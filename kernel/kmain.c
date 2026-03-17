@@ -1,23 +1,10 @@
 // NOTE: This is not the real kernel but one for testing purposes in the refactoring of the
 // bootloader The real kernel is src/kernel
-
-static void print_kernel_hello(void);
+#include <drivers/vga_text.h>
 
 int kmain() {
-	print_kernel_hello();
+	set_cursor_position(position_to_coordinates(0, 0));
+	print_string("Hello World, from the kernel!");
 	asm volatile("hlt");
 	return 0;
-}
-
-void print_kernel_hello(void) {
-	volatile unsigned short* vga_buffer = (volatile unsigned short*)0xB8000;
-	const char* message = "Hello from kernel!";
-
-	unsigned char color = 0x0F;
-
-	int i = 0;
-	while (message[i] != '\0') {
-		vga_buffer[i] = (unsigned short)message[i] | (unsigned short)(color << 8);
-		i++;
-	}
 }
