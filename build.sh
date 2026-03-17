@@ -7,6 +7,7 @@ docker build buildenv -t os-build-env
 xhost +local:root
 docker run -it --rm --name trazelos-dev \
 	-e DISPLAY=$DISPLAY                   \
+	-p 1234:1234                          \
 	-e XDG_RUNTIME_DIR=/tmp/runtime-root  \
 	-v /tmp/.X11-unix:/tmp/.X11-unix      \
 	-v $(pwd):/mnt/TrazelOs               \

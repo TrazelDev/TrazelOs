@@ -5,6 +5,7 @@ static void print_kernel_hello(void);
 int kmain() {
 	print_kernel_hello();
 	asm volatile("hlt");
+	return 0;
 }
 
 void print_kernel_hello(void) {

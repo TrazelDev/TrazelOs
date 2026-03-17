@@ -1,12 +1,17 @@
 include drivers.mk
 include commons.mk
 include utils.mk
-.PHONY: clean run build $(BIN_MBR) $(BIN_BOOTLOADER) $(BIN_KERNEL)
+.PHONY: clean run build debug_connect connect $(BIN_MBR) $(BIN_BOOTLOADER) $(BIN_KERNEL)
 
 # The main options:
 run: build
 	qemu-system-x86_64 -drive format=raw,file=$(OS_IMG)
 build: $(OS_IMG)
+debug: build
+	qemu-system-x86_64 -drive format=raw,file=$(OS_IMG) -s -S &
+connect: debug_connect
+debug_connect:
+	gdb bin/kernel.bin
 rebuild:
 	$(MAKE) clean
 	$(MAKE) build
@@ -37,7 +42,7 @@ $(BIN_BOOT_PARTITION_IMG): $(BIN_BOOTLOADER) $(BIN_KERNEL)
 	mcopy -i $(BIN_BOOT_PARTITION_IMG) $(BIN_KERNEL) ::kernel.bin
 
 $(BIN_KERNEL): kernel/kmain.c
-	$(CC) $(CC_FLAGS) -c kernel/kmain.c -o kernel/kmain.o
+	$(CC) $(CC_FLAGS) -ggdb3 -c kernel/kmain.c -o kernel/kmain.o
 	$(LD) -T kernel/kernel_linker.ld -z max-page-size=0x1000 -o $(BIN_KERNEL) kernel/kmain.o
 	
 $(BIN_MBR):
