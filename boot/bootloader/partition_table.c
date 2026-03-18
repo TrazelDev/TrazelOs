@@ -32,7 +32,7 @@ void print_mbr_partition_table(struct mbr_partition_table mbr_table) {
 		system_id = mbr_table.partitions[i].system_id;
 
 		// partition num:
-		print_string(itoa_unsigned(i, tempbuf, DECIMAL));
+		print_string(itoa_unsigned(i, tempbuf, INTEGER_BASE_DECIMAL));
 		print_string("           |");
 
 		// boot flag:
@@ -40,19 +40,19 @@ void print_mbr_partition_table(struct mbr_partition_table mbr_table) {
 		print_string("    | ");
 
 		// start sector:
-		print_string(itoa_unsigned(start_sector, tempbuf, DECIMAL));
+		print_string(itoa_unsigned(start_sector, tempbuf, INTEGER_BASE_DECIMAL));
 		print_string("     | ");
 
 		// end sector:
-		print_string(itoa_unsigned(end_sector, tempbuf, DECIMAL));
+		print_string(itoa_unsigned(end_sector, tempbuf, INTEGER_BASE_DECIMAL));
 		print_string("  | ");
 
 		// total sectors:
-		print_string(itoa_unsigned(total_sectors, tempbuf, DECIMAL));
+		print_string(itoa_unsigned(total_sectors, tempbuf, INTEGER_BASE_DECIMAL));
 		print_string("      | ");
 
 		// system id:
-		print_string(itoa_unsigned(system_id, tempbuf, HEX));
+		print_string(itoa_unsigned(system_id, tempbuf, INTEGER_BASE_HEX));
 		print_string("\n");
 	}
 }

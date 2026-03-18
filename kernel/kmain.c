@@ -2,7 +2,13 @@
 // bootloader The real kernel is src/kernel
 #include <drivers/vga_text.h>
 
+#include "kernel/printk/printk.h"
+
 int kmain() {
-	asm volatile("hlt");
-	return 0;
+	init_printk();
+	printk("Hello world, from the kernel\n");
+
+	while (true) {
+		asm volatile("hlt");
+	}
 }

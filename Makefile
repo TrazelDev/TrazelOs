@@ -34,7 +34,7 @@ $(OS_IMG): $(BIN_MBR) $(BIN_BOOT_PARTITION_IMG)
 
 $(BIN_BOOT_PARTITION_IMG): $(BIN_BOOTLOADER) $(BIN_KERNEL)
 	# Creating the partition and filing system:
-	dd if=/dev/zero of=$(BIN_BOOT_PARTITION_IMG) count=128 status=none
+	dd if=/dev/zero of=$(BIN_BOOT_PARTITION_IMG) count=256 status=none
 	mkfs.fat -F 12 -R $(BIN_BOOTLOADER_SECTOR_SIZE) $(BIN_BOOT_PARTITION_IMG)
 	# Copying the bootloader binary into the reserved sectors:
 	dd if=$(BIN_BOOTLOADER) of=$(BIN_BOOT_PARTITION_IMG) bs=512 skip=1 seek=1 conv=notrunc status=none

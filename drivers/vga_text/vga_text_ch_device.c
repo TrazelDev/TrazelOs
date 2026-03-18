@@ -10,6 +10,7 @@ enum special_chars { NEW_LINE = '\n', BACK_SPACE = '\b' };
 #define VGA_HEIGHT 25
 #define VGA_MEMORY ((uint8_t*)0xB8000)
 #define VGA_LAST_MEMORY_ADDRESS ((uint8_t*)(0xB8000 + (VGA_WIDTH * VGA_HEIGHT * 2)))
+#define VGA_EMPTY_CELL 0x0a20
 
 struct vga_data {
 	uint64_t vga_width;
@@ -35,6 +36,7 @@ static struct vga_data* get_private_vga_data(struct char_device* device) {
 static uint16_t position_to_coordinates(uint8_t x, uint8_t y);
 static void set_cursor_position(uint16_t position);
 static void output_char(char output_ch, uint8_t* starting_vga_mem, uint32_t offset);
+static void cls(struct vga_data* vga_data);
 
 static ssize_t vga_text_read(struct char_device* device, void* buffer, size_t size);
 static ssize_t vga_text_write(struct char_device* device, void* buffer, size_t size);
@@ -59,6 +61,7 @@ struct char_device* vga_text_init() {
 	g_char_device.ioctl = vga_text_ioctl;
 
 	set_cursor_position(position_to_coordinates(0, 0));
+	cls(&g_vga_data);
 	return &g_char_device;
 }
 
@@ -120,4 +123,15 @@ static void set_cursor_position(uint16_t position) {
 
 #undef POSITION_LOWER_BYTES
 #undef POSITION_UPPER_BYTES
+}
+
+static void cls(struct vga_data* vga_data) {
+	vga_data->cursor_position = 0;
+
+	uint16_t empty = VGA_EMPTY_CELL;
+	uint16_t* ptr = (uint16_t*)vga_data->starting_vga_memory_addr;
+	while (ptr != (uint16_t*)vga_data->final_vga_memory_addr) {
+		*ptr = empty;
+		ptr++;
+	}
 }

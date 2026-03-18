@@ -4,10 +4,10 @@
 /*
  * The bases that are supported
  */
-enum base {
-	HEX = 0,
-	DECIMAL = 1,
-	OCTAL = 2,
+enum integer_base {
+	INTEGER_BASE_HEX = 0,
+	INTEGER_BASE_DECIMAL = 1,
+	INTEGER_BASE_OCTAL = 2,
 };
 
 /*
@@ -17,5 +17,5 @@ enum base {
  * base - the base it needs to be converted into
  * Return value - the inputted buffer address
  */
-char* itoa_unsigned(uint64_t value, char* buffer, enum base base);
-char* itoa_signed(int64_t value, char* buffer, enum base base);
+char* itoa_unsigned(uint64_t value, char* buffer, enum integer_base base);
+char* itoa_signed(int64_t value, char* buffer, enum integer_base base);

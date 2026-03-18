@@ -1,14 +1,24 @@
-SRC_FILES != find *.c
+.PHONY: $(BIN_DRIVER_PRINT_VGA) $(BIN_DRIVER_ATA_PIO) $(BIN_LIB_LIBCTZ)
+SRC_FILES := $(shell find . -name "*.c")
 OBJ_FILES := $(addprefix $(DIR_BIN_KERNEL)/, $(SRC_FILES:.c=.o))
-DEP_FILES := $(addprefix $(DIR_BIN_KERNEL)/, $(SOURCE_FILES:.c=.d))
+DEP_FILES := $(addprefix $(DIR_BIN_KERNEL)/, $(SRC_FILES:.c=.d))
 KERNEL_LINKER := kernel_linker.ld
 
-$(BIN_KERNEL): $(OBJ_FILES) $(BIN_DRIVER_PRINT_VGA)
+$(BIN_KERNEL): $(OBJ_FILES) $(BIN_DRIVER_PRINT_VGA) $(BIN_DRIVER_ATA_PIO) $(BIN_LIB_LIBCTZ)
 	$(LD) -T $(KERNEL_LINKER) -z max-page-size=0x1000 -o $@ $^
 
 $(DIR_BIN_KERNEL)/%.o: %.c
 	@mkdir -p $(dir $@)
-	$(CC) $(CC_FLAGS) -ggdb3 -c $^ -o $@
+	$(CC) $(CC_FLAGS) -ggdb3 -c $< -o $@
 
+
+$(BIN_DRIVER_PRINT_VGA):
+	$(MAKE) $(BIN_DRIVER_PRINT_VGA) -C $(DIR_DRIVERS)
+
+$(BIN_DRIVER_ATA_PIO):
+	$(MAKE) $(BIN_DRIVER_ATA_PIO) -C $(DIR_DRIVERS)
+
+$(BIN_LIB_LIBCTZ):
+	$(MAKE) $(BIN_LIB_LIBCTZ) -C $(DIR_UTILS)
 
 -include $(DEP_FILES)
