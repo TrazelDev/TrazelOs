@@ -1,7 +1,7 @@
 #include <drivers/block_device.h>
-#include <drivers/vga_text.h>
 #include <integer_utils.h>
 
+#include "bootloader_print.h"
 #include "partition_table.h"
 
 struct mbr_partition_table get_drive_mbr_partition_table(struct block_device* blk_device) {
@@ -53,6 +53,6 @@ void print_mbr_partition_table(struct mbr_partition_table mbr_table) {
 
 		// system id:
 		print_string(itoa_unsigned(system_id, tempbuf, HEX));
-		print_char('\n');
+		print_string("\n");
 	}
 }

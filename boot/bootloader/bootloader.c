@@ -1,11 +1,11 @@
 #include <drivers/ata_pio.h>
 #include <drivers/block_device.h>
-#include <drivers/vga_text.h>
 #include <include/integer_utils.h>
 #include <include/strings.h>
 #include <include/types.h>
 
 #include "bootloader_alloc.h"
+#include "bootloader_print.h"
 #include "fat12.h"
 #include "kernel_elf_loader.h"
 #include "partition_table.h"
@@ -14,7 +14,7 @@ struct block_device get_bootable_partition_blk_device();
 struct basic_allocator get_blk_dev_allocator();
 
 void bootloader_entry() {
-	set_cursor_position(position_to_coordinates(0, 0));
+	init_print();
 	print_string("Bootloader stage 2\n");
 
 	struct block_device prt_blk_dev = get_bootable_partition_blk_device();

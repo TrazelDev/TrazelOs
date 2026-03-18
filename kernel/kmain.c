@@ -3,8 +3,6 @@
 #include <drivers/vga_text.h>
 
 int kmain() {
-	set_cursor_position(position_to_coordinates(0, 0));
-	print_string("Hello World, from the kernel!");
 	asm volatile("hlt");
 	return 0;
 }
