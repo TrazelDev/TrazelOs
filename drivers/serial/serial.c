@@ -20,6 +20,7 @@ struct char_device* serial_com1_init() {
 	if (is_initiazlied) {
 		return &g_char_device;
 	}
+	is_initiazlied = true;
 
 	memcpy(g_char_device.name, g_device_name, strlen(g_device_name) + 1);
 	g_char_device.write = com1_write;
