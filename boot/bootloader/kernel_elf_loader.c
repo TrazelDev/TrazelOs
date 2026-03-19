@@ -4,6 +4,7 @@
 #include <include/mem_utils.h>
 #include <include/types.h>
 
+#include "bootloader_print.h"
 #include "kernel_elf_loader.h"
 
 static void print_elf64_header(const Elf64_Ehdr* ehdr);

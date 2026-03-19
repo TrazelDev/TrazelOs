@@ -5,10 +5,10 @@ include utils.mk
 
 # The main options:
 run: build
-	qemu-system-x86_64 -drive format=raw,file=$(OS_IMG)
+	qemu-system-x86_64 -drive format=raw,file=$(OS_IMG) -serial stdio
 build: $(OS_IMG)
 debug: build
-	qemu-system-x86_64 -drive format=raw,file=$(OS_IMG) -s -S &
+	qemu-system-x86_64 -drive format=raw,file=$(OS_IMG) -s -S -serial stdio
 connect: debug_connect
 debug_connect:
 	gdb bin/kernel.bin

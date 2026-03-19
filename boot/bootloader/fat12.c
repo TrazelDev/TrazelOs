@@ -1,11 +1,11 @@
 #include <drivers/ata_pio.h>
 #include <drivers/block_device.h>
-#include <drivers/vga_text.h>
 #include <include/ctype.h>
 #include <include/mem_utils.h>
 #include <include/types.h>
 
 #include "bootloader_alloc.h"
+#include "bootloader_print.h"
 #include "fat12.h"
 
 static void* (*xmalloc)();

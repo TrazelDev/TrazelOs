@@ -1,3 +1,4 @@
+#include <drivers/serial.h>
 #include <drivers/vga_text.h>
 #include <include/integer_utils.h>
 #include <include/strings.h>
@@ -13,9 +14,18 @@ enum special_symbols {
 	SYMBOL_HEX = 'x',
 };
 
-static struct char_device* g_ch_device;
-void init_printk() { g_ch_device = vga_text_init(); }
+#define DEVICE_COUNT 2
+static struct char_device* g_ch_devices[DEVICE_COUNT];
+void init_printk() {
+	g_ch_devices[0] = vga_text_init();
+	g_ch_devices[1] = serial_com1_init();
+}
 
+static void write_devices(void* buffer, size_t size) {
+	for (size_t i = 0; i < DEVICE_COUNT; i++) {
+		g_ch_devices[i]->write(g_ch_devices[i], buffer, size);
+	}
+}
 static bool is_special_symbol(char chr);
 static void print_string(char* val);
 static void print_char(char val);
@@ -84,26 +94,26 @@ static bool is_special_symbol(char chr) {
 	}
 }
 
-static void print_string(char* val) { g_ch_device->write(g_ch_device, val, strlen(val)); }
-static void print_char(char val) { g_ch_device->write(g_ch_device, &val, 1); }
+static void print_string(char* val) { write_devices(val, strlen(val)); }
+static void print_char(char val) { write_devices(&val, 1); }
 
 #define MAX_BUFFER_SIZE 30
 static void print_int(int64_t val) {
 	char buffer[MAX_BUFFER_SIZE];
 	itoa_signed(val, buffer, INTEGER_BASE_DECIMAL);
 
-	g_ch_device->write(g_ch_device, buffer, strlen(buffer));
+	write_devices(buffer, strlen(buffer));
 }
 static void print_unsignedint(uint64_t val) {
 	char buffer[MAX_BUFFER_SIZE];
 	itoa_unsigned(val, buffer, INTEGER_BASE_DECIMAL);
 
-	g_ch_device->write(g_ch_device, buffer, strlen(buffer));
+	write_devices(buffer, strlen(buffer));
 }
 static void print_hex(uint64_t val) {
 	char buffer[MAX_BUFFER_SIZE];
 	itoa_unsigned(val, buffer, INTEGER_BASE_HEX);
 
-	g_ch_device->write(g_ch_device, buffer, strlen(buffer));
+	write_devices(buffer, strlen(buffer));
 }
 #undef MAX_BUFFER_SIZE
