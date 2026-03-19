@@ -18,6 +18,7 @@ struct vga_data {
 	uint8_t* starting_vga_memory_addr;
 	uint8_t* final_vga_memory_addr;
 	uint64_t cursor_position;
+	uint64_t max_cursor_position;
 };
 
 static struct char_device g_char_device;
@@ -37,6 +38,8 @@ static uint16_t position_to_coordinates(uint8_t x, uint8_t y);
 static void set_cursor_position(uint16_t position);
 static void output_char(char output_ch, uint8_t* starting_vga_mem, uint32_t offset);
 static void cls(struct vga_data* vga_data);
+/* Shift all of the values one line up in the case of overflowing vga buffer */
+static void slide_window(struct vga_data* vga_data);
 
 static ssize_t vga_text_read(struct char_device* device, void* buffer, size_t size);
 static ssize_t vga_text_write(struct char_device* device, void* buffer, size_t size);
@@ -53,6 +56,7 @@ struct char_device* vga_text_init() {
 	g_vga_data.vga_height = VGA_HEIGHT;
 	g_vga_data.starting_vga_memory_addr = VGA_MEMORY;
 	g_vga_data.final_vga_memory_addr = VGA_LAST_MEMORY_ADDRESS;
+	g_vga_data.max_cursor_position = (VGA_WIDTH * VGA_HEIGHT) - 1;
 
 	g_char_device.private_data = (void*)&g_vga_data;
 	memcpy(g_char_device.name, g_device_name, strlen(g_device_name) + 1);
@@ -74,6 +78,10 @@ static ssize_t vga_text_write(struct char_device* device, void* buffer, size_t s
 
 	ssize_t i = 0;
 	for (i = 0; i < size; i++) {
+		if (curr_cursor_index >= vga_data->max_cursor_position) {
+			slide_window(vga_data);
+			curr_cursor_index -= vga_data->vga_width;
+		}
 		switch (str[i]) {
 			case NEW_LINE:
 				curr_cursor_index += vga_data->vga_width;
@@ -133,5 +141,27 @@ static void cls(struct vga_data* vga_data) {
 	while (ptr != (uint16_t*)vga_data->final_vga_memory_addr) {
 		*ptr = empty;
 		ptr++;
+	}
+}
+
+static void slide_window(struct vga_data* vga_data) {
+	size_t row_size;
+	uint8_t* dst;
+	uint8_t* src;
+
+	// Setting all of lines except the last one to the line below:
+	for (size_t i = 0; i < vga_data->vga_height - 1; i++) {
+		row_size = vga_data->vga_width * 2;
+		dst = vga_data->starting_vga_memory_addr + (i * row_size);
+		src = vga_data->starting_vga_memory_addr + ((i + 1) * row_size);
+		memcpy(dst, src, row_size);
+	}
+
+	// Clearing the last line:
+	uint16_t* last_line =
+		(uint16_t*)(vga_data->starting_vga_memory_addr + ((vga_data->vga_height - 1) * row_size));
+	uint16_t empty = VGA_EMPTY_CELL;
+	for (size_t i = 0; i < vga_data->vga_width; i++) {
+		last_line[i] = empty;
 	}
 }
