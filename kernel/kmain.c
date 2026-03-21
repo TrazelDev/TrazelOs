@@ -3,14 +3,21 @@
 #include <drivers/vga_text.h>
 #include <include/types.h>
 
+#include "kernel/interrupts/cpu_interrupts/division_error.h"
+#include "kernel/interrupts/idt.h"
+#include "kernel/interrupts/idt_defs.h"
 #include "kernel/panic/panic.h"
 #include "kernel/printk/printk.h"
 
 int kmain() {
 	init_printk();
-	printk("Hello world, from the kernel\n");
-	KERNEL_ASSERT(5 == 5);
+	init_cpu_exceptions();
+	init_diviosn();
 
+	struct idt_register check;
+	asm volatile("sidt %0" : "=m"(check));
+	printk("After LIDT: size=0x%x, addr=0x%x\n", check.size, check.idt_address);
+	int a = 5 / 0;
 	while (true) {
 		asm volatile("hlt");
 	}
