@@ -1,6 +1,6 @@
-#include <kernel/printk/printk.h>
+#include <kernel/include/printk.h>
 
-#include "panic.h"
+#include "kernel/include/panic.h"
 
 __attribute__((noreturn)) void kernel_panic(const char* msg, const char* file_name, size_t line) {
 	asm volatile("cli");

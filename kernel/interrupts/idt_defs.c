@@ -1,4 +1,4 @@
-#include <kernel/panic/panic.h>
+#include <kernel/include/panic.h>
 
 #include "idt_defs.h"
 

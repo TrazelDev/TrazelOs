@@ -3,7 +3,7 @@
 #include <include/integer_utils.h>
 #include <include/strings.h>
 
-#include "printk.h"
+#include "kernel/include/printk.h"
 
 #define SPECIAL_SYMBOL_PREFIX '%'
 enum special_symbols {
