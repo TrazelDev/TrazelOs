@@ -2,6 +2,7 @@
 // bootloader The real kernel is src/kernel
 #include <drivers/vga_text.h>
 #include <include/types.h>
+#include <kernel/include/gdt.h>
 #include <kernel/include/intrrupts.h>
 #include <kernel/include/panic.h>
 #include <kernel/include/printk.h>
@@ -15,6 +16,7 @@ void exception_handler(struct exception_info* info) {
 
 int kmain() {
 	init_printk();
+	init_gdt();
 	init_cpu_exceptions();
 
 	set_cpu_exception_handler(CEI_DIVIDE_ERROR, exception_handler);
