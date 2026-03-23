@@ -1,4 +1,5 @@
 [bits 64]
+DEFAULT REL
 
 %macro popaq 0
   pop rax

@@ -36,7 +36,8 @@ export AR = x86_64-elf-ar
 # -ffreestanding - says that there are no stanard libs
 # -mno-red-zone - something with stack just in gcc, man it
 # -m64 - size of values like int long and so on
-CC_BIN_FLAGS := -ffreestanding -mno-red-zone -m64
+# CC_BIN_FLAGS := -ffreestanding -mno-red-zone -m64
+CC_BIN_FLAGS := -ffreestanding -mno-red-zone -m64 -fno-pie -fno-pic
 CC_INCLUDE_FLAGS := -I $(DIR_INCLUDS) -I $(DIR_CURR)
 CC_DEP_GENERATION_FLAGS := -MMD -MP
 CC_DEBUG_FLAGS := -ggdb3

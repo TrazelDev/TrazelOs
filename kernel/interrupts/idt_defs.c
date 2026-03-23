@@ -1,3 +1,4 @@
+#include <kernel/include/gdt.h>
 #include <kernel/include/panic.h>
 
 #include "idt_defs.h"
@@ -29,11 +30,10 @@ void create_interrupt_desc(struct idt_entry* entry, uint64_t isr_addr, enum inte
 
 #define GDT_INDICATOR 0
 #define SAME_PRIVILEGE_AS_DESCRIPTOR_TABLE 0
-#define CODE_SEGMENT 1
 void set_selector(union idt_selector* selector) {
 	selector->attr.table_indicator = GDT_INDICATOR;
 	selector->attr.privilege_level = SAME_PRIVILEGE_AS_DESCRIPTOR_TABLE;
-	selector->attr.index = CODE_SEGMENT;
+	selector->attr.index = get_segment_index(GS_CODE_SEGMENT);
 }
 
 // Extracting the offset:

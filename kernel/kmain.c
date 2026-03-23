@@ -29,9 +29,12 @@ int kmain() {
 	// volatile int64_t a = -9223372036854775808;
 	// volatile int64_t b = -1;
 	// volatile int64_t c = a / b;
-	char* val = (char*)0x300000;
-	val[0] = 'a';
+	// char* val = (char*)0x3000000;
+	// val[0] = 'a';
+	// int val = 2147483647;
+	// asm volatile("int $0x0E");
 
+	// val = val + 1;
 	while (true) {
 		asm volatile("hlt");
 	}

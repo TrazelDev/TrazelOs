@@ -1,52 +1,45 @@
 OUTPUT_FORMAT(elf64-x86-64)
 ENTRY(kmain)
 
+PHDRS {
+    text    PT_LOAD    FLAGS((1 << 0) | (1 << 2)) ; /* execute + read */
+    rodata  PT_LOAD    FLAGS((1 << 2)) ;            /* read */
+    data    PT_LOAD    FLAGS((1 << 1) | (1 << 2)) ; /* write + read */
+}
+
 SECTIONS {
-  . = 0xFFFFFFFFC0100000;
+    . = 0xFFFFFFFFC0100000;
 
-  .text : {
-    *(.text)
-    *(.text.*)
-  }
+    .text ALIGN(CONSTANT(MAXPAGESIZE)) : {
+        *(.text .text.*)
+    } : text
 
+    .rodata ALIGN(CONSTANT(MAXPAGESIZE)) : {
+        *(.rodata .rodata.*)
+    } : rodata
 
-  .bss : {
-    *(.bss)
-    *(.bss.*)
-  }
+    .data ALIGN(CONSTANT(MAXPAGESIZE)) : {
+        *(.data .data.*)
+    } : data
 
+    .bss : {
+        *(.COMMON)
+        *(.bss .bss.*)
+    } : data
 
-  .data : {
-    *(.data)
-    *(.data.*)
-  }
-
-
-  .rodata : {
-    *(.rodata)
-    *(.rodata.*)
-  }
-
-
-
-
-
-  /* --- DWARF Debugging Sections --- */
-  /* Setting the address to '0' ensures they are not allocated in RAM */
-  
-  .debug_info     0 : { *(.debug_info .gnu.linkonce.wi.*) }
-  .debug_abbrev   0 : { *(.debug_abbrev) }
-  .debug_line     0 : { *(.debug_line .debug_line.* .debug_line_str) }
-  .debug_frame    0 : { *(.debug_frame) }
-  .debug_str      0 : { *(.debug_str) }
-  .debug_loc      0 : { *(.debug_loc) }
-  .debug_macinfo  0 : { *(.debug_macinfo) }
-  .debug_aranges  0 : { *(.debug_aranges) }
-  .debug_ranges   0 : { *(.debug_ranges) }
-  
-  /* Discard anything else we don't explicitly want */
-  /DISCARD/ : {
-    *(.comment)
-    *(.note.GNU-stack)
-  }
+    /* --- DWARF Debugging Sections --- */
+    .debug_info     0 : { *(.debug_info .gnu.linkonce.wi.*) }
+    .debug_abbrev   0 : { *(.debug_abbrev) }
+    .debug_line     0 : { *(.debug_line .debug_line.* .debug_line_str) }
+    .debug_frame    0 : { *(.debug_frame) }
+    .debug_str      0 : { *(.debug_str) }
+    .debug_loc      0 : { *(.debug_loc) }
+    .debug_macinfo  0 : { *(.debug_macinfo) }
+    .debug_aranges  0 : { *(.debug_aranges) }
+    .debug_ranges   0 : { *(.debug_ranges) }
+ 
+    /DISCARD/ : {
+        *(.comment)
+        *(.note.GNU-stack)
+    }
 }

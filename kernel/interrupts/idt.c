@@ -25,7 +25,7 @@ static struct idt_entry g_interrupt_table[MAX_IDT_ENTRIES_COUNT];
 static struct idt_register g_idt_register;
 
 void init_cpu_exceptions() {
-	g_idt_register.size = (uint16_t)(sizeof(g_interrupt_table));
+	g_idt_register.size = (uint16_t)(sizeof(g_interrupt_table) - 1);
 	g_idt_register.idt_address = (uint64_t)(g_interrupt_table);
 
 	extern uint64_t isr_stub_table[CPU_EXCEPTION_INTERRUPT_COUNT];
