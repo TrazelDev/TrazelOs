@@ -2,7 +2,7 @@ OUTPUT_FORMAT(elf64-x86-64)
 ENTRY(kmain)
 
 SECTIONS {
-  . = 0x100000;
+  . = 0xFFFFFFFFC0100000;
 
   .text : {
     *(.text)

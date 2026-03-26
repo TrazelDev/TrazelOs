@@ -43,5 +43,5 @@ CC_DEBUG_FLAGS := -ggdb3
 # This makes it so that the compiler outputs paths in the generated files as relative to the project root directory,
 # not the full absolute paths on the filesystem this is necessary for debug information to work well:
 CC_PATH_MAP_FLAGS := -ffile-prefix-map=$(shell pwd)=.
-export CC_FLAGS := $(CC_BIN_FLAGS) $(CC_INCLUDE_FLAGS) $(CC_DEP_GENERATION_FLAGS) $(CC_DEBUG_FLAGS) $(CC_PATH_MAP_FLAGS)
+export CC_FLAGS := $(CC_BIN_FLAGS) $(CC_INCLUDE_FLAGS) $(CC_DEP_GENERATION_FLAGS) $(CC_DEBUG_FLAGS) $(CC_PATH_MAP_FLAGS) -mcmodel=kernel
 # ------------------------------------------------------------------

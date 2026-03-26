@@ -42,7 +42,12 @@ void* malloc(uint64_t alloc_size) {
 }
 
 void* malloc_aligned(uint64_t size, uint64_t alignment) {
-	s_buffer_offset += alignment - (s_buffer_offset % alignment);
+	uint64_t current_absolute_addr = (uint64_t)s_buffer + s_buffer_offset;
+	uint64_t remainder = current_absolute_addr % alignment;
+
+	if (remainder != 0) {
+		s_buffer_offset += (alignment - remainder);
+	}
 	return malloc(size);
 }
 

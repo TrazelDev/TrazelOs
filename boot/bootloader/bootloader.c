@@ -37,13 +37,16 @@ void bootloader_entry() {
 	FAT12DirectoryEntry* dir_entries;
 	char* file_content;
 	get_root_directory_entries(&dir_entries, &fat12_info);
+
 	init_kernel_hhdm(&dev_alloc);
 
 	uint64_t file_size = get_file_content((uint8_t**)&file_content, dir_entries, &fat12_info);
 	int kernel_return_value = load_and_jump_kernel(file_content, file_size);
 
 	dev_alloc.free_allocator();
-	asm volatile("hlt");
+	while (true) {
+		asm volatile("hlt");
+	}
 }
 
 struct block_device get_bootable_partition_blk_device() {
