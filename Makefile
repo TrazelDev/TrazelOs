@@ -1,6 +1,8 @@
 include drivers.mk
 include commons.mk
 include utils.mk
+
+BOOT_OPTION ?= custom
 .PHONY: clean run build debug_connect connect $(BIN_MBR) $(BIN_BOOTLOADER) $(BIN_KERNEL)
 
 # The main options:
@@ -18,12 +20,40 @@ rebuild:
 clean:
 	rm -rf bin
 
+# auto choosing limine options:
+runl:
+	$(MAKE) run BOOT_OPTION=limine
+buildl: 
+	$(MAKE) build BOOT_OPTION=limine
+debugl:
+	$(MAKE) debug BOOT_OPTION=limine
+rebuildl:
+	$(MAKE) rebuild BOOT_OPTION=limine
 
 
 # calculated at run time:
 BIN_BOOTLOADER_SECTOR_SIZE = $(shell stat --format='%s' $(BIN_BOOTLOADER) | awk '{print int(($$1+511)/512)}')
 BIN_BOOT_PARTITION_SECTOR_SIZE = $(shell stat --format='%s' $(BIN_BOOT_PARTITION_IMG) | awk '{print int(($$1+511)/512)}')
 
+ifeq ($(BOOT_OPTION),custom)
+$(OS_IMG): $(BIN_MBR) $(BIN_BOOT_PARTITION_IMG)
+	dd if=/dev/zero of=$(OS_IMG) count=512 status=none
+	dd if=$(BIN_MBR) of=$(OS_IMG) count=1 conv=notrunc status=none
+	dd if=$(BIN_BOOT_PARTITION_IMG) of=$(OS_IMG) seek=1 conv=notrunc status=none
+	echo ", $(BIN_BOOT_PARTITION_SECTOR_SIZE), 1, *" | sfdisk $(OS_IMG) >/dev/null
+	# 1 - means FAT12 filing system in the the partition
+	# * - means bootable partition 
+
+$(BIN_BOOT_PARTITION_IMG): $(BIN_BOOTLOADER) $(BIN_KERNEL)
+	# Creating the partition and filing system:
+	dd if=/dev/zero of=$(BIN_BOOT_PARTITION_IMG) count=256 status=none
+	mkfs.fat -F 12 -R $(BIN_BOOTLOADER_SECTOR_SIZE) $(BIN_BOOT_PARTITION_IMG)
+	# Copying the bootloader binary into the reserved sectors:
+	dd if=$(BIN_BOOTLOADER) of=$(BIN_BOOT_PARTITION_IMG) bs=512 skip=1 seek=1 conv=notrunc status=none
+	dd if=$(BIN_BOOTLOADER) of=$(BIN_BOOT_PARTITION_IMG) bs=1 count=3 conv=notrunc status=none
+	mcopy -i $(BIN_BOOT_PARTITION_IMG) $(BIN_KERNEL) ::kernel.bin
+
+else ifeq ($(BOOT_OPTION),limine):
 $(OS_IMG): $(BIN_KERNEL)
 	# 1. Create a blank image large enough to hold the partition table and the partition
 	dd if=/dev/zero bs=1M count=64 of=$(OS_IMG) status=none
@@ -55,24 +85,9 @@ $(OS_IMG): $(BIN_KERNEL)
 
 	# 5. Install Limine to the MBR of the final full disk image
 	limine bios-install $(OS_IMG)
-
-# $(OS_IMG): $(BIN_MBR) $(BIN_BOOT_PARTITION_IMG)
-# 	dd if=/dev/zero of=$(OS_IMG) count=512 status=none
-# 	dd if=$(BIN_MBR) of=$(OS_IMG) count=1 conv=notrunc status=none
-# 	dd if=$(BIN_BOOT_PARTITION_IMG) of=$(OS_IMG) seek=1 conv=notrunc status=none
-# 	echo ", $(BIN_BOOT_PARTITION_SECTOR_SIZE), 1, *" | sfdisk $(OS_IMG) >/dev/null
-# 	# 1 - means FAT12 filing system in the the partition
-# 	# * - means bootable partition 
-
-
-# $(BIN_BOOT_PARTITION_IMG): $(BIN_BOOTLOADER) $(BIN_KERNEL)
-# 	# Creating the partition and filing system:
-# 	dd if=/dev/zero of=$(BIN_BOOT_PARTITION_IMG) count=256 status=none
-# 	mkfs.fat -F 12 -R $(BIN_BOOTLOADER_SECTOR_SIZE) $(BIN_BOOT_PARTITION_IMG)
-# 	# Copying the bootloader binary into the reserved sectors:
-# 	dd if=$(BIN_BOOTLOADER) of=$(BIN_BOOT_PARTITION_IMG) bs=512 skip=1 seek=1 conv=notrunc status=none
-# 	dd if=$(BIN_BOOTLOADER) of=$(BIN_BOOT_PARTITION_IMG) bs=1 count=3 conv=notrunc status=none
-# 	mcopy -i $(BIN_BOOT_PARTITION_IMG) $(BIN_KERNEL) ::kernel.bin
+else
+	$(error BOOTLOADER must be either 'limine' or 'custom', got '$(BOOTLOADER)')
+endif
 
 $(BIN_KERNEL):
 	$(MAKE) $(BIN_KERNEL) -C $(DIR_KERNEL)

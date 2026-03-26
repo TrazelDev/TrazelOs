@@ -2,13 +2,12 @@
 
 ## An operating system focused on memory management using paging, virtual memory, and a dynamic memory pool (heap).
 > [!Note]
-> The project is currently undergoing a bootloader refactor
+> The project is currently undergoing refactor.
 
 ## Building:
 > [!NOTE]
-> The project only supports Linux build process but runs in a docker,
-> so making it work on windows won't be a problem
-
+> The project only supports Linux build process but builds and runs in a docker,
+> so setting up in windows will be as strait forward as creating a corsponding small bat script to launch docker.
 ### Dependencies:
 * Docker
 * xhost
@@ -34,6 +33,15 @@
 * Run the `build.sh` script to spawn a docker container with all the tools.
 * `make debug` to run a debugging session inside of the docker.
 * Inside regular terminal use `make connect` or `make debug_connect` to attach to the gdb session.
+
+## Projects custom bootloader vs limine bootloader:
+> [!NOTE]
+> The project is booting with costume bootloader which will incremtly try to support limine boot protocol.
+> For now the default bootloader is the custom bootloader.
+#### To choose the limine bootloader specifically there are couple of option:
+1. Use the limine corresponding options called: `runl`, `buildl` and `debugl`.
+2. Set the BOOT_OPTION parameter upon running make, for example: `make run BOOT_OPTION=limine`.
+3. Change the variable BOOT_OPTION at the top of the main Makefile.
 
 ## LSP support:
 > Once the `build.sh` docker container has spawned, you can use `buildenv/docker-clangd.sh` as a clangd instance.
