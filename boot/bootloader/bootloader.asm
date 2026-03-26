@@ -49,8 +49,19 @@ startProtectedMode:
 	jmp codeseg:start64Bit ; preforming far jump which is necessary because the cpu needs to switch to a new code segment after switching to 64 bit
 
 [bits 64]
+
+[section .bss]
+align 16
+bootloader_stack_bottom:
+    resb 32768  ; reserve 32 KiB for the bootloader stack
+bootloader_stack_top:
+
+[section .text]
 [extern bootloader_entry]
 start64Bit:
+	mov rsp, bootloader_stack_top
+	mov rbp, rsp
+
 	; cleaning the text and changing the text color to green
 	mov edi, 0xb8000
 	mov rax, 0x0a200a200a200a20
