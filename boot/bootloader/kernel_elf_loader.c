@@ -1,8 +1,8 @@
 #include <drivers/vga_text.h>
-#include <include/elf.h>
 #include <include/integer_utils.h>
 #include <include/mem_utils.h>
 #include <include/types.h>
+#include <include/vendor/elf.h>
 
 #include "bootloader_print.h"
 #include "kernel_elf_loader.h"
@@ -111,8 +111,6 @@ void print_elf64_header(const Elf64_Ehdr* ehdr) {
 	print_string(itoa_unsigned(ehdr->e_shstrndx, buf, INTEGER_BASE_DECIMAL));
 	print_string("\n--------------------\n");
 }
-
-#include <elf.h>
 
 void print_elf64_program_header(Elf64_Phdr* phdr, uint32_t index) {
 	char buf[64];
