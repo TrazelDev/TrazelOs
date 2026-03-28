@@ -1,6 +1,6 @@
 # Trazel operating system - specializes mainly in managing memory
 
-## An operating system focused on memory management using paging, virtual memory, and a dynamic memory pool (heap).
+## An x86_64 bootloader and operating system build in c and compiled fully within a docker with cross compiler.
 > [!Note]
 > The project is currently undergoing refactor.
 
@@ -41,7 +41,7 @@
 #### To choose the limine bootloader specifically there are couple of option:
 1. Use the limine corresponding options called: `runl`, `buildl` and `debugl`.
 2. Set the BOOT_OPTION parameter upon running make, for example: `make run BOOT_OPTION=limine`.
-3. Change the variable BOOT_OPTION at the top of the main Makefile.
+3. Change the variable BOOT_OPTION to limine in the config.mk file.
 
 ## LSP support:
 > Once the `build.sh` docker container has spawned, you can use `buildenv/docker-clangd.sh` as a clangd instance.

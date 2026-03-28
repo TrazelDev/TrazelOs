@@ -1,0 +1,2 @@
+BOOT_OPTION ?= custom
+HEADLESS ?= 1
