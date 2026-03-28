@@ -19,7 +19,7 @@ static struct char_device* g_ch_devices[DEVICE_COUNT];
 void init_printk() {
 	g_ch_devices[0] = vga_text_init();
 	g_ch_devices[1] = serial_com1_init();
-	printk("Initiazlied printk\n");
+	printk("Initialized printk\n");
 }
 
 static void write_devices(void* buffer, size_t size) {

@@ -16,11 +16,11 @@ static int is_transmit_empty();
 static int init_com1();
 static void transmit_char(char chr);
 struct char_device* serial_com1_init() {
-	static bool is_initiazlied = false;
-	if (is_initiazlied) {
+	static bool is_initialized = false;
+	if (is_initialized) {
 		return &g_char_device;
 	}
-	is_initiazlied = true;
+	is_initialized = true;
 
 	memcpy(g_char_device.name, g_device_name, strlen(g_device_name) + 1);
 	g_char_device.write = com1_write;

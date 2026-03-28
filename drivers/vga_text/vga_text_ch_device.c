@@ -45,12 +45,12 @@ static ssize_t vga_text_read(struct char_device* device, void* buffer, size_t si
 static ssize_t vga_text_write(struct char_device* device, void* buffer, size_t size);
 static ssize_t vga_text_ioctl(struct char_device* device, uint32_t command, void* arg);
 struct char_device* vga_text_init() {
-	static bool is_initiazlied = false;
-	if (is_initiazlied) {
+	static bool is_initialized = false;
+	if (is_initialized) {
 		return &g_char_device;
 	}
 
-	is_initiazlied = true;
+	is_initialized = true;
 	g_vga_data.cursor_position = 0;
 	g_vga_data.vga_width = VGA_WIDTH;
 	g_vga_data.vga_height = VGA_HEIGHT;
