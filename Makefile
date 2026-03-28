@@ -8,14 +8,16 @@ include config.mk
 ifeq ($(HEADLESS),0)
 run: build
 	qemu-system-x86_64 -drive format=raw,file=$(OS_IMG) -serial stdio
+debug: build
+	qemu-system-x86_64 -drive format=raw,file=$(OS_IMG) -s -S -serial stdio
 else
 run: build
 	qemu-system-x86_64 -drive format=raw,file=$(OS_IMG) -nographic
+debug: build
+	qemu-system-x86_64 -drive format=raw,file=$(OS_IMG) -s -S -nographic
 endif
 
 build: $(OS_IMG)
-debug: build
-	qemu-system-x86_64 -drive format=raw,file=$(OS_IMG) -s -S -serial stdio
 connect: debug_connect
 debug_connect:
 	gdb bin/kernel.bin
