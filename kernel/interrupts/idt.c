@@ -48,8 +48,8 @@ static void cli() { asm volatile("cli"); }
 static void sti() { asm volatile("sti"); }
 
 size_t load_new_interrupt(uint8_t index, struct idt_entry* desc) {
-	KERNEL_ASSERT(desc != NULL);
-	KERNEL_ASSERT(index < MAX_IDT_ENTRIES_COUNT);
+	KERNEL_ASSERT(desc != NULL, "Cannot load a null interrupt descriptor");
+	KERNEL_ASSERT(index < MAX_IDT_ENTRIES_COUNT, "Interrupt index out of bounds");
 
 	cli();
 	g_interrupt_table[index] = *desc;

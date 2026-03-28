@@ -14,7 +14,7 @@ static void set_offset(struct idt_entry* descriptor, uint64_t offset);
 #define MAX_INTERRUPT_STACK_TABLES 7
 void create_interrupt_desc(struct idt_entry* entry, uint64_t isr_addr, enum interrupt_type type,
 						   uint8_t interrupt_stack_table, uint8_t ring_access_to_interrupt) {
-	KERNEL_ASSERT(interrupt_stack_table < 7);
+	KERNEL_ASSERT(interrupt_stack_table < 7, "interrupt stack table index is out of bounds");
 
 	set_offset(entry, isr_addr);
 	set_selector(&entry->selector);
