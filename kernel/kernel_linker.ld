@@ -2,13 +2,20 @@ OUTPUT_FORMAT(elf64-x86-64)
 ENTRY(kmain)
 
 PHDRS {
-    text    PT_LOAD    FLAGS((1 << 0) | (1 << 2)) ; /* execute + read */
-    rodata  PT_LOAD    FLAGS((1 << 2)) ;            /* read */
-    data    PT_LOAD    FLAGS((1 << 1) | (1 << 2)) ; /* write + read */
+    limine_requests PT_LOAD    FLAGS((1 << 2))            ;
+    text            PT_LOAD    FLAGS((1 << 0) | (1 << 2)) ; /* execute + read */
+    rodata          PT_LOAD    FLAGS((1 << 2))            ; /* read */
+    data            PT_LOAD    FLAGS((1 << 1) | (1 << 2)) ; /* write + read */
 }
 
 SECTIONS {
     . = 0xFFFFFFFFC0100000;
+
+    .limine_requests : {
+        KEEP(*(.limine_requests_start))
+        KEEP(*(.limine_requests))
+        KEEP(*(.limine_requests_end))
+    } :limine_requests
 
     .text ALIGN(CONSTANT(MAXPAGESIZE)) : {
         *(.text .text.*)
