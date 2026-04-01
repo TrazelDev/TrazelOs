@@ -25,7 +25,7 @@ static inline uint64_t get_cr3_reg() {
 	return cr3_register;
 }
 
-void init_kernel_hhdm(struct basic_allocator* allocator) {
+void init_higher_half_kernel(struct basic_allocator* allocator) {
 	page_pdp_table_t* pdp_table =
 		allocator->malloc_aligned(sizeof(page_pdp_table_t), REGULAR_PAGE_SIZE);
 	*pdp_table = (page_pdp_table_t){0};

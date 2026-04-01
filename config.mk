@@ -1,2 +1,2 @@
-BOOT_OPTION ?= custom
-HEADLESS ?= 1
+BOOT_OPTION ?= limine
+HEADLESS ?= 0
