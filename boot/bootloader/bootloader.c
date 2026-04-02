@@ -14,6 +14,7 @@
 struct block_device get_bootable_partition_blk_device();
 struct basic_allocator get_blk_dev_allocator();
 
+// ERROR: Currently we are just accessing the memory
 void bootloader_entry() {
 	init_print();
 	print_string("Bootloader stage 2\n");

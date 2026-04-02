@@ -4,18 +4,18 @@ BIOS_FUNCTION_TO_QUERY_MEMORY_MAPS equ 0xE820
 BIOS_SYSTEM_SERVICE_INTERRUPT	   equ 0x15
 MEMORY_MAP_SIZE					   equ 24
 
-; global variables that are used in cpp kernel code:
-addressWithMemoryMaps:
+; global variables that are used in c state of the bootloader:
+address_with_memory_maps:
 	dq 0x5002
-	global addressWithMemoryMaps
-memoryRegionCount:
+	global address_with_memory_maps
+memory_region_count:
 	db 0
-	global memoryRegionCount
+	global memory_region_count
 
 detectMemory:
 	mov ax, 0
 	mov es, ax						 ; set the ax to the value 0 ( we are using ax because we cannot move a direct value into es)
-	mov di, [addressWithMemoryMaps]  ; place that we would like to store it ( it is random )
+	mov di, [address_with_memory_maps]  ; place that we would like to store it ( it is random )
 	mov edx, SMAP_ASCII_VALUE		 
 	xor ebx, ebx
 
@@ -28,7 +28,7 @@ detectMemory:
 		je .finished	
 
 		add di, MEMORY_MAP_SIZE		 ; move to the next memory region entry
-		inc byte [memoryRegionCount] ; increment the memory region count
+		inc byte [memory_region_count] ; increment the memory region count
 		jmp .repeat
 
 	.finished:
