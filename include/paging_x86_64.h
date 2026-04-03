@@ -28,6 +28,8 @@ union virtual_addr {
 	void* ptr;
 } __attribute__((packed));
 
+#define PAGE_ADDR_TO_PAGE_TABLE_ENTRY_INDEX(x) ((x) >> 12)
+#define PAGE_TABLE_ENTRY_INDEX_TO_PAGE_ADDR(x) ((x) << 12)
 union page_table_entry {
 	struct {
 		uint64_t present : 1;		 // page present in memory
