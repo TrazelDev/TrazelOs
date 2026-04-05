@@ -4,6 +4,7 @@
 #include <include/types.h>
 #include <include/vendor/limine.h>
 #include <kernel/include/gdt.h>
+#include <kernel/include/heap.h>
 #include <kernel/include/intrrupts.h>
 #include <kernel/include/panic.h>
 #include <kernel/include/pmm.h>
@@ -48,6 +49,7 @@ int kmain() {
 
 	init_pmm(memmap_request.response, hhdm_request.response);
 	init_vmm(hhdm_request.response);
+	init_kernel_heap();
 
 	while (true) {
 		asm volatile("hlt");
