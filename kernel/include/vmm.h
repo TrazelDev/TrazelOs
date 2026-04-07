@@ -14,5 +14,10 @@ enum vmm_map_page_flags {
 void init_vmm(volatile struct limine_hhdm_response* hhdm_response);
 void* vmm_get_curr_pagemap();
 
+/** Gets a physical addr and returns the corresponding virtual addr in the HHDM for kernel usage
+ * @return kernel based hhdm writable addr
+ */
+void* vmm_phys_to_virt_hhdm(void* paddr);
+
 int vmm_map_page(void* pagemap, void* vaddr, void* paddr, enum vmm_map_page_flags flags);
 int vmm_unmap_page(void* pagemap, void* vaddr, uint64_t flags);

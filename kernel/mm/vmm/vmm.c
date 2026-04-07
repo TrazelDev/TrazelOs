@@ -28,6 +28,8 @@ void init_vmm(volatile struct limine_hhdm_response* hhdm_response) {
 	printk("Initialized vmm\n");
 }
 
+void* vmm_phys_to_virt_hhdm(void* paddr) { return (void*)((uint64_t)paddr + g_hhdm_offset); }
+
 void* vmm_get_curr_pagemap() {
 	uint64_t cr3_register;
 	asm volatile("movq %%cr3, %0" : "=r"(cr3_register) : : "memory");
