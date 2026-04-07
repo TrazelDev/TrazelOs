@@ -44,7 +44,7 @@ BIN_BOOT_PARTITION_SECTOR_SIZE = $(shell stat --format='%s' $(BIN_BOOT_PARTITION
 
 ifeq ($(BOOT_OPTION),custom)
 $(OS_IMG): $(BIN_MBR) $(BIN_BOOT_PARTITION_IMG)
-	dd if=/dev/zero of=$(OS_IMG) count=512 status=none
+	dd if=/dev/zero of=$(OS_IMG) count=1024 status=none
 	dd if=$(BIN_MBR) of=$(OS_IMG) count=1 conv=notrunc status=none
 	dd if=$(BIN_BOOT_PARTITION_IMG) of=$(OS_IMG) seek=1 conv=notrunc status=none
 	echo ", $(BIN_BOOT_PARTITION_SECTOR_SIZE), 1, *" | sfdisk $(OS_IMG) >/dev/null
@@ -53,7 +53,7 @@ $(OS_IMG): $(BIN_MBR) $(BIN_BOOT_PARTITION_IMG)
 
 $(BIN_BOOT_PARTITION_IMG): $(BIN_BOOTLOADER) $(BIN_KERNEL)
 	# Creating the partition and filing system:
-	dd if=/dev/zero of=$(BIN_BOOT_PARTITION_IMG) count=256 status=none
+	dd if=/dev/zero of=$(BIN_BOOT_PARTITION_IMG) count=512 status=none
 	mkfs.fat -F 12 -R $(BIN_BOOTLOADER_SECTOR_SIZE) $(BIN_BOOT_PARTITION_IMG)
 
 	# Copying the bootloader binary into the reserved sectors:
@@ -61,7 +61,7 @@ $(BIN_BOOT_PARTITION_IMG): $(BIN_BOOTLOADER) $(BIN_KERNEL)
 	dd if=$(BIN_BOOTLOADER) of=$(BIN_BOOT_PARTITION_IMG) bs=1 count=3 conv=notrunc status=none
 	mcopy -i $(BIN_BOOT_PARTITION_IMG) $(BIN_KERNEL) ::kernel.bin
 
-else ifeq ($(BOOT_OPTION),limine):
+else ifeq ($(BOOT_OPTION),limine)
 $(OS_IMG): $(BIN_KERNEL)
 	dd if=/dev/zero bs=1M count=64 of=$(OS_IMG) status=none
 
@@ -81,7 +81,7 @@ $(OS_IMG): $(BIN_KERNEL)
 	dd if=$(BIN_BOOT_PARTITION_IMG) of=$(OS_IMG) bs=1M seek=1 conv=notrunc status=none
 	limine bios-install $(OS_IMG)
 else
-	$(error BOOTLOADER must be either 'limine' or 'custom', got '$(BOOTLOADER)')
+$(error BOOTLOADER must be either 'limine' or 'custom', got '$(BOOT_OPTION)')
 endif
 
 $(BIN_KERNEL):
