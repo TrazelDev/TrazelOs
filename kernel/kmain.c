@@ -3,6 +3,7 @@
 #include <drivers/vga_text.h>
 #include <include/types.h>
 #include <include/vendor/limine.h>
+#include <kernel/include/acpi.h>
 #include <kernel/include/gdt.h>
 #include <kernel/include/heap.h>
 #include <kernel/include/intrrupts.h>
@@ -27,6 +28,10 @@ __attribute__((
 	.id = LIMINE_HHDM_REQUEST_ID, .revision = 0, .response = NULL};
 
 __attribute__((
+	used, section(".limine_requests"))) static volatile struct limine_rsdp_request rsdp_request = {
+	.id = LIMINE_RSDP_REQUEST_ID, .revision = 0, .response = NULL};
+
+__attribute__((
 	used, section(".limine_requests_end"))) static volatile uint64_t limine_requests_end_marker[] =
 	LIMINE_REQUESTS_END_MARKER;
 
@@ -36,8 +41,6 @@ void exception_handler(struct exception_info* info) {
 		asm volatile("hlt");
 	}
 }
-
-void func(volatile struct limine_hhdm_response* response) { printk("%x", response->offset); }
 
 int kmain() {
 	init_printk();
@@ -53,6 +56,8 @@ int kmain() {
 	init_kernel_heap();
 
 	init_msr_cpu();
+
+	init_acpi(rsdp_request.response);
 
 	while (true) {
 		asm volatile("hlt");
