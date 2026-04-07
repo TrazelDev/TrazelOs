@@ -6,6 +6,7 @@
 #include <kernel/include/gdt.h>
 #include <kernel/include/heap.h>
 #include <kernel/include/intrrupts.h>
+#include <kernel/include/msr.h>
 #include <kernel/include/panic.h>
 #include <kernel/include/pmm.h>
 #include <kernel/include/printk.h>
@@ -50,6 +51,8 @@ int kmain() {
 	init_pmm(memmap_request.response, hhdm_request.response);
 	init_vmm(hhdm_request.response);
 	init_kernel_heap();
+
+	init_msr_cpu();
 
 	while (true) {
 		asm volatile("hlt");
