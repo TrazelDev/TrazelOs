@@ -9,12 +9,12 @@ ifeq ($(HEADLESS),0)
 run: build
 	qemu-system-x86_64 -drive format=raw,file=$(OS_IMG) -serial stdio
 debug: build
-	qemu-system-x86_64 -drive format=raw,file=$(OS_IMG) -s -S -serial stdio
+	qemu-system-x86_64 -monitor tcp:0.0.0.0:55555,server,nowait -drive format=raw,file=$(OS_IMG) -s -S -serial stdio
 else
 run: build
 	qemu-system-x86_64 -drive format=raw,file=$(OS_IMG) -nographic
 debug: build
-	qemu-system-x86_64 -drive format=raw,file=$(OS_IMG) -s -S -nographic
+	qemu-system-x86_64 -monitor tcp:0.0.0.0:55555,server,nowait -drive format=raw,file=$(OS_IMG) -s -S -nographic
 endif
 
 build: $(OS_IMG)
