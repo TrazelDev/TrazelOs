@@ -2,13 +2,13 @@
 #include <include/types.h>
 
 enum cpu_exceptions_indexes;
-struct exception_info;
+struct interrupt_info;
 
 /* @brief initializing the idt */
 void init_cpu_exceptions();
 
 void set_cpu_exception_handler(enum cpu_exceptions_indexes index,
-							   void (*handler)(struct exception_info* info));
+							   void (*handler)(struct interrupt_info* info));
 
 #define CPU_EXCEPTION_INTERRUPT_COUNT 32
 enum cpu_exceptions_indexes {
@@ -35,7 +35,7 @@ enum cpu_exceptions_indexes {
 	CEI_CONTROL_PROTECTION_EXCEPTION = 0x15,
 };
 
-struct exception_info {
+struct interrupt_info {
 	uint64_t rax;
 	uint64_t rbx;
 	uint64_t rcx;

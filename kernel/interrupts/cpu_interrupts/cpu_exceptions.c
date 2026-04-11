@@ -4,14 +4,16 @@
 #include "kernel/include/intrrupts.h"
 
 static void (*s_cpu_exception_handlers[CPU_EXCEPTION_INTERRUPT_COUNT])(
-	struct exception_info* info) = {NULL};
+	struct interrupt_info* info) = {NULL};
 
 void set_cpu_exception_handler(enum cpu_exceptions_indexes index,
-							   void (*handler)(struct exception_info* info)) {
+							   void (*handler)(struct interrupt_info* info)) {
+	KERNEL_ASSERT(index >= 0 && index < CPU_EXCEPTION_INTERRUPT_COUNT,
+				  "Invalid CPU exception index");
 	s_cpu_exception_handlers[index] = handler;
 }
 
-void cpu_exceptions_isr_central_handler(struct exception_info* info) {
+void cpu_exceptions_isr_central_handler(struct interrupt_info* info) {
 	if (s_cpu_exception_handlers[info->interrupt_index]) {
 		s_cpu_exception_handlers[info->interrupt_index](info);
 		return;

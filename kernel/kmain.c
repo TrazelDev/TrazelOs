@@ -35,7 +35,7 @@ __attribute__((
 	used, section(".limine_requests_end"))) static volatile uint64_t limine_requests_end_marker[] =
 	LIMINE_REQUESTS_END_MARKER;
 
-void exception_handler(struct exception_info* info) {
+void exception_handler(struct interrupt_info* info) {
 	printk("It works but it should just crush in that case\n");
 	while (true) {
 		asm volatile("hlt");
