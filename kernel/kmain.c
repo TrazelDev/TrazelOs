@@ -7,6 +7,7 @@
 #include <kernel/include/gdt.h>
 #include <kernel/include/heap.h>
 #include <kernel/include/intrrupts.h>
+#include <kernel/include/madt.h>
 #include <kernel/include/msr.h>
 #include <kernel/include/panic.h>
 #include <kernel/include/pmm.h>
@@ -58,6 +59,7 @@ int kmain() {
 	init_msr_cpu();
 
 	init_acpi(rsdp_request.response);
+	init_madt();
 
 	while (true) {
 		asm volatile("hlt");
