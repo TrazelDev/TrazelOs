@@ -4,6 +4,7 @@
 
 enum legacy_isa_irq;
 void init_apic();
+void apic_send_eoi();
 void apic_set_legacy_irq_desc_num(enum legacy_isa_irq irq, uint32_t desc_num);
 
 enum legacy_isa_irq {

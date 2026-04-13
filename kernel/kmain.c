@@ -1,6 +1,8 @@
-// NOTE: This is not the real kernel but one for testing purposes in the refactoring of the
-// bootloader The real kernel is src/kernel
+// NOTE: This is not full the kernel currently it is undergoing a big refactor but this version is
+// the primary. More code is present in legacy_src/kernel
+
 #include <drivers/vga_text.h>
+#include <include/io.h>
 #include <include/types.h>
 #include <include/vendor/limine.h>
 #include <kernel/include/acpi.h>
@@ -37,11 +39,17 @@ __attribute__((
 	used, section(".limine_requests_end"))) static volatile uint64_t limine_requests_end_marker[] =
 	LIMINE_REQUESTS_END_MARKER;
 
-void exception_handler(struct interrupt_info* info) {
-	printk("It works but it should just crush in that case\n");
-	while (true) {
-		asm volatile("hlt");
-	}
+void keyboard_interrupt_handler(struct interrupt_info* info) {
+	uint8_t scan_code = inb(IO_KEYBOARD_DATA_PORT);
+	printk("key: 0x%x\n", scan_code);
+	apic_send_eoi();
+}
+
+void pit_interrupt_handler() {
+	static int count = 0;
+	count++;
+	printk("The count is %d\n", count);
+	apic_send_eoi();
 }
 
 int kmain() {
@@ -50,18 +58,29 @@ int kmain() {
 	init_gdt();
 
 	init_cpu_exceptions();
-	// set_cpu_exception_handler(CEI_DIVIDE_ERROR, exception_handler);
-	// set_cpu_exception_handler(CEI_PAGE_FAULT, exception_handler);
 
 	init_pmm(memmap_request.response, hhdm_request.response);
 	init_vmm(hhdm_request.response);
 	init_kernel_heap();
 
 	init_msr_cpu();
-
 	init_acpi(rsdp_request.response);
 	init_madt();
+	init_apic();
 	init_hardware_interrupts();
+
+	// set_cpu_exception_handler(CEI_DIVIDE_ERROR, exception_handler);
+	// set_cpu_exception_handler(CEI_PAGE_FAULT, exception_handler);
+
+	uint8_t keyboard_desc = get_free_interrupt_desc();
+	printk("The keyboard desc is %d\n", keyboard_desc);
+	apic_set_legacy_irq_desc_num(LIRQ_KEYBOARD, keyboard_desc);
+	set_hardware_interrupt_handler(keyboard_desc, keyboard_interrupt_handler);
+
+	uint8_t pit_desc = get_free_interrupt_desc();
+	printk("The pit desc is %d\n", keyboard_desc);
+	apic_set_legacy_irq_desc_num(LIRQ_PIT, pit_desc);
+	set_hardware_interrupt_handler(pit_desc, pit_interrupt_handler);
 
 	while (true) {
 		asm volatile("hlt");
