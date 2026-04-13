@@ -4,6 +4,7 @@
 #include <include/types.h>
 #include <include/vendor/limine.h>
 #include <kernel/include/acpi.h>
+#include <kernel/include/apic.h>
 #include <kernel/include/gdt.h>
 #include <kernel/include/heap.h>
 #include <kernel/include/intrrupts.h>
@@ -60,6 +61,7 @@ int kmain() {
 
 	init_acpi(rsdp_request.response);
 	init_madt();
+	init_hardware_interrupts();
 
 	while (true) {
 		asm volatile("hlt");

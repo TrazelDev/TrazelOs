@@ -4,13 +4,26 @@
 enum cpu_exceptions_indexes;
 struct interrupt_info;
 
-/* @brief initializing the idt */
+/* @brief initializing the idt and setting cpu exceptions*/
 void init_cpu_exceptions();
+
+/** @brief Initialazing hardware interrupt */
+void init_hardware_interrupts();
 
 void set_cpu_exception_handler(enum cpu_exceptions_indexes index,
 							   void (*handler)(struct interrupt_info* info));
 
+void set_hardware_interrupt_handler(uint8_t index, void (*handler)(struct interrupt_info* info));
+
+/** Returns then index of a free hardware interrupt that can be used
+ * On fail it kernel panics the caller is responsible to check if there is a free descriptor number
+ * before calling (This is useful cause reaching the limit of hardware interrupts is very uncommon
+ * but a huge problem)*/
+uint8_t get_free_interrupt_desc(void);
+
 #define CPU_EXCEPTION_INTERRUPT_COUNT 32
+#define HARDWARE_INTERRUPT_COUNT (256 - CPU_EXCEPTION_INTERRUPT_COUNT)
+
 enum cpu_exceptions_indexes {
 	CEI_DIVIDE_ERROR = 0x0,
 	CEI_DEBUG_EXCEPTION = 0x1,
