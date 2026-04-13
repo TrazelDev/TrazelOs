@@ -25,6 +25,8 @@ static struct idt_entry g_interrupt_table[MAX_IDT_ENTRIES_COUNT];
 static struct idt_register g_idt_register;
 
 void init_cpu_exceptions() {
+	cli();
+
 	g_idt_register.size = (uint16_t)(sizeof(g_interrupt_table) - 1);
 	g_idt_register.idt_address = (uint64_t)(g_interrupt_table);
 
@@ -39,6 +41,21 @@ void init_cpu_exceptions() {
 	printk("Initialized CPU exceptions\n");
 }
 
+void init_hardware_interrupts() {
+	extern uint64_t isr_hardware_interrupt_stub_table[HARDWARE_INTERRUPT_COUNT];
+	struct idt_entry entry;
+	uint64_t isr_address;
+
+	for (uint32_t i = 0; i < HARDWARE_INTERRUPT_COUNT; i++) {
+		isr_address = (uint64_t)isr_hardware_interrupt_stub_table[i];
+		create_interrupt_desc(&entry, isr_address, INTTYP_INTERRUPT_GATE, 0, 0);
+		load_new_interrupt(i + CPU_EXCEPTION_INTERRUPT_COUNT, &entry);
+	}
+
+	sti();
+	printk("Initialized hardware interrupts\n");
+}
+
 static void load_idt_register() {
 	// m - means get the address of the variable
 	asm volatile("lidt %0" : : "m"(g_idt_register));
@@ -51,9 +68,6 @@ size_t load_new_interrupt(uint8_t index, struct idt_entry* desc) {
 	KERNEL_ASSERT(desc != NULL, "Cannot load a null interrupt descriptor");
 	KERNEL_ASSERT(index < MAX_IDT_ENTRIES_COUNT, "Interrupt index out of bounds");
 
-	cli();
 	g_interrupt_table[index] = *desc;
-	// sti();
-
 	return index;
 }
