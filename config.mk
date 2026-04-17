@@ -1,2 +1,2 @@
 BOOT_OPTION ?= limine
-HEADLESS ?= 0
+HEADLESS ?= 1
