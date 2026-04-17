@@ -1,0 +1,14 @@
+SOURCE_FILES != find *.c
+OBJ_FILES := $(addprefix $(DIR_BIN_DRIVER_PS2_KEYBOARD)/, $(SOURCE_FILES:.c=.o))
+DEP_FILES := $(addprefix $(DIR_BIN_DRIVER_PS2_KEYBOARD)/, $(SOURCE_FILES:.c=.d))
+
+$(BIN_DRIVER_PS2_KEYBOARD): $(OBJ_FILES) $(BIN_IO)
+	$(AR) r $@ $^
+
+$(DIR_BIN_DRIVER_PS2_KEYBOARD)/%.o: %.c $(DIR_BIN_DRIVER_PS2_KEYBOARD)
+	$(CC) $(CC_FLAGS) -c $< -o $@
+
+$(DIR_BIN_DRIVER_PS2_KEYBOARD):
+	mkdir -p $@
+
+-include $(DEP_FILES)
