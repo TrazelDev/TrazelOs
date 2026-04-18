@@ -87,7 +87,7 @@ void init_ioapic() {
 }
 
 void init_lapic() {
-	const uint32_t MILLISECONDS_PER_TIMER_ACTIVATION = 1;
+	const uint32_t MILLISECONDS_PER_TIMER_ACTIVATION = 35;
 
 	// Tell APIC timer to use divider 16
 	write_lapic_register(LAPIC_REG_TMRDIV, 0x3);
