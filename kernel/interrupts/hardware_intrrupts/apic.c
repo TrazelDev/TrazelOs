@@ -43,7 +43,7 @@ enum lapic_registers {
 #define GET_APIC_REDIRECTION_ENTRY_INDEX(index) (0x10 + ((index) * 2))
 uint32_t volatile* g_io_apic_base = NULL;
 uint32_t volatile* g_lapic_base = NULL;
-void (*g_lapic_timer_handler)() = NULL;
+void (*g_lapic_timer_handler)(struct interrupt_info* state) = NULL;
 
 union apic_redirection_entry {
 	struct {
@@ -122,7 +122,9 @@ void apic_set_legacy_irq_desc_num(enum legacy_isa_irq irq, uint32_t desc_num) {
 	write_ioapic_redirection_entry(entry, pin_index);
 }
 
-void apic_setup_timer_handler(void (*handler)()) { g_lapic_timer_handler = handler; }
+void apic_setup_timer_handler(void (*handler)(struct interrupt_info* state)) {
+	g_lapic_timer_handler = handler;
+}
 
 // module private functions:
 // -------------------------------------------------------------------------------------------------
@@ -160,9 +162,9 @@ static void disable_pic() {
 	outb(IO_SLAVE_PIC_DATA_PORT, 0xff);
 }
 
-static void lapic_timer_handler() {
+static void lapic_timer_handler(struct interrupt_info* state) {
 	if (g_lapic_timer_handler) {
-		g_lapic_timer_handler();
+		g_lapic_timer_handler(state);
 	}
 
 	apic_send_eoi();

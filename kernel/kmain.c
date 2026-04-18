@@ -42,7 +42,7 @@ __attribute__((
 	used, section(".limine_requests_end"))) static volatile uint64_t limine_requests_end_marker[] =
 	LIMINE_REQUESTS_END_MARKER;
 
-void timer_handler() {
+void timer_handler(struct interrupt_info* state) {
 	static uint64_t ticks = 0;
 	ticks++;
 	if (ticks % 1000 == 0) {

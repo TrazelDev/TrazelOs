@@ -1,6 +1,7 @@
 #pragma once
 
 #include <include/types.h>
+#include <kernel/include/intrrupts.h>
 
 enum legacy_isa_irq;
 
@@ -8,7 +9,7 @@ void init_ioapic();
 void init_lapic();
 void apic_send_eoi();
 void apic_set_legacy_irq_desc_num(enum legacy_isa_irq irq, uint32_t desc_num);
-void apic_setup_timer_handler(void (*handler)());
+void apic_setup_timer_handler(void (*handler)(struct interrupt_info* state));
 
 enum legacy_isa_irq {
 	LIRQ_PIT = 0,
