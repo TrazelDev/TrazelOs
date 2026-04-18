@@ -1,6 +1,4 @@
-// NOTE: This is not full the kernel currently it is undergoing a big refactor but this version is
-// the primary. More code is present in legacy_src/kernel
-
+#include <drivers/char_device.h>
 #include <drivers/ps2_keyboard.h>
 #include <drivers/vga_text.h>
 #include <include/io.h>
@@ -16,9 +14,8 @@
 #include <kernel/include/panic.h>
 #include <kernel/include/pmm.h>
 #include <kernel/include/printk.h>
+#include <kernel/include/scheduler.h>
 #include <kernel/include/vmm.h>
-
-#include "drivers/char_device.h"
 
 __attribute__((
 	used,
@@ -42,11 +39,33 @@ __attribute__((
 	used, section(".limine_requests_end"))) static volatile uint64_t limine_requests_end_marker[] =
 	LIMINE_REQUESTS_END_MARKER;
 
-void timer_handler(struct interrupt_info* state) {
-	static uint64_t ticks = 0;
-	ticks++;
-	if (ticks % 1000 == 0) {
-		printk("Tick %d\n", ticks);
+void func1() {
+	static uint64_t count = 0;
+	while (true) {
+		count++;
+		printk("A %d\n", count);
+	}
+}
+void func2() {
+	static uint64_t count = 0;
+	while (true) {
+		count++;
+		printk("B %d\n", count);
+	}
+}
+
+void func3() {
+	static uint64_t count = 0;
+	while (true) {
+		count++;
+		printk("C %d\n", count);
+	}
+}
+void func4() {
+	static uint64_t count = 0;
+	while (true) {
+		count++;
+		printk("D %d\n", count);
 	}
 }
 
@@ -70,11 +89,16 @@ int kmain() {
 	init_lapic();
 
 	struct char_device* ps2_keyboard = ps2_keyboard_init();
-	apic_setup_timer_handler(timer_handler);
+
+	init_scheduler();
+	scheduler_add_task(func1);
+	scheduler_add_task(func2);
+	scheduler_add_task(func3);
+	scheduler_add_task(func4);
+	scheduler_handover_execution();
 
 	// set_cpu_exception_handler(CEI_DIVIDE_ERROR, exception_handler);
 	// set_cpu_exception_handler(CEI_PAGE_FAULT, exception_handler);
-
 
 	while (true) {
 		asm volatile("hlt");
