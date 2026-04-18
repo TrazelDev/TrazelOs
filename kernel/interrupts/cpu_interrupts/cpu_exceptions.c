@@ -20,7 +20,7 @@ void cpu_exceptions_isr_central_handler(struct interrupt_info* info) {
 	}
 
 	printk("\n=== CPU Exception ===\n");
-	printk("Exception #%d at RIP: %x\n", info->interrupt_index, info->exception_trigger_rip);
+	printk("Exception #%d at RIP: %x\n", info->interrupt_index, info->rip);
 	printk("RSP: %x | RFLAGS: %x\n", info->original_rsp, info->rflags);
 	printk("Error Code: %x | Code Segment: %x", info->potential_error_code, info->code_segment);
 

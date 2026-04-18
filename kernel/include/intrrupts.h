@@ -74,10 +74,11 @@ struct interrupt_info {
 	 */
 	uint64_t potential_error_code;
 	/* the rip that the exception was triggered on */
-	uint64_t exception_trigger_rip;
+	uint64_t rip;
 	/* the code segment padded to 8 bytes */
 	uint64_t code_segment;
 	uint64_t rflags;
 	/* Original value of rsp (It is relevant cause stack can change when interrupt is triggered) */
 	uint64_t original_rsp;
+	uint64_t stack_segment;
 } __attribute__((packed));
