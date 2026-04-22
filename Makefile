@@ -5,15 +5,19 @@ include config.mk
 
 .PHONY: clean run build debug_connect connect $(BIN_MBR) $(BIN_BOOTLOADER) $(BIN_KERNEL)
 
+ifeq ($(RUN_ONLY), 0)
+BEFORE_RUN := build
+endif
+
 ifeq ($(HEADLESS),0)
-run: build
+run: $(BEFORE_RUN)
 	qemu-system-x86_64 -drive format=raw,file=$(OS_IMG) -serial stdio
-debug: build
+debug: $(BEFORE_RUN)
 	qemu-system-x86_64 -monitor tcp:0.0.0.0:55555,server,nowait -drive format=raw,file=$(OS_IMG) -s -S -serial stdio
 else
-run: build
+run: $(BEFORE_RUN)
 	qemu-system-x86_64 -drive format=raw,file=$(OS_IMG) -nographic
-debug: build
+debug: $(BEFORE_RUN)
 	qemu-system-x86_64 -monitor tcp:0.0.0.0:55555,server,nowait -drive format=raw,file=$(OS_IMG) -s -S -nographic
 endif
 
