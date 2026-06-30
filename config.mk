@@ -5,4 +5,4 @@ BOOT_OPTION ?= limine
 HEADLESS ?= 0
 
 # 1 - only run the os in qemu, 0 - build and run:
-RUN_ONLY ?= 1
+RUN_ONLY ?= 0
