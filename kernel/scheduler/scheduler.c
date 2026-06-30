@@ -41,6 +41,7 @@ void scheduler_add_task(void (*task_func)(void)) {
 		.code_segment = GDT_KERNEL_CS,
 		.rflags = RFLAGS_INTERRUPTS_ENABLED,
 		.original_rsp = (uint64_t)(pmm_alloc_page_hhdm() + REGULAR_PAGE_SIZE),
+		.stack_segment = GDT_KERNEL_DS,
 	};
 
 	task_enqueue(task);
