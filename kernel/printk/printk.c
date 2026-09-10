@@ -3,6 +3,7 @@
 #include <include/integer_utils.h>
 #include <include/strings.h>
 
+#include "drivers/framebuffer_print.h"
 #include "kernel/include/printk.h"
 
 #define SPECIAL_SYMBOL_PREFIX '%'
@@ -14,11 +15,12 @@ enum special_symbols {
 	SYMBOL_HEX = 'x',
 };
 
-#define DEVICE_COUNT 2
+#define DEVICE_COUNT 3
 static struct char_device* g_ch_devices[DEVICE_COUNT];
-void init_printk() {
+void init_printk(volatile struct limine_framebuffer_response* framebuffer_response) {
 	g_ch_devices[0] = vga_text_init();
 	g_ch_devices[1] = serial_com1_init();
+	g_ch_devices[2] = init_framebuffer_print(framebuffer_response);
 	printk("Initialized printk\n");
 }
 

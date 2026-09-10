@@ -1,4 +1,5 @@
 #include <drivers/char_device.h>
+#include <drivers/framebuffer_print.h>
 #include <drivers/ps2_keyboard.h>
 #include <drivers/vga_text.h>
 #include <include/io.h>
@@ -35,6 +36,9 @@ __attribute__((
 	used, section(".limine_requests"))) static volatile struct limine_rsdp_request rsdp_request = {
 	.id = LIMINE_RSDP_REQUEST_ID, .revision = 0, .response = NULL};
 
+__attribute__((used, section(".limine_requests"))) static volatile struct limine_framebuffer_request
+	framebuffer_request = {.id = LIMINE_FRAMEBUFFER_REQUEST_ID, .revision = 0};
+
 __attribute__((
 	used, section(".limine_requests_end"))) static volatile uint64_t limine_requests_end_marker[] =
 	LIMINE_REQUESTS_END_MARKER;
@@ -70,8 +74,7 @@ void func4() {
 }
 
 int kmain() {
-	init_printk();
-
+	init_printk(framebuffer_request.response);
 	init_gdt();
 
 	init_cpu_exceptions();
@@ -91,14 +94,20 @@ int kmain() {
 	struct char_device* ps2_keyboard = ps2_keyboard_init();
 
 	init_scheduler();
-	scheduler_add_task(func1);
-	scheduler_add_task(func2);
-	scheduler_add_task(func3);
-	scheduler_add_task(func4);
-	scheduler_handover_execution();
+
+	// scheduler_add_task(func1);
+	// scheduler_add_task(func2);
+	// scheduler_add_task(func3);
+	// scheduler_add_task(func4);
+	// scheduler_handover_execution();
 
 	// set_cpu_exception_handler(CEI_DIVIDE_ERROR, exception_handler);
 	// set_cpu_exception_handler(CEI_PAGE_FAULT, exception_handler);
+
+	// uint32_t index = 0;
+	// for (index = 0; index < 100000; index++) {
+	// 	printk("%d\n", index);
+	// }
 
 	while (true) {
 		asm volatile("hlt");
