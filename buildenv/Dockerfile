@@ -59,7 +59,7 @@ WORKDIR /mnt
 RUN curl -O https://codeberg.org/Limine/Limine/releases/download/v10.8.5/limine-10.8.5.tar.gz
 RUN tar -xzf limine-10.8.5.tar.gz
 WORKDIR /mnt/limine-10.8.5
-RUN ./configure CC_FOR_TARGET=x86_64-elf-gcc LD_FOR_TARGET=x86_64-elf-ld OBJCOPY_FOR_TARGET=x86_64-elf-objcopy OBJDUMP_FOR_TARGET=x86_64-elf-objdump READELF_FOR_TARGET=x86_64-elf-readelf --enable-bios
+RUN ./configure CC_FOR_TARGET=x86_64-elf-gcc LD_FOR_TARGET=x86_64-elf-ld OBJCOPY_FOR_TARGET=x86_64-elf-objcopy OBJDUMP_FOR_TARGET=x86_64-elf-objdump READELF_FOR_TARGET=x86_64-elf-readelf --enable-bios --enable-uefi-x86-64
 RUN make 
 RUN make install
 
