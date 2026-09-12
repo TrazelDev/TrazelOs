@@ -73,6 +73,7 @@ void func4() {
 	}
 }
 
+extern void jump_usermode();
 int kmain() {
 	init_printk(framebuffer_request.response);
 	init_gdt();
@@ -108,6 +109,18 @@ int kmain() {
 	// for (index = 0; index < 100000; index++) {
 	// 	printk("%d\n", index);
 	// }
+
+	void* ptr = pmm_alloc_page();
+	vmm_map_page(vmm_get_curr_pagemap(), (void*)0x400000, ptr,
+				 MPF_WRITABLE_PAGE | MPF_USER_ACCESSIBLE);
+
+	uint8_t* user_code = (uint8_t*)0x400000;
+	// user_code[0] = 0xF4;  // cli
+	user_code[0] = 0xEB;  // jmp instruction
+	user_code[1] = 0xFE;  // relative offset to self
+	void (*func)() = (void (*)())0x400000;
+	// func();
+	jump_usermode();
 
 	while (true) {
 		asm volatile("hlt");

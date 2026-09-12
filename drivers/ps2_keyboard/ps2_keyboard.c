@@ -92,10 +92,10 @@ static void keyboard_interrupt_handler(struct interrupt_info* info) {
 	uint8_t scan_code = inb(IO_KEYBOARD_DATA_PORT);
 	ring_buffer_push(&s_ps2_keyboard_data.s_ps2keyboard_rb, scan_code);
 
-	// if (scan_code < sizeof(SCAN_CODE_LOOKUP_TABLE)) {
-	// 	scan_code = SCAN_CODE_LOOKUP_TABLE[scan_code];
-	// 	printk("%c", scan_code);
-	// }
+	if (scan_code < sizeof(SCAN_CODE_LOOKUP_TABLE)) {
+		scan_code = SCAN_CODE_LOOKUP_TABLE[scan_code];
+		printk("%c", scan_code);
+	}
 
 	apic_send_eoi();
 }
