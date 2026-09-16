@@ -28,7 +28,7 @@ uint64_t msr_get_register(uint32_t msr) {
 	return (((uint64_t)high << 32) | low);
 }
 
-void msr_set_register(uint64_t msr, uint64_t value) {
+void msr_set_register(uint32_t msr, uint64_t value) {
 	if (!g_msr_enabled) {
 		KERNEL_PANIC("MSR is not enabled");
 	}
