@@ -6,6 +6,7 @@ docker build buildenv -t os-build-env
 # running:
 xhost +local:root
 docker run -it --rm --name trazelos-dev \
+	--ipc=host                            \
 	-e DISPLAY=$DISPLAY                   \
 	-p 1234:1234                          \
 	-p 55555:55555                        \
