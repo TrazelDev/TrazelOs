@@ -49,7 +49,8 @@ RUN apt-get install -y qemu qemu-system
 RUN apt-get install -y mesa-utils mesa-utils-extra libgl1 libgl1-mesa-dri
 RUN apt-get install -y mtools dosfstools
 RUN apt-get install -y bear
-RUN apt-get install -y clangd
+RUN apt-get update
+RUN apt-get install -y clangd-15
 RUN apt-get install -y clang-tidy
 RUN apt-get install -y parted
 
