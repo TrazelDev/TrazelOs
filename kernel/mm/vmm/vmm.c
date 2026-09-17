@@ -58,6 +58,10 @@ int vmm_map_page(void* pagemap, void* vaddr, void* paddr, enum vmm_map_page_flag
 			curr_page_table->entries[curr_page_table_index] = allocate_page_table_page();
 		}
 
+		if (map_page_flags.flags.user_accessible) {
+			curr_page_table->entries[curr_page_table_index].attributes.user_access = 1;
+		}
+
 		curr_page_table = get_next_page_table(curr_page_table, curr_page_table_index);
 	}
 
