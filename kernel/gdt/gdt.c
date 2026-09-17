@@ -47,7 +47,7 @@ void init_gdt() {
 	printk("Initialized GDT\n");
 }
 
-uint8_t get_segment_index(enum gdt_segments segment) {
+uint16_t gdt_get_segment_index(enum gdt_segments segment) {
 	switch (segment) {
 		case GS_RING0_CODE_SEGMENT:
 			return GDT_RING0_CODE_SEGMENT;

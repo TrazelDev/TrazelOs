@@ -33,7 +33,7 @@ void create_interrupt_desc(struct idt_entry* entry, uint64_t isr_addr, enum inte
 void set_selector(union idt_selector* selector) {
 	selector->attr.table_indicator = GDT_INDICATOR;
 	selector->attr.privilege_level = SAME_PRIVILEGE_AS_DESCRIPTOR_TABLE;
-	selector->attr.index = get_segment_index(GS_RING0_CODE_SEGMENT);
+	selector->attr.index = gdt_get_segment_index(GS_RING0_CODE_SEGMENT);
 }
 
 // Extracting the offset:

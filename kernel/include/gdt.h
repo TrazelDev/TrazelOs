@@ -29,4 +29,4 @@ union gdt_segment_selector {
 } __attribute__((packed));
 
 void init_gdt();
-uint8_t get_segment_index(enum gdt_segments segment);
+uint16_t gdt_get_segment_index(enum gdt_segments segment);
