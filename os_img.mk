@@ -22,7 +22,7 @@ ifeq ($(BOOT_OPTION),limine)
 $(OS_IMG): $(BIN_KERNEL)
 	dd if=/dev/zero bs=1M count=64 of=$(OS_IMG) status=none
 	parted -s $(OS_IMG) mklabel msdos
-	parted -s $(OS_IMG) mkpart primary fat32 1MiB 100%
+	parted -s $(OS_IMG) mkpart primary fat16 1MiB 100% # Its written fat16 but it is the same as fat12
 	parted -s $(OS_IMG) set 1 boot on
 
 	dd if=/dev/zero of=$(BIN_BOOT_PARTITION_IMG) bs=1M count=62 status=none
