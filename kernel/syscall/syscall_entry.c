@@ -1,4 +1,5 @@
 #include <kernel/include/gdt.h>
+#include <kernel/include/intrrupts.h>
 #include <kernel/include/msr.h>
 #include <kernel/include/panic.h>
 #include <kernel/include/printk.h>
@@ -10,19 +11,30 @@ extern void asm_jump_usermode(uint64_t usermode_entrypoint);
 
 static void enable_system_call_extension();
 static void setup_star_registers(uint64_t kernel_entry_addr);
+static void setup_rflags_registers();
+static void setup_gs_kernel_gs_base();
 
-// static void enable_system_call_extension();
+#define KERNEL_STACK_SIZE 4096
+static uint8_t g_kernel_stack[KERNEL_STACK_SIZE];
+// This has 2 elements cause the kernel stack is at the first and the second element is used in asm
+uint8_t* g_kernel_ptr[2];
 
 void init_usermode() {
 	enable_system_call_extension();
 	setup_star_registers((uint64_t)asm_kernel_syscall_entrypoint);
+	setup_rflags_registers();
+	setup_gs_kernel_gs_base();
 
-	// TODO: set it up so you use the FSMASK msr register to clear the interrupt flag and maybe some
-	// other flags
-
-	printk("Initializing user mode jump\n");
+	printk("Initializing ring3\n");
 }
 void usermode_jump_ring3(void (*init)()) { asm_jump_usermode((uint64_t)init); }
+
+/** Function reuses the interrupt_info for the sake of universal API though some fields useless.
+ * this function is the entry point for syscalls into the kernel.
+ */
+void syscall_kernel_handler(struct interrupt_info* syscall_info) {
+	printk("YO I have just been to usermode I am so fucking cool, NO fucking way\n");
+}
 
 // module private functions:
 // -------------------------------------------------------------------------------------------------
@@ -59,4 +71,30 @@ static void setup_star_registers(uint64_t kernel_entry_addr) {
 
 	msr_set_register(MR_STAR_MSR, star.raw);
 	msr_set_register(MR_LSTAR_MSR, kernel_entry_addr);
+}
+
+static void setup_rflags_registers() {
+	// as a default setting up all the fields as zero
+	union rflags_register fsmask = {.raw = 0};
+
+	// All the turned on flags here mean they are cleared the second syscall occurs:
+	fsmask.flags.interrupt_enable_flag = 1;	 // clearing the interrupts when syscall occurs
+	fsmask.flags.direction_flag = 1;		 // related to the direction of string operations
+
+	msr_set_register(MR_FSMASK_MSR, fsmask.raw);
+}
+
+static void setup_gs_kernel_gs_base() {
+	// uint64_t kernel_gs = msr_get_register(MR_KERNEL_GS_BAS_MSR);
+	// uint64_t regular_gs = msr_get_register(MR_GS_BAS_MSR);
+
+	// printk("regular gs: %d, kernel gs: %d\n", regular_gs, kernel_gs);
+	// msr_set_register(MR_KERNEL_GS_BAS_MSR, 0x1000);
+
+	// kernel_gs = msr_get_register(MR_KERNEL_GS_BAS_MSR);
+	// regular_gs = msr_get_register(MR_GS_BAS_MSR);
+	// printk("regular gs: %d, kernel gs: %d\n", regular_gs, kernel_gs);
+
+	g_kernel_ptr[0] = g_kernel_stack + KERNEL_STACK_SIZE;
+	msr_set_register(MR_KERNEL_GS_BAS_MSR, (uint64_t)&g_kernel_ptr);
 }

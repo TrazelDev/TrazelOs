@@ -48,6 +48,34 @@ enum cpu_exceptions_indexes {
 	CEI_CONTROL_PROTECTION_EXCEPTION = 0x15,
 };
 
+union rflags_register {
+	uint64_t raw;
+	struct {
+		uint64_t carry_flag : 1;
+		uint64_t reserved1 : 1;
+		uint64_t parity_flag : 1;
+		uint64_t reserved2 : 1;
+		uint64_t auxiliary_carry_flag : 1;
+		uint64_t reserved3 : 1;
+		uint64_t zero_flag : 1;
+		uint64_t sign_flag : 1;
+		uint64_t trap_flag : 1;
+		uint64_t interrupt_enable_flag : 1;
+		uint64_t direction_flag : 1;
+		uint64_t overflow_flag : 1;
+		uint64_t io_privilege_level : 2;
+		uint64_t nested_task : 1;
+		uint64_t reserved4 : 1;
+		uint64_t resume_flag : 1;
+		uint64_t virtual_8086_mode : 1;
+		uint64_t alignment_check_or_access_control : 1;
+		uint64_t virtual_interrupt_flag : 1;
+		uint64_t virtual_interrupt_pending : 1;
+		uint64_t id_flag : 1;
+		uint64_t reserved5 : 42;
+	} flags;
+} __attribute__((packed));
+
 struct interrupt_info {
 	uint64_t rax;
 	uint64_t rbx;
@@ -77,7 +105,7 @@ struct interrupt_info {
 	uint64_t rip;
 	/* the code segment padded to 8 bytes */
 	uint64_t code_segment;
-	uint64_t rflags;
+	union rflags_register rflags;
 	/* Original value of rsp (It is relevant cause stack can change when interrupt is triggered) */
 	uint64_t original_rsp;
 	uint64_t stack_segment;

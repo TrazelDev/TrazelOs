@@ -11,6 +11,10 @@ enum msr_registers {
 	MR_EFER_MSR = 0xC0000080,
 	MR_STAR_MSR = 0xC0000081,
 	MR_LSTAR_MSR = 0xC0000082,
+	MR_FSMASK_MSR = 0xC0000084,
+
+	MR_GS_BAS_MSR = 0xC0000101,
+	MR_KERNEL_GS_BAS_MSR = 0xC0000102,
 };
 
 /** docmention at the bottom of this page: https://wiki.osdev.org/Model_Specific_Registers */
