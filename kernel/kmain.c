@@ -17,6 +17,7 @@
 #include <kernel/include/printk.h>
 #include <kernel/include/scheduler.h>
 #include <kernel/include/syscall.h>
+#include <kernel/include/vfs.h>
 #include <kernel/include/vmm.h>
 
 __attribute__((
@@ -105,6 +106,8 @@ int kmain() {
 	// setting up cpu exectption
 	// set_cpu_exception_handler(CEI_DIVIDE_ERROR, exception_handler);
 	// set_cpu_exception_handler(CEI_PAGE_FAULT, exception_handler);
+
+	vfs_init();
 
 	// jumping to user mode:
 	void* ptr = pmm_alloc_page();
