@@ -3,7 +3,7 @@ include commons.mk
 include utils.mk
 include config.mk
 
-.PHONY: $(BIN_MBR) $(BIN_BOOTLOADER) $(BIN_KERNEL)
+.PHONY: $(BIN_MBR) $(BIN_BOOTLOADER) $(BIN_KERNEL) $(BIN_USER_INIT)
 
 # calculated at run time:
 BIN_BOOTLOADER_SECTOR_SIZE = $(shell stat --format='%s' $(BIN_BOOTLOADER) | awk '{print int(($$1+511)/512)}')
@@ -12,6 +12,9 @@ BIN_BOOT_PARTITION_SECTOR_SIZE = $(shell stat --format='%s' $(BIN_BOOT_PARTITION
 $(BIN_KERNEL):
 	$(MAKE) $(BIN_KERNEL) -C $(DIR_KERNEL)
 
+$(BIN_USER_INIT):
+	$(MAKE) $(BIN_USER_INIT) -C $(DIR_USER)
+
 $(BIN_MBR):
 	$(MAKE) $(BIN_MBR) -C $(DIR_MBR)
 
@@ -19,7 +22,7 @@ $(BIN_BOOTLOADER):
 	$(MAKE) $(BIN_BOOTLOADER) -C $(DIR_BOOTLOADER)
 
 ifeq ($(BOOT_OPTION),limine)
-$(OS_IMG): $(BIN_KERNEL)
+$(OS_IMG): $(BIN_KERNEL) $(BIN_USER_INIT)
 	dd if=/dev/zero bs=1M count=64 of=$(OS_IMG) status=none
 	parted -s $(OS_IMG) mklabel msdos
 	parted -s $(OS_IMG) mkpart primary fat16 1MiB 100% # Its written fat16 but it is the same as fat12
@@ -31,6 +34,7 @@ $(OS_IMG): $(BIN_KERNEL)
 	mmd -i $(BIN_BOOT_PARTITION_IMG) ::boot
 	mmd -i $(BIN_BOOT_PARTITION_IMG) ::boot/limine
 	mcopy -i $(BIN_BOOT_PARTITION_IMG) $(BIN_KERNEL) ::kernel.bin
+	mcopy -i $(BIN_BOOT_PARTITION_IMG) $(BIN_USER_INIT) ::init
 	mcopy -i $(BIN_BOOT_PARTITION_IMG) boot/limine/limine.conf ::limine.conf
 	mcopy -i $(BIN_BOOT_PARTITION_IMG) /mnt/limine-10.8.5/common-bios/limine-bios.sys ::boot/limine/limine-bios.sys
 
