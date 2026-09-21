@@ -38,6 +38,11 @@ void* vmm_get_curr_pagemap() {
 	return (void*)(pml4_phys + g_hhdm_offset);
 }
 
+void vmm_reload_cr3(void* new_pagemap_hhdm) {
+	uint64_t cr3_phys = (uint64_t)new_pagemap_hhdm - g_hhdm_offset;
+	asm volatile("movq %0, %%cr3" : : "r"(cr3_phys) : "memory");
+}
+
 int vmm_map_page(void* pagemap, void* vaddr, void* paddr, enum vmm_map_page_flags flags) {
 	union map_page_flags map_page_flags = {.raw = flags};
 
@@ -120,6 +125,18 @@ int vmm_unmap_page(void* pagemap, void* vaddr, uint64_t flags) {
 	page_table_final_level->entries[virtual_addr.addr.pt_index].raw = 0;
 	flush_tlb_addr((uint64_t)vaddr);
 	return 0;
+}
+
+void* vmm_create_new_pagemap() {
+	void* curr_pagemap = vmm_get_curr_pagemap();
+	void* new_page_map = pmm_alloc_page_hhdm();
+	KERNEL_ASSERT(new_page_map != NULL, "Kernel ran out of memory");
+
+	memcpy(((uint8_t*)new_page_map) + (REGULAR_PAGE_SIZE / 2),
+		   ((uint8_t*)curr_pagemap) + (REGULAR_PAGE_SIZE / 2), REGULAR_PAGE_SIZE / 2);
+	memset((new_page_map), 0, (REGULAR_PAGE_SIZE / 2));
+
+	return new_page_map;
 }
 
 // module private functions:
