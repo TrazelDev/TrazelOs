@@ -7,7 +7,6 @@
 #include "kernel/include/syscall.h"
 
 extern void asm_kernel_syscall_entrypoint();
-extern void asm_jump_usermode(uint64_t usermode_entrypoint);
 
 static void enable_system_call_extension();
 static void setup_star_registers(uint64_t kernel_entry_addr);
@@ -27,13 +26,12 @@ void init_usermode() {
 
 	printk("Initializing ring3\n");
 }
-void usermode_jump_ring3(void (*init)()) { asm_jump_usermode((uint64_t)init); }
 
 /** Function reuses the interrupt_info for the sake of universal API though some fields useless.
  * this function is the entry point for syscalls into the kernel.
  */
 void syscall_kernel_handler(struct interrupt_info* syscall_info) {
-	printk("YO I have just been to usermode I am so fucking cool, NO fucking way\n");
+	printk((char*)syscall_info->rax);
 }
 
 // module private functions:

@@ -15,6 +15,7 @@
 #include <kernel/include/panic.h>
 #include <kernel/include/pmm.h>
 #include <kernel/include/printk.h>
+#include <kernel/include/process_manager.h>
 #include <kernel/include/scheduler.h>
 #include <kernel/include/syscall.h>
 #include <kernel/include/vfs.h>
@@ -96,7 +97,7 @@ int kmain() {
 	struct char_device* ps2_keyboard = ps2_keyboard_init();
 
 	// scheduling:
-	init_scheduler();
+	// init_scheduler();
 	// scheduler_add_task(func1);
 	// scheduler_add_task(func2);
 	// scheduler_add_task(func3);
@@ -108,23 +109,8 @@ int kmain() {
 	// set_cpu_exception_handler(CEI_PAGE_FAULT, exception_handler);
 
 	vfs_init();
-
-	// jumping to user mode:
-	void* ptr = pmm_alloc_page();
-	vmm_map_page(vmm_get_curr_pagemap(), (void*)0x400000, ptr,
-				 MPF_WRITABLE_PAGE | MPF_USER_ACCESSIBLE);
-	uint8_t* user_code = (uint8_t*)0x400000;
-	// user_code[0] = 0xF4;  // hlt
-	// user_code[0] = 0xF4;
-	// syscall:
-	user_code[0] = 0x0F;
-	user_code[1] = 0x05;
-	user_code[2] = 0xEB;  // jmp instruction
-	user_code[3] = 0xFE;  // relative offset to self
-	void (*init)() = (void (*)())0x400000;
-
 	init_usermode();
-	usermode_jump_ring3(init);
+	init_process_manager();
 
 	while (true) {
 		asm volatile("hlt");
