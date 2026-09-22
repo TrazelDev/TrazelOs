@@ -33,8 +33,9 @@ $(OS_IMG): $(BIN_KERNEL) $(BIN_USER_INIT)
 
 	mmd -i $(BIN_BOOT_PARTITION_IMG) ::boot
 	mmd -i $(BIN_BOOT_PARTITION_IMG) ::boot/limine
+	mmd -i $(BIN_BOOT_PARTITION_IMG) ::sbin
 	mcopy -i $(BIN_BOOT_PARTITION_IMG) $(BIN_KERNEL) ::kernel.bin
-	mcopy -i $(BIN_BOOT_PARTITION_IMG) $(BIN_USER_INIT) ::init
+	mcopy -i $(BIN_BOOT_PARTITION_IMG) $(BIN_USER_INIT) ::/sbin/init
 	mcopy -i $(BIN_BOOT_PARTITION_IMG) boot/limine/limine.conf ::limine.conf
 	mcopy -i $(BIN_BOOT_PARTITION_IMG) /mnt/limine-10.8.5/common-bios/limine-bios.sys ::boot/limine/limine-bios.sys
 
