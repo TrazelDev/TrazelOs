@@ -1,11 +1,13 @@
 #include <include/io.h>
 #include <include/ring_buffer.h>
+#include <include/types.h>
 #include <kernel/include/apic.h>
 #include <kernel/include/intrrupts.h>
 #include <kernel/include/panic.h>
 #include <kernel/include/printk.h>
 
 #include "drivers/ps2_keyboard.h"
+#include "types.h"
 
 const char SCAN_CODE_LOOKUP_TABLE[] = {
 	0,	 0,	  '1', '2', '3', '4', '5', '6', '7', '8', '9',	'0', '-', '=',	'\b',
@@ -62,22 +64,17 @@ static inline struct ps2_keyboard_data* get_device_private_data(struct char_devi
 }
 
 static ssize_t ps2_read(struct char_device* device, void* buffer, size_t size) {
-	// KERNEL_PANIC(
-	// 	"PS/2 Keyboard driver read operation is not fully implemented yet. should implement "
-	// 	"convention of scan code");
 	struct ps2_keyboard_data* data = get_device_private_data(device);
-	uint8_t ps2_keyboard_id = sizeof(SCAN_CODE_LOOKUP_TABLE);
+	char input_char;
 
-	while (!ring_buffer_is_empty(&data->s_ps2keyboard_rb) &&
-		   ps2_keyboard_id >= sizeof(SCAN_CODE_LOOKUP_TABLE)) {
-		ring_buffer_pop(&data->s_ps2keyboard_rb, &ps2_keyboard_id);
+	for (uint64_t i = 0; i < size; i++) {
+		if (!ring_buffer_pop(&data->s_ps2keyboard_rb, (uint8_t*)&input_char)) {
+			return (ssize_t)i;
+		}
+		((char*)buffer)[i] = input_char;
 	}
 
-	if (ps2_keyboard_id >= sizeof(SCAN_CODE_LOOKUP_TABLE)) {
-		return -1;
-	}
-
-	return SCAN_CODE_LOOKUP_TABLE[ps2_keyboard_id];
+	return (ssize_t)size;
 }
 
 static ssize_t ps2_write(struct char_device* device, void* buffer, size_t size) {
@@ -90,12 +87,13 @@ static ssize_t ps2_ioctl(struct char_device* device, uint32_t command, void* arg
 
 static void keyboard_interrupt_handler(struct interrupt_info* info) {
 	uint8_t scan_code = inb(IO_KEYBOARD_DATA_PORT);
-	ring_buffer_push(&s_ps2_keyboard_data.s_ps2keyboard_rb, scan_code);
 
-	// if (scan_code < sizeof(SCAN_CODE_LOOKUP_TABLE)) {
-	// 	scan_code = SCAN_CODE_LOOKUP_TABLE[scan_code];
-	// 	printk("%c", scan_code);
-	// }
+	if (scan_code >= sizeof(SCAN_CODE_LOOKUP_TABLE)) {
+		apic_send_eoi();
+		return;
+	}
 
+	char input_char = SCAN_CODE_LOOKUP_TABLE[scan_code];
+	ring_buffer_push(&s_ps2_keyboard_data.s_ps2keyboard_rb, input_char);
 	apic_send_eoi();
 }
