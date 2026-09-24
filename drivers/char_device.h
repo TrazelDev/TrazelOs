@@ -26,3 +26,7 @@ struct char_device {
  */
 struct char_device* char_dev_create_multiwrite_dev(const char* name, struct char_device** devices,
 												   size_t num_devices);
+
+/** Takes a name, read device and write device, and creates new device cabple of reading writing */
+struct char_device* char_dev_create_duplex(const char* name, struct char_device* read_dev,
+										   struct char_device* write_dev);
