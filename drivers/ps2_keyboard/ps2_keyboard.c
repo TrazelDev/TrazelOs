@@ -44,6 +44,7 @@ struct char_device* ps2_keyboard_init() {
 					 RING_BUFFER_SIZE);
 	s_keyboard_device = (struct char_device){
 		.name = "ps2_keyboard",
+		.capabilities = CDC_READ_CAPABILITY,
 		.private_data = &s_ps2_keyboard_data,
 		.read = ps2_read,
 		.write = ps2_write,

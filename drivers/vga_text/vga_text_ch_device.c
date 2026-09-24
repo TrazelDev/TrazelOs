@@ -2,6 +2,7 @@
 #include <include/strings.h>
 #include <include/types.h>
 
+#include "drivers/char_device.h"
 #include "drivers/vga_text.h"
 #include "io.h"
 
@@ -58,6 +59,7 @@ struct char_device* vga_text_init() {
 	g_vga_data.final_vga_memory_addr = VGA_LAST_MEMORY_ADDRESS;
 	g_vga_data.max_cursor_position = (VGA_WIDTH * VGA_HEIGHT) - 1;
 
+	g_char_device.capabilities = CDC_WRITE_CAPABILITY;
 	g_char_device.private_data = (void*)&g_vga_data;
 	memcpy(g_char_device.name, g_device_name, strlen(g_device_name) + 1);
 	g_char_device.write = vga_text_write;

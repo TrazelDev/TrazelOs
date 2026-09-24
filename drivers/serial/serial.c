@@ -26,6 +26,7 @@ struct char_device* serial_com1_init() {
 	g_char_device.write = com1_write;
 	g_char_device.read = com1_read;
 	g_char_device.ioctl = com1_ioctl;
+	g_char_device.capabilities = CDC_WRITE_CAPABILITY;
 
 	if (init_com1() == -1) {
 		return NULL;

@@ -49,6 +49,7 @@ struct char_device* init_framebuffer_print(
 	g_device_initialized = true;
 	g_framebuffer_device = (struct char_device){
 		.name = "framebuffer",
+		.capabilities = CDC_WRITE_CAPABILITY,
 		.private_data = NULL,
 		.read = framebuffer_read,
 		.write = framebuffer_write,
