@@ -1,6 +1,6 @@
 #include <strings.h>
 
-uint64_t strlen(char* str) {
+uint64_t strlen(const char* str) {
 	int count = 0;
 	while (*str) {
 		count++;
