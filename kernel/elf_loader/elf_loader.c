@@ -20,12 +20,12 @@ uint64_t load_elf_to_memory(const char* file_path, void* pagemap_ptr) {
 	struct vfs_file* elf_file = vfs_open(file_path);
 	Elf64_Ehdr* elf_header = kmalloc(sizeof(Elf64_Ehdr));
 
-	elf_file->file_position = 0;
-	elf_file->read(elf_file, (uint8_t*)elf_header, sizeof(Elf64_Ehdr));
+	vfs_read(elf_file, (uint8_t*)elf_header, sizeof(Elf64_Ehdr));
 	load_binary_segments(elf_header, elf_file, pagemap_ptr);
 
 	uint64_t elf_start = elf_header->e_entry;
 	kfree(elf_header);
+	vfs_close(elf_file);
 	return elf_start;
 }
 
@@ -36,8 +36,8 @@ static void load_binary_segments(const Elf64_Ehdr* elf_header, struct vfs_file* 
 								 void* pagemap_ptr) {
 	Elf64_Phdr* program_headers = kmalloc(sizeof(Elf64_Phdr) * elf_header->e_phnum);
 
-	elf_file->file_position = elf_header->e_phoff;
-	elf_file->read(elf_file, (uint8_t*)program_headers, sizeof(Elf64_Phdr) * elf_header->e_phnum);
+	vfs_seek(elf_file, (int64_t)elf_header->e_phoff, SKW_VFS_SEEK_SET);
+	vfs_read(elf_file, (uint8_t*)program_headers, sizeof(Elf64_Phdr) * elf_header->e_phnum);
 
 	for (uint32_t i = 0; i < elf_header->e_phnum; i++) {
 		Elf64_Phdr* curr_ph = &program_headers[i];
@@ -62,8 +62,8 @@ static void load_segment(Elf64_Phdr* program_header, struct vfs_file* elf_file, 
 	// Loading the segment to memory:
 	uint8_t* segment_start_hhdm_location =
 		vmm_phys_to_virt_hhdm(phys_pages) + (program_header->p_vaddr % REGULAR_PAGE_SIZE);
-	elf_file->file_position = program_header->p_offset;
-	elf_file->read(elf_file, segment_start_hhdm_location, program_header->p_filesz);
+	vfs_seek(elf_file, (int64_t)program_header->p_offset, SKW_VFS_SEEK_SET);
+	vfs_read(elf_file, segment_start_hhdm_location, program_header->p_filesz);
 
 	if (program_header->p_memsz > program_header->p_filesz) {
 		memset(segment_start_hhdm_location + program_header->p_filesz, 0,

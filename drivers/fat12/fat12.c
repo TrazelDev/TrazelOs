@@ -1,6 +1,8 @@
 #include <drivers/ata_pio.h>
 #include <drivers/block_device.h>
+#include <include/ctype.h>
 #include <include/mem_utils.h>
+#include <include/strings.h>
 #include <include/types.h>
 #include <kernel/include/heap.h>
 #include <kernel/include/panic.h>
@@ -28,15 +30,17 @@ void init_fat12(struct block_device* blk_dev) {
 	printk("Initialized fat12 driver Successfully\n");
 }
 
-int vfs_fat12_read(struct vfs_file* vfs_node, uint8_t* buffer, uint32_t size) {
+int64_t vfs_fat12_read(struct vfs_file* vfs_node, uint8_t* buffer, uint64_t size) {
 	memcpy(buffer, (uint8_t*)vfs_node->fs_private_data + vfs_node->file_position, size);
-	return size;
+	return (int64_t)size;
 }
 
-int vfs_fat12_close(struct vfs_file* vfs_node) {
+int64_t vfs_fat12_close(struct vfs_file* vfs_node) {
 	kfree(vfs_node->fs_private_data);
-	kfree(vfs_node);
 	return 0;
+}
+int64_t vfs_fat12_write(struct vfs_file* vfs_node, const uint8_t* buffer, uint64_t size) {
+	KERNEL_PANIC("FAT12 write write is not supported yet");
 }
 
 struct vfs_file* fat12_open(const char* filepath) {
@@ -78,9 +82,9 @@ struct vfs_file* fat12_open(const char* filepath) {
 
 	file_vfs->file_size = get_file_content((uint8_t**)&file_vfs->fs_private_data,
 										   file_directory_entry, &g_fat12_info);
-	file_vfs->file_position = 0;
 	file_vfs->read = vfs_fat12_read;
-	file_vfs->close = NULL;
+	file_vfs->write = vfs_fat12_write;
+	file_vfs->close = vfs_fat12_close;
 
 	kfree(dir_entries);
 	return file_vfs;
