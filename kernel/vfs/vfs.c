@@ -1,6 +1,7 @@
 #include <drivers/ata_pio.h>
 #include <drivers/block_device.h>
 #include <include/mem_utils.h>
+#include <include/strings.h>
 #include <kernel/include/heap.h>
 #include <kernel/include/panic.h>
 #include <kernel/include/printk.h>

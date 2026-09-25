@@ -7,6 +7,7 @@
 #include <include/mem_utils.h>
 #include <include/strings.h>
 #include <kernel/include/heap.h>
+#include <kernel/include/printk.h>
 #include <kernel/include/vfs.h>
 
 #include "devfs.h"
