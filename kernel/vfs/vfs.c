@@ -1,12 +1,13 @@
 #include <drivers/ata_pio.h>
 #include <drivers/block_device.h>
-#include <drivers/fat12.h>
 #include <include/mem_utils.h>
 #include <kernel/include/heap.h>
 #include <kernel/include/panic.h>
 #include <kernel/include/printk.h>
 
+#include "drivers/fat12.h"
 #include "kernel/include/vfs.h"
+#include "kernel/vfs/devfs.h"
 
 #define FIRST_PARTITION_MBR_OFFSET 2048
 void vfs_init() {
@@ -15,14 +16,25 @@ void vfs_init() {
 	create_partition_wrapper(prt_blk_dev, ata_pio_init(), FIRST_PARTITION_MBR_OFFSET, "/dev/sda1",
 							 -1);
 	init_fat12(prt_blk_dev);
+	init_devfs();
+
 	printk("initialized VFS successfully.\n");
 }
 
-struct vfs_file* vfs_open(const char* filename) {
-	struct vfs_file* file_vfs = fat12_open(filename);
+struct vfs_file* vfs_open(const char* filepath) {
+	struct vfs_file* file_vfs = NULL;
+	if (!strncmp(filepath, "/dev/", 5)) {
+		file_vfs = devfs_open(filepath + 5);
+	} else {
+		file_vfs = fat12_open(filepath);
+	}
+
+	if (!file_vfs) {
+		return NULL;
+	}
+
 	file_vfs->file_position = 0;
 	file_vfs->file_ref_count = 1;
-
 	return file_vfs;
 }
 
@@ -48,6 +60,23 @@ int64_t vfs_read(struct vfs_file* vfs_node, uint8_t* buffer, uint64_t size) {
 	return bytes_read;
 }
 
+int64_t vfs_write(struct vfs_file* vfs_node, uint8_t* buffer, uint64_t size) {
+	if (!vfs_node || !vfs_node->write) {
+		return -1;
+	}
+
+	int64_t bytes_written = vfs_node->write(vfs_node, buffer, size);
+
+	if (bytes_written > 0) {
+		vfs_node->file_position += bytes_written;
+	}
+	if (vfs_node->file_position > vfs_node->file_size) {
+		vfs_node->file_size = vfs_node->file_position;
+	}
+
+	return bytes_written;
+}
+
 int64_t vfs_close(struct vfs_file* vfs_node) {
 	if (!vfs_node) {
 		return -1;
@@ -58,7 +87,9 @@ int64_t vfs_close(struct vfs_file* vfs_node) {
 	}
 
 	if (vfs_node->file_ref_count == 0) {
-		vfs_node->close(vfs_node);
+		if (vfs_node->close) {
+			vfs_node->close(vfs_node);
+		}
 		kfree(vfs_node);
 	}
 

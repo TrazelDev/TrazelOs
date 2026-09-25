@@ -22,7 +22,8 @@ enum vfs_seek_whence {
 };
 
 void vfs_init();
-struct vfs_file* vfs_open(const char* filename);
+struct vfs_file* vfs_open(const char* filepath);
 int64_t vfs_read(struct vfs_file* vfs_node, uint8_t* buffer, uint64_t size);
+int64_t vfs_write(struct vfs_file* vfs_node, uint8_t* buffer, uint64_t size);
 int64_t vfs_close(struct vfs_file* vfs_node);
 int64_t vfs_seek(struct vfs_file* vfs_node, int64_t offset, enum vfs_seek_whence whence);
