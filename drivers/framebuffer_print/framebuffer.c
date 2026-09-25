@@ -58,6 +58,11 @@ struct char_device* init_framebuffer_print(
 	return &g_framebuffer_device;
 }
 
+struct char_device* get_framebuffer_print_driver() {
+	KERNEL_ASSERT(g_device_initialized, "Framebuffer print driver not initialized");
+	return &g_framebuffer_device;
+}
+
 static ssize_t framebuffer_read(struct char_device* device, void* buffer, size_t size) {
 	return -1;
 }
