@@ -69,8 +69,10 @@ static ssize_t ps2_read(struct char_device* device, void* buffer, size_t size) {
 	char input_char;
 
 	for (uint64_t i = 0; i < size; i++) {
-		if (!ring_buffer_pop(&data->s_ps2keyboard_rb, (uint8_t*)&input_char)) {
-			return (ssize_t)i;
+		while (!ring_buffer_pop(&data->s_ps2keyboard_rb, (uint8_t*)&input_char)) {
+			asm volatile("sti");
+			asm volatile("hlt");
+			asm volatile("cli");
 		}
 		((char*)buffer)[i] = input_char;
 	}
