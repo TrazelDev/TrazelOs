@@ -1,12 +1,19 @@
+#include <include/types.h>
 #include <kernel/include/gdt.h>
 #include <kernel/include/intrrupts.h>
 #include <kernel/include/msr.h>
 #include <kernel/include/panic.h>
 #include <kernel/include/printk.h>
 
+#include "kernel/include/process_manager.h"
 #include "kernel/include/syscall.h"
+#include "kernel/include/vfs.h"
 
 extern void asm_kernel_syscall_entrypoint();
+
+// syscall functions:
+static void syscall_write_handler(struct interrupt_info* process_regs);
+static void syscall_read_handler(struct interrupt_info* process_regs);
 
 static void enable_system_call_extension();
 static void setup_star_registers(uint64_t kernel_entry_addr);
@@ -31,11 +38,65 @@ void init_usermode() {
  * this function is the entry point for syscalls into the kernel.
  */
 void syscall_kernel_handler(struct interrupt_info* syscall_info) {
-	printk((char*)syscall_info->rax);
+	switch (syscall_info->rax) {
+		case 0:
+			syscall_read_handler(syscall_info);
+			break;
+		case 1:
+			syscall_write_handler(syscall_info);
+			break;
+		default: {
+			printk("Trying to to execute unknown syscall number %d", syscall_info->rax);
+			// TODO: refactor kernel panic and kernel assert to accept arguments
+			KERNEL_PANIC("Syscall: unknown syscall number:\n");
+		}
+	}
 }
 
 // module private functions:
 // -------------------------------------------------------------------------------------------------
+
+static void syscall_write_handler(struct interrupt_info* process_regs) {
+	int fd = (int)process_regs->rdi;
+	uint8_t* output_buf = (uint8_t*)process_regs->rsi;
+	size_t buf_len = process_regs->rdx;
+
+	struct process_control_block* pcb = pm_get_curr_pcb();
+	if (fd < 0 || fd >= MAX_PROCESS_FDS) {
+		process_regs->rax = -1;
+		return;
+	}
+
+	struct vfs_file* file = pcb->fds[fd];
+	if (file == NULL) {
+		process_regs->rax = -1;
+		return;
+	}
+
+	int64_t bytes_wrote = vfs_write(file, output_buf, buf_len);
+	process_regs->rax = bytes_wrote;
+}
+
+static void syscall_read_handler(struct interrupt_info* process_regs) {
+	int fd = (int)process_regs->rdi;
+	uint8_t* buf = (uint8_t*)process_regs->rsi;
+	size_t buf_len = process_regs->rdx;
+
+	struct process_control_block* pcb = pm_get_curr_pcb();
+	if (fd < 0 || fd >= MAX_PROCESS_FDS) {
+		process_regs->rax = -1;
+		return;
+	}
+
+	struct vfs_file* file = pcb->fds[fd];
+	if (file == NULL) {
+		process_regs->rax = -1;
+		return;
+	}
+
+	int64_t bytes_read = vfs_read(file, buf, buf_len);
+	process_regs->rax = bytes_read;
+}
 
 static void enable_system_call_extension() {
 	union EFER_msr_register efer;
