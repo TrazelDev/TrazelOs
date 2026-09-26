@@ -10,6 +10,9 @@ define run
 	qemu-reset
 end
 
+# loading init process file debug info:
+add-symbol-file bin/user/init
+
 # Connecting to the os:
 set architecture i386:x86-64
 set disassembly-flavor intel
