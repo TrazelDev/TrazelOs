@@ -56,7 +56,6 @@ struct char_device* ps2_keyboard_init() {
 	apic_set_legacy_irq_desc_num(LIRQ_KEYBOARD, keyboard_desc);
 	set_hardware_interrupt_handler(keyboard_desc, keyboard_interrupt_handler);
 
-	printk("scan code lookup table size: %d\n", sizeof(SCAN_CODE_LOOKUP_TABLE));
 	return &s_keyboard_device;
 }
 
