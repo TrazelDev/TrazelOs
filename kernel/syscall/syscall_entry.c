@@ -14,6 +14,7 @@ extern void asm_kernel_syscall_entrypoint();
 // syscall functions:
 static void syscall_write_handler(struct interrupt_info* process_regs);
 static void syscall_read_handler(struct interrupt_info* process_regs);
+static void syscall_open_handler(struct interrupt_info* process_regs);
 
 static void enable_system_call_extension();
 static void setup_star_registers(uint64_t kernel_entry_addr);
@@ -44,6 +45,9 @@ void syscall_kernel_handler(struct interrupt_info* syscall_info) {
 			break;
 		case 1:
 			syscall_write_handler(syscall_info);
+			break;
+		case 2:
+			syscall_open_handler(syscall_info);
 			break;
 		default: {
 			printk("Trying to to execute unknown syscall number %d", syscall_info->rax);
@@ -96,6 +100,27 @@ static void syscall_read_handler(struct interrupt_info* process_regs) {
 
 	int64_t bytes_read = vfs_read(file, buf, buf_len);
 	process_regs->rax = bytes_read;
+}
+
+static void syscall_open_handler(struct interrupt_info* process_regs) {
+	struct process_control_block* pcb = pm_get_curr_pcb();
+	struct vfs_file* file = vfs_open((char*)process_regs->rdi);
+	if (file == NULL) {
+		process_regs->rax = -1;
+		return;
+	}
+
+	for (uint64_t i = 0; i < MAX_PROCESS_FDS; i++) {
+		if (pcb->fds[i] != NULL) {
+			continue;
+		}
+
+		pcb->fds[i] = file;
+		process_regs->rax = i;
+		return;
+	}
+
+	process_regs->rax = -1;
 }
 
 static void enable_system_call_extension() {
