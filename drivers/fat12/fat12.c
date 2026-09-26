@@ -40,7 +40,7 @@ int64_t vfs_fat12_close(struct vfs_file* vfs_node) {
 	return 0;
 }
 int64_t vfs_fat12_write(struct vfs_file* vfs_node, const uint8_t* buffer, uint64_t size) {
-	KERNEL_PANIC("FAT12 write write is not supported yet");
+	KERNEL_PANIC("FAT12 write is not supported yet");
 }
 
 struct vfs_file* fat12_open(const char* filepath) {
