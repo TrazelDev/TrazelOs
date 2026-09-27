@@ -279,6 +279,7 @@ uint32_t get_file_content(uint8_t** file_content,
 		curr_cluster_id = get_next_cluster_id(curr_cluster_id, fat);
 	}
 
+	kfree(fat);
 	if (is_directory_entry_directory(file_directory_entry)) {
 		return BYTES_PER_CLUSTER * file_cluster_count;
 	}
