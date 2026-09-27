@@ -66,6 +66,8 @@ inline union virtual_addr create_virtual_addr(void* ptr) {
 
 #define PAGE_TABLE_ENTRIES_IN_ONE_PAGE 512
 #define REGULAR_PAGE_SIZE 0x1000
+#define HUGE_PAGE_SIZE 0x200000
+#define SUPER_HUGE_PAGE_SIZE 0x40000000
 struct page_table {
 	union page_table_entry entries[PAGE_TABLE_ENTRIES_IN_ONE_PAGE];
 } __attribute__((packed, aligned(REGULAR_PAGE_SIZE)));

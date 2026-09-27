@@ -21,6 +21,7 @@ static inline struct page_table* get_next_page_table(struct page_table* curr_pag
 static union page_table_entry allocate_page_table_page();
 static inline void flush_tlb();
 static inline void flush_tlb_addr(uint64_t addr);
+static void recursive_pagemap_delete(struct page_table* curr_page_table, uint32_t level);
 
 void init_vmm(volatile struct limine_hhdm_response* hhdm_response) {
 	KERNEL_ASSERT(hhdm_response != NULL, "There should be hhdm enabled");
@@ -139,6 +140,12 @@ void* vmm_create_new_pagemap() {
 	return new_page_map;
 }
 
+void vmm_delete_pagemap(void* pagemap_hhdm) {
+	struct page_table* curr_page_table = (struct page_table*)pagemap_hhdm;
+	recursive_pagemap_delete(curr_page_table, 4);
+	pmm_free_page((uint8_t*)curr_page_table - g_hhdm_offset);
+}
+
 // module private functions:
 // -------------------------------------------------------------------------------------------------
 
@@ -183,4 +190,41 @@ static inline void flush_tlb() {
 
 static inline void flush_tlb_addr(uint64_t vaddr) {
 	asm volatile("invlpg (%0)" ::"r"(vaddr) : "memory");
+}
+
+static void recursive_pagemap_delete(struct page_table* curr_page_table, uint32_t level) {
+	if (level == 0) {
+		return;
+	}
+
+	uint64_t level_entries = REGULAR_PAGE_SIZE / sizeof(union page_table_entry);
+	if (level == 4) {
+		level_entries /= 2;
+	}
+
+	for (uint64_t i = 0; i < level_entries; i++) {
+		union page_table_entry* entry = &(curr_page_table->entries[i]);
+		if (entry->raw == 0) {
+			continue;
+		}
+		if (!entry->attributes.present) {
+			entry->raw = 0;
+			continue;
+		}
+
+		struct page_table* next_page_table = get_next_page_table(curr_page_table, i);
+		if (!entry->attributes.huge_page || level == 1) {
+			recursive_pagemap_delete(next_page_table, level - 1);
+			pmm_free_page((uint8_t*)next_page_table - g_hhdm_offset);
+			entry->raw = 0;
+			continue;
+		}
+
+		uint64_t page_size = (level == 3) ? SUPER_HUGE_PAGE_SIZE : HUGE_PAGE_SIZE;
+		for (uint64_t j = 0; j < page_size / REGULAR_PAGE_SIZE; j++) {
+			void* page_addr = ((uint8_t*)next_page_table) + (j * REGULAR_PAGE_SIZE);
+			pmm_free_page((uint8_t*)page_addr - g_hhdm_offset);
+		}
+		entry->raw = 0;
+	}
 }

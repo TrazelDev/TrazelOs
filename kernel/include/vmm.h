@@ -27,3 +27,4 @@ int vmm_unmap_page(void* pagemap, void* vaddr, uint64_t flags);
  * @return new pagemap in hhdm form
  */
 void* vmm_create_new_pagemap();
+void vmm_delete_pagemap(void* pagemap_hhdm);
