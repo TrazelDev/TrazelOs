@@ -7,4 +7,4 @@
  * @param pagemap_ptr A pointer to the pagemap where the ELF file will be loaded.
  * @return The entry point address of the loaded ELF file.
  */
-uint64_t load_elf_to_memory(const char* file_path, void* pagemap_ptr);
+uint64_t load_elf_to_memory(const char* file_path, void* pagemap_hhdm_ptr);

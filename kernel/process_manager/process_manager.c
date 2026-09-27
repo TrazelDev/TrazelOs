@@ -25,12 +25,12 @@ void init_process_manager() {
 	}
 
 	// Load process to memory:
-	void* page_map_physical = vmm_create_new_pagemap();
-	uint64_t entry_point = load_elf_to_memory("/sbin/init", page_map_physical);
-	vmm_map_page(page_map_physical, (void*)(USER_STACK_PTR - REGULAR_PAGE_SIZE), pmm_alloc_page(),
+	void* pagemap_hhdm_ptr = vmm_create_new_pagemap();
+	uint64_t entry_point = load_elf_to_memory("/sbin/init", pagemap_hhdm_ptr);
+	vmm_map_page(pagemap_hhdm_ptr, (void*)(USER_STACK_PTR - REGULAR_PAGE_SIZE), pmm_alloc_page(),
 				 MPF_OVERRIDE_CURRENT_PAGING | MPF_WRITABLE_PAGE | MPF_USER_ACCESSIBLE);
-	vmm_reload_cr3(page_map_physical);
-	init_process_pcb->pagemap_hhdm_ptr = page_map_physical;
+	vmm_reload_cr3(pagemap_hhdm_ptr);
+	init_process_pcb->pagemap_hhdm_ptr = pagemap_hhdm_ptr;
 
 	g_curr_pcb = init_process_pcb;
 	printk("Initializing processor scheduler and jumping to user mode init process\n\n\n");
