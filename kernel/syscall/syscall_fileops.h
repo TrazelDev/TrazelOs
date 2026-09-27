@@ -6,3 +6,5 @@ void syscall_write_handler(struct process_control_block* pcb, struct interrupt_i
 void syscall_read_handler(struct process_control_block* pcb, struct interrupt_info* process_regs);
 void syscall_open_handler(struct process_control_block* pcb, struct interrupt_info* process_regs);
 void syscall_close_handler(struct process_control_block* pcb, struct interrupt_info* process_regs);
+void syscall_dup_handler(struct process_control_block* pcb, struct interrupt_info* process_regs);
+void syscall_dup2_handler(struct process_control_block* pcb, struct interrupt_info* process_regs);

@@ -21,6 +21,8 @@ ssize_t write(int64_t file_desc, void* buf, uint64_t count) {
 }
 ssize_t open(const char* path, uint64_t flags) { return syscall(2, (uint64_t)path, flags, 0); }
 ssize_t close(int64_t file_desc) { return syscall(3, file_desc, 0, 0); }
+int64_t dup(int64_t file_desc) { return syscall(32, file_desc, 0, 0); }
+int64_t dup2(int64_t newfd, int64_t oldfd) { return syscall(33, newfd, oldfd, 0); }
 
 #define BUFFER_LEN 10
 void _start() {

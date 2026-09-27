@@ -49,6 +49,12 @@ void syscall_kernel_handler(struct interrupt_info* syscall_info) {
 		case 3:
 			syscall_close_handler(pcb, syscall_info);
 			break;
+		case 32:
+			syscall_dup_handler(pcb, syscall_info);
+			break;
+		case 33:
+			syscall_dup2_handler(pcb, syscall_info);
+			break;
 		default: {
 			printk("Trying to to execute unknown syscall number %d", syscall_info->rax);
 			// TODO: refactor kernel panic and kernel assert to accept arguments
