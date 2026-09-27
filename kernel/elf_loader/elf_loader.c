@@ -3,6 +3,7 @@
 #include <include/types.h>
 #include <include/vendor/elf.h>
 #include <kernel/include/heap.h>
+#include <kernel/include/panic.h>
 #include <kernel/include/pmm.h>
 #include <kernel/include/printk.h>
 #include <kernel/include/vfs.h>
@@ -55,8 +56,12 @@ static void load_segment(Elf64_Phdr* program_header, struct vfs_file* elf_file, 
 	uint8_t* segment_vaddr = (uint8_t*)program_header->p_vaddr;
 	uint8_t* phys_pages = pmm_alloc_pages(segment_page_count);
 	for (uint64_t i = 0; i < segment_page_count; i++) {
-		vmm_map_page(pagemap_ptr, segment_vaddr + (i * REGULAR_PAGE_SIZE),
-					 phys_pages + (i * REGULAR_PAGE_SIZE), MPF_WRITABLE_PAGE | MPF_USER_ACCESSIBLE);
+		int map_status = vmm_map_page(pagemap_ptr, segment_vaddr + (i * REGULAR_PAGE_SIZE),
+									  phys_pages + (i * REGULAR_PAGE_SIZE),
+									  MPF_WRITABLE_PAGE | MPF_USER_ACCESSIBLE);
+		KERNEL_ASSERT(map_status == 0,
+					  "Trying to load an ELF segment which overlaps with another segment.\n This "
+					  "feature is not supported");
 	}
 
 	// Loading the segment to memory:
