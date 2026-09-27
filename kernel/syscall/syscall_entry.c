@@ -1,14 +1,18 @@
 #include <include/types.h>
+#include <kernel/include/elf_loader.h>
 #include <kernel/include/gdt.h>
 #include <kernel/include/intrrupts.h>
 #include <kernel/include/msr.h>
 #include <kernel/include/panic.h>
+#include <kernel/include/pmm.h>
 #include <kernel/include/printk.h>
+#include <kernel/include/vmm.h>
 
 #include "kernel/include/process_manager.h"
 #include "kernel/include/syscall.h"
 #include "kernel/include/vfs.h"
 #include "syscall_fileops.h"
+#include "syscall_process.h"
 
 extern void asm_kernel_syscall_entrypoint();
 
@@ -54,6 +58,9 @@ void syscall_kernel_handler(struct interrupt_info* syscall_info) {
 			break;
 		case 33:
 			syscall_dup2_handler(pcb, syscall_info);
+			break;
+		case 59:
+			syscall_execve_handler(pcb, syscall_info);
 			break;
 		default: {
 			printk("Trying to to execute unknown syscall number %d", syscall_info->rax);

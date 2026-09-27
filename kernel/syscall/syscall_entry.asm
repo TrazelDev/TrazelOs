@@ -60,7 +60,7 @@ asm_kernel_syscall_entrypoint:
         pop rcx ; restoring rip
         add rsp, 8 ; skiping code segment
         pop r11 ; restore r11
+        pop rsp ; restoring ring3 rsp
 
-        mov rsp, gs:[0x8] ; restoring ring3 rsp
         swapgs
         o64 sysret

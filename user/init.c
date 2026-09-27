@@ -23,6 +23,9 @@ ssize_t open(const char* path, uint64_t flags) { return syscall(2, (uint64_t)pat
 ssize_t close(int64_t file_desc) { return syscall(3, file_desc, 0, 0); }
 int64_t dup(int64_t file_desc) { return syscall(32, file_desc, 0, 0); }
 int64_t dup2(int64_t newfd, int64_t oldfd) { return syscall(33, newfd, oldfd, 0); }
+int execve(const char* path, char* const argv[], char* const envp[]) {
+	return (int)syscall(59, (uint64_t)path, (uint64_t)argv, (uint64_t)envp);
+}
 
 #define BUFFER_LEN 10
 void _start() {
