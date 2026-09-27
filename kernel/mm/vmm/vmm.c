@@ -30,6 +30,7 @@ void init_vmm(volatile struct limine_hhdm_response* hhdm_response) {
 }
 
 void* vmm_phys_to_virt_hhdm(void* paddr) { return (void*)((uint64_t)paddr + g_hhdm_offset); }
+void* vmm_virt_hhdm_to_phys(void* vaddr) { return (void*)((uint64_t)vaddr - g_hhdm_offset); }
 
 void* vmm_get_curr_pagemap() {
 	uint64_t cr3_register;
