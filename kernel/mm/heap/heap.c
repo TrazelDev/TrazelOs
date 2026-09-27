@@ -1,10 +1,10 @@
 #include <include/types.h>
+#include <kernel/include/panic.h>
 #include <kernel/include/pmm.h>
 #include <kernel/include/printk.h>
+#include <kernel/include/vmm.h>
 
-#include "drivers/block_device.h"
 #include "kernel/include/heap.h"
-#include "kernel/include/panic.h"
 
 #define ALIGN_UP(x, align) (((x) % (align) == 0) ? (x) : ((x) + (align) - ((x) % (align))))
 #define DIV_ROUND_UP(x, align) (((x) + (align) - 1) / (align))
@@ -33,6 +33,11 @@ static void remove_memory_block_from_list(struct memory_block* block);
 static void replace_memory_block_in_list(struct memory_block* old_block,
 										 struct memory_block* new_block);
 
+/** Allocating block which are bigger than a REGULAR_PAGE_SIZE therefor too big for standard heap
+ * implemtnion */
+static void* malloc_largeblock(size_t size);
+static void free_largeblock(void* addr);
+
 void init_kernel_heap(void) {
 	uint8_t* buffer = pmm_alloc_page_hhdm();
 	g_super_blocks = (struct memory_block*)buffer;
@@ -47,6 +52,10 @@ void* kmalloc(size_t size) {
 	KERNEL_ASSERT(size != 0, "Trying to allocate size 0");
 	// KERNEL_PANIC("Function not implemented");
 	size = ALIGN_UP(size, sizeof(struct memory_block));
+
+	if (size > REGULAR_PAGE_SIZE - sizeof(struct memory_block)) {
+		return malloc_largeblock(size);
+	}
 
 	struct memory_block* block = find_big_enough_block(g_free_blocks, size);
 	if (block) {
@@ -80,6 +89,11 @@ void* kmalloc(size_t size) {
 void kfree(void* addr) {
 	struct memory_block* addr_header =
 		(struct memory_block*)(((uint8_t*)addr) - sizeof(struct memory_block));
+
+	if (addr_header->block_size > REGULAR_PAGE_SIZE - sizeof(struct memory_block)) {
+		free_largeblock(addr);
+		return;
+	}
 
 	addr_header->next = NULL;
 	if (!g_free_blocks) {
@@ -189,4 +203,30 @@ static void replace_memory_block_in_list(struct memory_block* old_block,
 			g_free_block_tail = new_block;
 		}
 	}
+}
+
+static void* malloc_largeblock(size_t size) {
+	size = ALIGN_UP(size + sizeof(struct memory_block), REGULAR_PAGE_SIZE);
+	size_t block_pagecount = size / REGULAR_PAGE_SIZE;
+
+	struct memory_block* largeblock = pmm_alloc_pages_hhdm(block_pagecount);
+	KERNEL_ASSERT(largeblock != NULL, "Kernel does not have enough memory to allocate that");
+
+	largeblock->next = NULL;
+	largeblock->prev = NULL;
+	largeblock->padding = 0;
+	largeblock->block_size = size - sizeof(struct memory_block);
+
+	return GET_MEMORY_BLOCK_BUFFER(largeblock);
+}
+
+static void free_largeblock(void* addr) {
+	struct memory_block* addr_header =
+		(struct memory_block*)(((uint8_t*)addr) - sizeof(struct memory_block));
+
+	size_t block_totalsize = addr_header->block_size + sizeof(struct memory_block);
+	size_t block_pagecount = (block_totalsize) / REGULAR_PAGE_SIZE;
+	void* block_phys_addr = vmm_virt_hhdm_to_phys(addr_header);
+
+	pmm_free_pages(block_phys_addr, block_pagecount);
 }
