@@ -39,6 +39,17 @@ void init_usermode() {
  * this function is the entry point for syscalls into the kernel.
  */
 void syscall_kernel_handler(struct interrupt_info* syscall_info) {
+	uint16_t ring3_cs_index = gdt_get_segment_index(GS_RING3_CODE_SEGMENT);
+	uint16_t ring3_ds_index = gdt_get_segment_index(GS_RING3_DATA_SEGMENT);
+	union gdt_segment_selector code_segment_ring3 = {
+		.selector = {.privilege_level = 3, .table_indicator = 0, .index = ring3_cs_index}};
+	union gdt_segment_selector data_segment_ring3 = {
+		.selector = {.privilege_level = 3, .table_indicator = 0, .index = ring3_ds_index}};
+
+	// Loading the correct code segment and data segments for interrupts compatibility
+	syscall_info->code_segment = code_segment_ring3.raw;
+	syscall_info->stack_segment = data_segment_ring3.raw;
+
 	struct process_control_block* pcb = pm_get_curr_pcb();
 	switch (syscall_info->rax) {
 		case 0:

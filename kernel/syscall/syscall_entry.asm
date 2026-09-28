@@ -42,10 +42,10 @@ asm_kernel_syscall_entrypoint:
         mov gs:[0x8], rsp ; saving ring3 rsp
         mov rsp, gs:[0]   ; extracting ring0 rsp
 
-        push 0 ; data segment that came from is irelavant
+        push 0 ; data segment that came from (Will be loaded in c (in syscall_kernel_handler func) for interrupt compatability)
         push qword gs:[0x8]
         push r11 ; rflags at syscall (syscall saves rflags register into r11 cause sfmask changes it)
-        push 0 ; code segment that came from is irelavant
+        push 0 ; code segment that came from (Will be loaded in c (in syscall_kernel_handler func) for interrupt compatability)
         push rcx ; rip to return (syscall saves it into rcx)
         push 0 ; potential error code (there are no error codes in syscalls)
         push -1 ; this is the interrupt index (but this is sycall not interrupt so no index needed)
