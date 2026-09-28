@@ -11,27 +11,37 @@
 
 #include "kernel/include/elf_loader.h"
 
+/** Makes sure the magic bytes verify the file is an elf file */
+static bool is_elf_file(Elf64_Ehdr* elf_header);
 static void load_binary_segments(const Elf64_Ehdr* elf_header, struct vfs_file* elf_file,
 								 void* pagemap_ptr);
 static void load_segment(Elf64_Phdr* program_header, struct vfs_file* elf_file, void* pagemap_ptr);
 static void print_elf64_header(const Elf64_Ehdr* ehdr);
 static inline uint64_t get_elf_segment_pages_count(const Elf64_Phdr* program_header);
 
-uint64_t load_elf_to_memory(const char* file_path, void* pagemap_ptr) {
-	struct vfs_file* elf_file = vfs_open(file_path);
+uint64_t load_elf_to_memory(struct vfs_file* elf_file, void* pagemap_hhdm_ptr) {
 	Elf64_Ehdr* elf_header = kmalloc(sizeof(Elf64_Ehdr));
 
 	vfs_read(elf_file, (uint8_t*)elf_header, sizeof(Elf64_Ehdr));
-	load_binary_segments(elf_header, elf_file, pagemap_ptr);
+	if (!is_elf_file(elf_header)) {
+		kfree(elf_header);
+		return NULL;
+	}
 
-	uint64_t elf_start = elf_header->e_entry;
+	load_binary_segments(elf_header, elf_file, pagemap_hhdm_ptr);
+
+	uint64_t entry = elf_header->e_entry;
 	kfree(elf_header);
-	vfs_close(elf_file);
-	return elf_start;
+	return entry;
 }
 
 // module private functions:
 // -------------------------------------------------------------------------------------------------
+
+static bool is_elf_file(Elf64_Ehdr* elf_header) {
+	return (elf_header->e_ident[EI_MAG0] == ELFMAG0 || elf_header->e_ident[EI_MAG1] == ELFMAG1 ||
+			elf_header->e_ident[EI_MAG2] == ELFMAG2 || elf_header->e_ident[EI_MAG3] == ELFMAG3);
+}
 
 static void load_binary_segments(const Elf64_Ehdr* elf_header, struct vfs_file* elf_file,
 								 void* pagemap_ptr) {
