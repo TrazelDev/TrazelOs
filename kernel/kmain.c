@@ -16,7 +16,6 @@
 #include <kernel/include/pmm.h>
 #include <kernel/include/printk.h>
 #include <kernel/include/process_manager.h>
-#include <kernel/include/scheduler.h>
 #include <kernel/include/syscall.h>
 #include <kernel/include/vfs.h>
 #include <kernel/include/vmm.h>

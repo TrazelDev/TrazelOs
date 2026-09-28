@@ -7,67 +7,53 @@
 #include <kernel/include/vmm.h>
 
 #include "kernel/include/heap.h"
-#include "kernel/include/scheduler.h"
-
-#define GDT_KERNEL_CS 0x08
-#define GDT_KERNEL_DS 0x10
-// Bit 9 (0x200) is the Interrupt Enable Flag (IF).
-// Bit 1 (0x02) is a CPU reserved bit that must always be 1.
-#define RFLAGS_INTERRUPTS_ENABLED 0x202
-typedef struct interrupt_info thread_state_t;
+#include "kernel/include/process_manager.h"
+#include "scheduler.h"
 
 struct runnable_task {
-	thread_state_t thread_state;
+	struct process_control_block* pcb;
 	struct runnable_task* next;
 };
 
 static struct runnable_task* g_runnable_tasks_head = NULL;
 static struct runnable_task* g_runnable_tasks_rear = NULL;
 static struct runnable_task* g_curr_task = NULL;
-static bool g_first_task_scheduled = true;
+static bool g_first_task_added = true;
 
-static void timer_scheduler(struct interrupt_info* thread_state);
+static void timer_scheduler(struct interrupt_info* curr_task_state);
 static void task_enqueue(struct runnable_task* task);
 static struct runnable_task* task_dequeue();
 static inline bool task_queue_empty();
 
-void init_scheduler() { printk("Initializing processor scheduler\n"); }
+void init_scheduler() { apic_setup_timer_handler(timer_scheduler); }
 
-void scheduler_add_task(void (*task_func)(void)) {
+void scheduler_add_task(struct process_control_block* pcb) {
 	struct runnable_task* task = kmalloc(sizeof(struct runnable_task));
-
-	task->thread_state = (thread_state_t){
-		.rip = (uint64_t)task_func,
-		.code_segment = GDT_KERNEL_CS,
-		.rflags = RFLAGS_INTERRUPTS_ENABLED,
-		.original_rsp = (uint64_t)(pmm_alloc_page_hhdm() + REGULAR_PAGE_SIZE),
-		.stack_segment = GDT_KERNEL_DS,
-	};
-
+	task->pcb = pcb;
 	task_enqueue(task);
+
+	if (g_first_task_added) {
+		g_curr_task = task_dequeue();
+		g_first_task_added = false;
+		return;
+	}
 }
 
-void scheduler_handover_execution() { apic_setup_timer_handler(timer_scheduler); }
+struct process_control_block* pm_get_curr_pcb() { return g_curr_task->pcb; }
 
 // module private functions:
 // -------------------------------------------------------------------------------------------------
 
-static void timer_scheduler(struct interrupt_info* thread_state) {
+static void timer_scheduler(struct interrupt_info* curr_task_state) {
 	if (task_queue_empty()) {
 		return;
 	}
 
-	if (g_first_task_scheduled) {
-		g_curr_task = task_dequeue();
-		*thread_state = g_curr_task->thread_state;
-		g_first_task_scheduled = false;
-		return;
-	}
-
-	g_curr_task->thread_state = *thread_state;
+	*g_curr_task->pcb->interrupt_info = *curr_task_state;
 	task_enqueue(g_curr_task);
 	g_curr_task = task_dequeue();
-	*thread_state = g_curr_task->thread_state;
+	*curr_task_state = *g_curr_task->pcb->interrupt_info;
+	vmm_reload_cr3(g_curr_task->pcb->pagemap_hhdm_ptr);
 }
 
 static void task_enqueue(struct runnable_task* task) {
@@ -75,10 +61,11 @@ static void task_enqueue(struct runnable_task* task) {
 	if (g_runnable_tasks_rear == NULL) {
 		g_runnable_tasks_head = task;
 		g_runnable_tasks_rear = task;
-	} else {
-		g_runnable_tasks_rear->next = task;
-		g_runnable_tasks_rear = task;
+		return;
 	}
+
+	g_runnable_tasks_rear->next = task;
+	g_runnable_tasks_rear = task;
 }
 
 static struct runnable_task* task_dequeue() {

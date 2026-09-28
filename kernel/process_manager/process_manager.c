@@ -8,15 +8,17 @@
 
 #include "kernel/include/panic.h"
 #include "kernel/include/process_manager.h"
+#include "scheduler.h"
 
+// Bit 9 (0x200) is the Interrupt Enable Flag (IF).
+// Bit 1 (0x02) is a CPU reserved bit that must always be 1.
+#define RFLAGS_INTERRUPTS_ENABLED 0x202
 #define USER_STACK_PTR 0x00007FFFFFFFF000
 #define MAX_PIDS 0x1000
 
 extern void asm_jump_usermode(uint64_t usermode_entrypoint, uint64_t stack_ptr);
-static struct process_control_block* g_curr_pcb;
 
 static size_t generate_pid();
-struct process_control_block* pm_get_curr_pcb() { return g_curr_pcb; }
 
 void init_process_manager() {
 	struct process_control_block* init_process_pcb = kmalloc(sizeof(struct process_control_block));
@@ -49,8 +51,12 @@ void init_process_manager() {
 	vmm_reload_cr3(pagemap_hhdm_ptr);
 	init_process_pcb->pagemap_hhdm_ptr = pagemap_hhdm_ptr;
 
-	g_curr_pcb = init_process_pcb;
+	init_process_pcb->interrupt_info = kmalloc(sizeof(struct interrupt_info));
+
+	scheduler_add_task(init_process_pcb);
 	printk("Initializing processor scheduler and jumping to user mode init process\n\n\n");
+
+	init_scheduler();
 	asm_jump_usermode(entry_point, USER_STACK_PTR);
 }
 
@@ -86,7 +92,7 @@ int64_t pm_execve(struct process_control_block* pcb, const char* path,
 	process_regs->rip = entry_point;
 	process_regs->rcx = entry_point;
 	process_regs->original_rsp = USER_STACK_PTR;
-	process_regs->r11 = 0x202;
+	process_regs->r11 = RFLAGS_INTERRUPTS_ENABLED;
 
 	vfs_close(file);
 	return 0;
