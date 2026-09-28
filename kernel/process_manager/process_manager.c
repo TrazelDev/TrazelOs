@@ -10,15 +10,17 @@
 #include "kernel/include/process_manager.h"
 
 #define USER_STACK_PTR 0x00007FFFFFFFF000
+#define MAX_PIDS 0x1000
 
 extern void asm_jump_usermode(uint64_t usermode_entrypoint, uint64_t stack_ptr);
 static struct process_control_block* g_curr_pcb;
 
+static size_t generate_pid();
 struct process_control_block* pm_get_curr_pcb() { return g_curr_pcb; }
 
 void init_process_manager() {
 	struct process_control_block* init_process_pcb = kmalloc(sizeof(struct process_control_block));
-	init_process_pcb->pid = 0;
+	init_process_pcb->pid = generate_pid();
 
 	// Setup process file descriptors:
 	struct vfs_file* tty_dev = vfs_open("/dev/tty");
@@ -88,4 +90,14 @@ int64_t pm_execve(struct process_control_block* pcb, const char* path,
 
 	vfs_close(file);
 	return 0;
+}
+// module private functions:
+// -------------------------------------------------------------------------------------------------
+
+static size_t generate_pid() {
+	static size_t current_pid = 0;
+	KERNEL_ASSERT(current_pid < MAX_PIDS, "PID generator ran out of pids");
+
+	current_pid++;
+	return current_pid;
 }
