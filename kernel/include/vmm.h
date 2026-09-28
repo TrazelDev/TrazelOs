@@ -35,3 +35,9 @@ int vmm_unmap_page(void* pagemap, void* vaddr, uint64_t flags);
  */
 void* vmm_create_new_pagemap();
 void vmm_delete_pagemap(void* pagemap_hhdm);
+/** Copies all the kernel top half of the pages, recursively clones all of the pages in the tree
+ * hierarchy of the source pagemap_hhdm var into a new pagemap and than copies the actual pages
+ * themself as well
+ * @return new pagemap in hhdm form
+ */
+void* vmm_clone_pagemap(void* pagemap_hhdm);

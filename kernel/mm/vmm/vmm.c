@@ -147,6 +147,59 @@ void vmm_delete_pagemap(void* pagemap_hhdm) {
 	pmm_free_page((uint8_t*)curr_page_table - g_hhdm_offset);
 }
 
+void recursive_pagemap_clone(struct page_table* curr_page_table, struct page_table* new_page_table,
+							 uint32_t level) {
+	if (level == 0) {
+		return;
+	}
+
+	uint64_t level_entries = REGULAR_PAGE_SIZE / sizeof(union page_table_entry);
+	if (level == 4) {
+		level_entries /= 2;
+	}
+
+	for (uint64_t i = 0; i < level_entries; i++) {
+		union page_table_entry* entry = &(curr_page_table->entries[i]);
+		if (entry->raw == 0) {
+			continue;
+		}
+		KERNEL_ASSERT(entry->attributes.present,
+					  "Page table entry should be present if it is non-zero");
+		KERNEL_ASSERT(!entry->attributes.huge_page, "Huge pages are not supported");
+
+		// Creating an empty page:
+		void* new_page_phys = pmm_alloc_page();
+		void* new_page_hhdm = vmm_phys_to_virt_hhdm(new_page_phys);
+		memset(new_page_hhdm, 0, REGULAR_PAGE_SIZE);
+
+		// Setting up the new page table entry:
+		new_page_table->entries[i] = curr_page_table->entries[i];
+		new_page_table->entries[i].attributes.index =
+			PAGE_ADDR_TO_PAGE_TABLE_ENTRY_INDEX((uint64_t)new_page_phys);
+
+		// recursive call:
+		if (level != 1) {
+			struct page_table* next_page_table = get_next_page_table(curr_page_table, i);
+			struct page_table* new_next_page_table = get_next_page_table(new_page_table, i);
+			recursive_pagemap_clone(next_page_table, new_next_page_table, level - 1);
+			continue;
+		}
+
+		// final page copy:
+		void* original_page_phys =
+			(void*)(PAGE_TABLE_ENTRY_INDEX_TO_PAGE_ADDR((uint64_t)entry->attributes.index));
+		void* original_page_hhdm = vmm_phys_to_virt_hhdm(original_page_phys);
+		memcpy(new_page_hhdm, original_page_hhdm, REGULAR_PAGE_SIZE);
+	}
+}
+
+void* vmm_clone_pagemap(void* pagemap_hhdm) {
+	struct page_table* new_page_map = vmm_create_new_pagemap();
+	recursive_pagemap_clone((struct page_table*)pagemap_hhdm, new_page_map, 4);
+
+	return new_page_map;
+}
+
 // module private functions:
 // -------------------------------------------------------------------------------------------------
 
