@@ -116,6 +116,12 @@ void pmm_free_pages(void* physical_addr, size_t count) {
 static inline size_t get_ram_max_size(volatile struct limine_memmap_response* memmap_response) {
 	size_t max_address = 0;
 	for (uint32_t i = 0; i < memmap_response->entry_count; i++) {
+		uint64_t type = memmap_response->entries[i]->type;
+		if (type != LIMINE_MEMMAP_USABLE && type != LIMINE_MEMMAP_ACPI_RECLAIMABLE &&
+			type != LIMINE_MEMMAP_BOOTLOADER_RECLAIMABLE) {
+			continue;
+		}
+
 		size_t top = memmap_response->entries[i]->base + memmap_response->entries[i]->length;
 		if (top > max_address) {
 			max_address = top;
