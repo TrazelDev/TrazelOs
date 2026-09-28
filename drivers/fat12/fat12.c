@@ -60,7 +60,12 @@ struct vfs_file* fat12_open(const char* filepath) {
 		if (*curr == '/') {
 			struct fat12_directory_entry* dir_entry = get_path_element_dir_entry(
 				dir_entries, curr_path_element, path_element_len, dir_entries_count);
-			KERNEL_ASSERT(dir_entry != NULL, "file with this path does not exist");
+			if (dir_entry == NULL) {
+				kfree(dir_entries);
+				kfree(file_vfs);
+				return NULL;
+			}
+
 			dir_entries_backup = dir_entries;
 			dir_entries_count =
 				get_filtered_directory_entries(&dir_entries, dir_entry, &g_fat12_info);
@@ -78,7 +83,11 @@ struct vfs_file* fat12_open(const char* filepath) {
 
 	struct fat12_directory_entry* file_directory_entry = get_path_element_dir_entry(
 		dir_entries, curr_path_element, path_element_len, dir_entries_count);
-	KERNEL_ASSERT(file_directory_entry != NULL, "file with this path does not exist");
+	if (file_directory_entry == NULL) {
+		kfree(dir_entries);
+		kfree(file_vfs);
+		return NULL;
+	}
 
 	file_vfs->file_size = get_file_content((uint8_t**)&file_vfs->fs_private_data,
 										   file_directory_entry, &g_fat12_info);
