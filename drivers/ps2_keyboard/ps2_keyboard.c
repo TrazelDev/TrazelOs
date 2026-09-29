@@ -7,6 +7,7 @@
 #include <kernel/include/printk.h>
 
 #include "drivers/ps2_keyboard.h"
+#include "kernel/process_manager/scheduler.h"
 #include "types.h"
 
 const char SCAN_CODE_LOOKUP_TABLE[] = {
@@ -20,6 +21,7 @@ const char SCAN_CODE_LOOKUP_TABLE[] = {
 struct ps2_keyboard_data {
 	uint8_t s_buffer[RING_BUFFER_SIZE];
 	struct ring_buffer s_ps2keyboard_rb;
+	struct pm_wait_queue* device_wait_queue;
 };
 
 static bool is_initialized = false;
@@ -42,6 +44,7 @@ struct char_device* ps2_keyboard_init() {
 	is_initialized = true;
 	ring_buffer_init(&s_ps2_keyboard_data.s_ps2keyboard_rb, s_ps2_keyboard_data.s_buffer,
 					 RING_BUFFER_SIZE);
+	s_ps2_keyboard_data.device_wait_queue = pm_create_wait_queue();
 	s_keyboard_device = (struct char_device){
 		.name = "ps2_keyboard",
 		.capabilities = CDC_READ_CAPABILITY,
@@ -68,10 +71,13 @@ static ssize_t ps2_read(struct char_device* device, void* buffer, size_t size) {
 	char input_char;
 
 	for (uint64_t i = 0; i < size; i++) {
-		while (!ring_buffer_pop(&data->s_ps2keyboard_rb, (uint8_t*)&input_char)) {
-			asm volatile("sti");
-			asm volatile("hlt");
-			asm volatile("cli");
+		if (!ring_buffer_pop(&data->s_ps2keyboard_rb, (uint8_t*)&input_char)) {
+			if (i == 0) {
+				pm_waitqueue_enqueue(data->device_wait_queue);
+				return 0;
+			}
+
+			return (ssize_t)i;
 		}
 		((char*)buffer)[i] = input_char;
 	}
@@ -97,5 +103,7 @@ static void keyboard_interrupt_handler(struct interrupt_info* info) {
 
 	char input_char = SCAN_CODE_LOOKUP_TABLE[scan_code];
 	ring_buffer_push(&s_ps2_keyboard_data.s_ps2keyboard_rb, input_char);
+	pm_waitqueue_dequeue_all(s_ps2_keyboard_data.device_wait_queue);
+
 	apic_send_eoi();
 }
