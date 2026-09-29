@@ -26,19 +26,33 @@ int64_t dup2(int64_t newfd, int64_t oldfd) { return syscall(33, newfd, oldfd, 0)
 int execve(const char* path, char* const argv[], char* const envp[]) {
 	return (int)syscall(59, (uint64_t)path, (uint64_t)argv, (uint64_t)envp);
 }
+int fork(void) { return (int)syscall(57, 0, 0, 0); }
 
-#define BUFFER_LEN 10
-void _start() {
-	char buf[BUFFER_LEN];
-
-	while (1) {
-		ssize_t ret = read(0, buf, 1);
-		if (ret == 0) {
-			continue;
-		}
-		write(1, buf, 1);
-	}
+void child() {
+	write(1, "Hello from child process\n", 25);
+	char buf[] = "In the child process: x\n";
 
 	while (1) {
+		ssize_t ret = read(0, buf + 22, 1);
+		write(1, buf, 24);
 	}
 }
+
+void parent() {
+	write(1, "Hello from parent process\n", 26);
+	char buf[] = "In the parent process: x\n";
+
+	while (1) {
+		ssize_t ret = read(0, buf + 23, 1);
+		write(1, buf, 25);
+	}
+}
+
+void _start() {
+	if (fork()) {
+		parent();
+	} else {
+		child();
+	}
+}
+

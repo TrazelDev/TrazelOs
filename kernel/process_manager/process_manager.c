@@ -1,12 +1,13 @@
+#include <include/mem_utils.h>
 #include <kernel/include/elf_loader.h>
 #include <kernel/include/heap.h>
 #include <kernel/include/intrrupts.h>
+#include <kernel/include/panic.h>
 #include <kernel/include/pmm.h>
 #include <kernel/include/printk.h>
 #include <kernel/include/vfs.h>
 #include <kernel/include/vmm.h>
 
-#include "kernel/include/panic.h"
 #include "kernel/include/process_manager.h"
 #include "scheduler.h"
 
@@ -98,6 +99,29 @@ int64_t pm_execve(struct process_control_block* pcb, const char* path,
 	vfs_close(file);
 	return 0;
 }
+
+int pm_fork(struct process_control_block* pcb, struct interrupt_info* process_regs) {
+	struct process_control_block* child_pcb = kmalloc(sizeof(struct process_control_block));
+	child_pcb->pid = generate_pid();
+	child_pcb->process_state = PS_READY_STATE;
+
+	for (uint64_t i = 0; i < MAX_PROCESS_FDS; i++) {
+		child_pcb->fds[i] = pcb->fds[i];
+		if (child_pcb->fds[i] != NULL) {
+			child_pcb->fds[i]->file_ref_count++;
+		}
+	}
+
+	child_pcb->interrupt_info = kmalloc(sizeof(struct interrupt_info));
+	*child_pcb->interrupt_info = *process_regs;
+
+	child_pcb->pagemap_hhdm_ptr = vmm_clone_pagemap(pcb->pagemap_hhdm_ptr);
+
+	child_pcb->interrupt_info->rax = 0;	 // telling the child process it is not the parent
+	scheduler_add_task(child_pcb);
+	return (int)child_pcb->pid;
+}
+
 // module private functions:
 // -------------------------------------------------------------------------------------------------
 

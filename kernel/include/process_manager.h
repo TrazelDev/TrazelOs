@@ -17,6 +17,8 @@ struct process_control_block {
 void init_process_manager();
 int64_t pm_execve(struct process_control_block* pcb, const char* path,
 				  struct interrupt_info* process_regs);
+int pm_fork(struct process_control_block* pcb, struct interrupt_info* process_regs);
+
 struct process_control_block* pm_get_curr_pcb();
 
 struct pm_wait_queue;
