@@ -10,16 +10,6 @@
 #include "kernel/include/process_manager.h"
 #include "scheduler.h"
 
-struct task_node {
-	struct process_control_block* pcb;
-	struct task_node* next;
-};
-
-struct task_queue {
-	struct task_node* queues_head;
-	struct task_node* queues_rear;
-};
-
 static struct task_queue g_runnable_tasks = {NULL, NULL};
 static struct task_node* g_curr_task = NULL;
 static bool g_first_task_added = true;
@@ -44,6 +34,19 @@ void scheduler_add_task(struct process_control_block* pcb) {
 }
 
 struct process_control_block* pm_get_curr_pcb() { return g_curr_task->pcb; }
+
+struct pm_wait_queue* pm_create_wait_queue(void) { return kmalloc(sizeof(struct pm_wait_queue)); }
+void pm_waitqueue_enqueue(struct pm_wait_queue* wait_queue) {
+	g_curr_task->pcb->process_state = PS_WAITING_STATE;
+	task_enqueue(&wait_queue->wait_queue, g_curr_task);
+}
+void pm_waitqueue_dequeue_all(struct pm_wait_queue* wait_queue) {
+	while (!task_queue_empty(&wait_queue->wait_queue)) {
+		struct task_node* task = task_dequeue(&wait_queue->wait_queue);
+		task->pcb->process_state = PS_READY_STATE;
+		task_enqueue(&g_runnable_tasks, task);
+	}
+}
 
 // module private functions:
 // -------------------------------------------------------------------------------------------------

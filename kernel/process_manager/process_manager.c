@@ -23,6 +23,7 @@ static size_t generate_pid();
 void init_process_manager() {
 	struct process_control_block* init_process_pcb = kmalloc(sizeof(struct process_control_block));
 	init_process_pcb->pid = generate_pid();
+	init_process_pcb->process_state = PS_READY_STATE;
 
 	// Setup process file descriptors:
 	struct vfs_file* tty_dev = vfs_open("/dev/tty");
