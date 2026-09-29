@@ -52,7 +52,6 @@ void init_hardware_interrupts() {
 		load_new_interrupt(i + CPU_EXCEPTION_INTERRUPT_COUNT, &entry);
 	}
 
-	sti();
 	printk("Initialized hardware interrupts\n");
 }
 
