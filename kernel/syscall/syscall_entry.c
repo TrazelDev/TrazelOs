@@ -51,7 +51,8 @@ void syscall_kernel_handler(struct interrupt_info* syscall_info) {
 	syscall_info->stack_segment = data_segment_ring3.raw;
 
 	struct process_control_block* pcb = pm_get_curr_pcb();
-	switch (syscall_info->rax) {
+	uint64_t syscall_num = syscall_info->rax;
+	switch (syscall_num) {
 		case 0:
 			syscall_read_handler(pcb, syscall_info);
 			break;
@@ -79,6 +80,15 @@ void syscall_kernel_handler(struct interrupt_info* syscall_info) {
 			KERNEL_PANIC("Syscall: unknown syscall number:\n");
 		}
 	}
+
+	if (pcb->process_state != PS_WAITING_STATE) {
+		return;
+	}
+
+	syscall_info->rax = syscall_num;  // restoring in case it was overridden
+	syscall_info->rip = syscall_info->rip - 2;
+	*pcb->interrupt_info = *syscall_info;
+	*syscall_info = *pm_load_next_ready_process();
 }
 
 // module private functions:
