@@ -25,3 +25,7 @@ struct pm_wait_queue* pm_create_wait_queue(void);
 void pm_waitqueue_enqueue(struct pm_wait_queue* wait_queue);
 /** Marks all the processes in the wait queue as ready again */
 void pm_waitqueue_dequeue_all(struct pm_wait_queue* wait_queue);
+/** Loads a process ready to run.
+ * If there are no ready processes waits for a ready one and uses it.
+ * @return The ready process CPU state */
+struct interrupt_info* pm_load_next_ready_process();

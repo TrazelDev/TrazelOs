@@ -13,6 +13,13 @@
 static struct task_queue g_runnable_tasks = {NULL, NULL};
 static struct task_node* g_curr_task = NULL;
 static bool g_first_task_added = true;
+/* CRITICAL WARNING: This variable is tricky. Do not modify it anywhere other
+ * than pm_load_next_ready_process. If something sets it to false from the outside,
+ * you risk a race condition where the timer scheduler task switches a kernel process.
+ * This skips the swapgs instruction on the way out and will crash the OS on the
+ * next syscall.
+ */
+static volatile bool g_cpu_is_idle = false;
 
 static void timer_scheduler(struct interrupt_info* curr_task_state);
 static void task_enqueue(struct task_queue* task_queue, struct task_node* task);
@@ -47,11 +54,29 @@ void pm_waitqueue_dequeue_all(struct pm_wait_queue* wait_queue) {
 		task_enqueue(&g_runnable_tasks, task);
 	}
 }
+struct interrupt_info* pm_load_next_ready_process() {
+	// The current pcb/running task is already at the waiting queue somewhere no need to save it
+
+	while (task_queue_empty(&g_runnable_tasks)) {
+		g_cpu_is_idle = true;
+		asm volatile("sti; hlt");
+		asm volatile("cli");
+	}
+	g_cpu_is_idle = false;
+
+	g_curr_task = task_dequeue(&g_runnable_tasks);
+	vmm_reload_cr3(g_curr_task->pcb->pagemap_hhdm_ptr);
+	return g_curr_task->pcb->interrupt_info;
+}
 
 // module private functions:
 // -------------------------------------------------------------------------------------------------
 
 static void timer_scheduler(struct interrupt_info* curr_task_state) {
+	if (g_cpu_is_idle) {
+		return;
+	}
+
 	if (task_queue_empty(&g_runnable_tasks)) {
 		return;
 	}
