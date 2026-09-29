@@ -1,4 +1,5 @@
 #include <kernel/include/apic.h>
+#include <kernel/include/gdt.h>
 #include <kernel/include/intrrupts.h>
 #include <kernel/include/panic.h>
 #include <kernel/include/pmm.h>
@@ -76,6 +77,10 @@ static void timer_scheduler(struct interrupt_info* curr_task_state) {
 	if (g_cpu_is_idle) {
 		return;
 	}
+
+	union gdt_segment_selector curr_task_code_segment = {.raw = curr_task_state->code_segment};
+	KERNEL_ASSERT(!gdt_is_segment_ring0(curr_task_code_segment),
+				  "Scheduler trying to context switch from ring0 process");
 
 	if (task_queue_empty(&g_runnable_tasks)) {
 		return;

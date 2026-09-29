@@ -63,6 +63,10 @@ uint16_t gdt_get_segment_index(enum gdt_segments segment) {
 	}
 }
 
+bool gdt_is_segment_ring0(union gdt_segment_selector selector) {
+	return selector.selector.privilege_level == 0;
+}
+
 // module private functions:
 // -------------------------------------------------------------------------------------------------
 
