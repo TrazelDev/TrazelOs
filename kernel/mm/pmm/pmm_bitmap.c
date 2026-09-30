@@ -13,8 +13,7 @@ static inline int64_t get_bitmap_region(volatile struct limine_memmap_response* 
 										size_t physical_ram_size);
 static inline void set_page_as_used(void* page_addr);
 static inline void set_page_as_unused(void* page_addr);
-static void mark_region_as_used(struct limine_memmap_entry* entry);
-static void mark_region_as_usable(struct limine_memmap_entry* entry);
+static void mark_region_free(struct limine_memmap_entry* entry);
 
 static struct tz_bitmap g_bitmap;
 static size_t g_hhdm_offset;
@@ -42,7 +41,7 @@ void init_pmm(volatile struct limine_memmap_response* memmap_response,
 	// Marking all the safe usable regions:
 	for (uint32_t i = 0; i < memmap_response->entry_count; i++) {
 		if (memmap_response->entries[i]->type == LIMINE_MEMMAP_USABLE) {
-			mark_region_as_usable(memmap_response->entries[i]);
+			mark_region_free(memmap_response->entries[i]);
 		}
 	}
 
@@ -161,13 +160,7 @@ static inline void set_page_as_unused(void* page_addr) {
 		"PMM bitmap bit set out of bounds");
 }
 
-static void mark_region_as_used(struct limine_memmap_entry* entry) {
-	for (uint64_t i = 0; i < entry->length / REGULAR_PAGE_SIZE; i++) {
-		set_page_as_used((void*)(entry->base + (i * REGULAR_PAGE_SIZE)));
-	}
-}
-
-static void mark_region_as_usable(struct limine_memmap_entry* entry) {
+static void mark_region_free(struct limine_memmap_entry* entry) {
 	for (uint64_t i = 0; i < entry->length / REGULAR_PAGE_SIZE; i++) {
 		set_page_as_unused((void*)(entry->base + (i * REGULAR_PAGE_SIZE)));
 	}

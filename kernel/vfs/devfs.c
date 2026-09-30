@@ -67,7 +67,6 @@ struct vfs_file* devfs_open(const char* filepath) {
 
 	for (int i = 0; i < DEVFS_MAX_DEVICES; i++) {
 		if (g_block_devices[i] != NULL && strcmp(filepath, g_block_devices[i]->name) == 0) {
-			// return something
 			return NULL;
 		}
 	}

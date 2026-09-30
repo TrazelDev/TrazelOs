@@ -71,8 +71,9 @@ static void write_ioapic_redirection_entry(union apic_redirection_entry entry, u
 static uint32_t read_lapic_register(enum lapic_registers reg_offset);
 static void write_lapic_register(enum lapic_registers reg_offset, uint32_t value);
 static void disable_pic();
-static void print_apic_redirection_entry(union apic_redirection_entry entry);
 static void lapic_timer_handler();
+__attribute__((unused)) static void print_apic_redirection_entry(
+	union apic_redirection_entry entry);
 
 void init_ioapic() {
 	if (!cpuid_is_apic_supported()) {

@@ -26,8 +26,8 @@ struct xsdp {
 static void verify_rsdp_checksum(const struct rsdp* rsdp);
 static void verify_xsdp_checksum(const struct xsdp* xsdp);
 static void verify_acpi_std_header_checksum(const struct acpi_std_header* std_header);
-static void print_rsdp(const struct rsdp* rsdp);
-static void print_acpi_sdt_header(const struct acpi_std_header* header);
+__attribute__((unused)) static void print_rsdp(const struct rsdp* rsdp);
+__attribute__((unused)) static void print_acpi_sdt_header(const struct acpi_std_header* header);
 
 static bool g_acpi_init = false;
 static struct acpi_std_header* g_rsdt = NULL;

@@ -16,7 +16,6 @@ static bool is_elf_file(Elf64_Ehdr* elf_header);
 static void load_binary_segments(const Elf64_Ehdr* elf_header, struct vfs_file* elf_file,
 								 void* pagemap_ptr);
 static void load_segment(Elf64_Phdr* program_header, struct vfs_file* elf_file, void* pagemap_ptr);
-static void print_elf64_header(const Elf64_Ehdr* ehdr);
 static inline uint64_t get_elf_segment_pages_count(const Elf64_Phdr* program_header);
 
 uint64_t load_elf_to_memory(struct vfs_file* elf_file, void* pagemap_hhdm_ptr) {

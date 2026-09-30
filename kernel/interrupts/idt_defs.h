@@ -10,6 +10,14 @@ struct idt_register;
 void create_interrupt_desc(struct idt_entry* entry, uint64_t isr_addr, enum interrupt_type type,
 						   uint8_t interrupt_stack_table, uint8_t ring_access_to_interrupt);
 
+/* the function that is setting the selector in the current way we want it to be
+ * configured: gdt, the same privilege level as the descriptor table and in the code segment */
+void set_selector(union idt_selector* selector);
+/* gets the isr offset from the descriptor */
+uint64_t get_offset(struct idt_entry* descriptor);
+/* sets the isr offset into the descriptor */
+void set_offset(struct idt_entry* descriptor, uint64_t offset);
+
 /**
  * IDT register (10 bytes).
  * Loaded via LIDT instruction to tell CPU where IDT is located.

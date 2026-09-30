@@ -138,7 +138,6 @@ static void* malloc_from_block(struct memory_block* block, size_t size) {
 		block->block_size - (size + sizeof(struct memory_block));
 	replace_memory_block_in_list(block, original_block_replacement);
 
-	struct memory_block* allocated_memory_block = block;
 	block->block_size = size;
 	return GET_MEMORY_BLOCK_BUFFER(block);
 }
@@ -146,7 +145,6 @@ static void* malloc_from_block(struct memory_block* block, size_t size) {
 static void remove_memory_block_from_list(struct memory_block* block) {
 	// Remove head:
 	if (block->prev == NULL) {
-		struct memory_block* block_list_head;
 		if (block == g_free_blocks) {
 			g_free_blocks = g_free_blocks->next;
 

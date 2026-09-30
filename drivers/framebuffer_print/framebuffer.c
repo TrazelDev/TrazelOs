@@ -23,7 +23,7 @@ static uint64_t g_curr_cursor_index = 0;
 static struct char_device g_framebuffer_device;
 static bool g_device_initialized = false;
 
-static void print_framebuffer_response(
+__attribute__((unused)) static void print_framebuffer_response(
 	volatile struct limine_framebuffer_response* framebuffer_response);
 static void print_letter(char letter);
 static void slide_framebuffer();
@@ -91,6 +91,8 @@ static ssize_t framebuffer_write(struct char_device* device, void* buffer, size_
 			g_curr_cursor_index -= chars_per_row;
 		}
 	}
+
+	return 0;
 }
 
 bool is_pixel_on(char c, int x, int y) {
@@ -98,7 +100,7 @@ bool is_pixel_on(char c, int x, int y) {
 	int byte_index = (y * bytes_per_row) + (x / 8);
 	int bit_index = 7 - (x % 8);
 
-	return font8x16[c][byte_index] & (1 << bit_index);
+	return font8x16[(uint8_t)c][byte_index] & (1 << bit_index);
 }
 
 static void print_letter(char letter) {

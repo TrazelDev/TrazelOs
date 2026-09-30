@@ -3,14 +3,6 @@
 
 #include "idt_defs.h"
 
-/* the function that is setting the selector in the current way we want it to be
- * configured: gdt, the same privilege level as the descriptor table and in the code segment */
-static void set_selector(union idt_selector* selector);
-/* gets the isr offset from the descriptor */
-static uint64_t get_offset(struct idt_entry* descriptor);
-/* sets the isr offset into the descriptor */
-static void set_offset(struct idt_entry* descriptor, uint64_t offset);
-
 #define MAX_INTERRUPT_STACK_TABLES 7
 void create_interrupt_desc(struct idt_entry* entry, uint64_t isr_addr, enum interrupt_type type,
 						   uint8_t interrupt_stack_table, uint8_t ring_access_to_interrupt) {
@@ -44,13 +36,13 @@ void set_selector(union idt_selector* selector) {
 #define GET_OFFSET_MID_BIT_MASK(desc) ((uint64_t)(desc)->offset_mid) << 16
 #define GET_OFFSET_HIGH_BIT_MASK(desc) ((uint64_t)(desc)->offset_high) << 32
 
-static void set_offset(struct idt_entry* descriptor, uint64_t offset) {
+void set_offset(struct idt_entry* descriptor, uint64_t offset) {
 	descriptor->offset_low = SET_OFFSET_LOW_BIT_MASK(offset);
 	descriptor->offset_mid = SET_OFFSET_MID_BIT_MASK(offset);
 	descriptor->offset_high = SET_OFFSET_HIGH_BIT_MASK(offset);
 }
 
-static uint64_t get_offset(struct idt_entry* descriptor) {
+uint64_t get_offset(struct idt_entry* descriptor) {
 	uint64_t offset = 0;
 
 	// using bitwise or in order to set the value offset with the right bits:
