@@ -12,7 +12,7 @@
 #include "scheduler.h"
 
 static struct task_queue g_runnable_tasks = {NULL, NULL};
-static struct task_node* g_curr_task = NULL;
+static struct process_control_block* g_curr_task = NULL;
 static bool g_first_task_added = true;
 /* CRITICAL WARNING: This variable is tricky. Do not modify it anywhere other
  * than pm_load_next_ready_process. If something sets it to false from the outside,
@@ -23,16 +23,14 @@ static bool g_first_task_added = true;
 static volatile bool g_cpu_is_idle = false;
 
 static void timer_scheduler(struct interrupt_info* curr_task_state);
-static void task_enqueue(struct task_queue* task_queue, struct task_node* task);
-static struct task_node* task_dequeue(struct task_queue* task_queue);
+static void task_enqueue(struct task_queue* task_queue, struct process_control_block* task);
+static struct process_control_block* task_dequeue(struct task_queue* task_queue);
 static inline bool task_queue_empty(struct task_queue* task_queue);
 
 void init_scheduler() { apic_setup_timer_handler(timer_scheduler); }
 
 void scheduler_add_task(struct process_control_block* pcb) {
-	struct task_node* task = kmalloc(sizeof(struct task_node));
-	task->pcb = pcb;
-	task_enqueue(&g_runnable_tasks, task);
+	task_enqueue(&g_runnable_tasks, pcb);
 
 	if (g_first_task_added) {
 		g_curr_task = task_dequeue(&g_runnable_tasks);
@@ -41,17 +39,17 @@ void scheduler_add_task(struct process_control_block* pcb) {
 	}
 }
 
-struct process_control_block* pm_get_curr_pcb() { return g_curr_task->pcb; }
+struct process_control_block* pm_get_curr_pcb() { return g_curr_task; }
 
 struct pm_wait_queue* pm_create_wait_queue(void) { return kmalloc(sizeof(struct pm_wait_queue)); }
 void pm_waitqueue_enqueue(struct pm_wait_queue* wait_queue) {
-	g_curr_task->pcb->process_state = PS_WAITING_STATE;
+	g_curr_task->process_state = PS_WAITING_STATE;
 	task_enqueue(&wait_queue->wait_queue, g_curr_task);
 }
 void pm_waitqueue_dequeue_all(struct pm_wait_queue* wait_queue) {
 	while (!task_queue_empty(&wait_queue->wait_queue)) {
-		struct task_node* task = task_dequeue(&wait_queue->wait_queue);
-		task->pcb->process_state = PS_READY_STATE;
+		struct process_control_block* task = task_dequeue(&wait_queue->wait_queue);
+		task->process_state = PS_READY_STATE;
 		task_enqueue(&g_runnable_tasks, task);
 	}
 }
@@ -66,8 +64,8 @@ struct interrupt_info* pm_load_next_ready_process() {
 	g_cpu_is_idle = false;
 
 	g_curr_task = task_dequeue(&g_runnable_tasks);
-	vmm_reload_cr3(g_curr_task->pcb->pagemap_hhdm_ptr);
-	return g_curr_task->pcb->interrupt_info;
+	vmm_reload_cr3(g_curr_task->pagemap_hhdm_ptr);
+	return g_curr_task->interrupt_info;
 }
 
 // module private functions:
@@ -86,14 +84,14 @@ static void timer_scheduler(struct interrupt_info* curr_task_state) {
 		return;
 	}
 
-	*g_curr_task->pcb->interrupt_info = *curr_task_state;
+	*g_curr_task->interrupt_info = *curr_task_state;
 	task_enqueue(&g_runnable_tasks, g_curr_task);
 	g_curr_task = task_dequeue(&g_runnable_tasks);
-	*curr_task_state = *g_curr_task->pcb->interrupt_info;
-	vmm_reload_cr3(g_curr_task->pcb->pagemap_hhdm_ptr);
+	*curr_task_state = *g_curr_task->interrupt_info;
+	vmm_reload_cr3(g_curr_task->pagemap_hhdm_ptr);
 }
 
-static void task_enqueue(struct task_queue* task_queue, struct task_node* task) {
+static void task_enqueue(struct task_queue* task_queue, struct process_control_block* task) {
 	task->next = NULL;
 	if (task_queue->queues_rear == NULL) {
 		task_queue->queues_head = task;
@@ -105,8 +103,8 @@ static void task_enqueue(struct task_queue* task_queue, struct task_node* task) 
 	task_queue->queues_rear = task;
 }
 
-static struct task_node* task_dequeue(struct task_queue* task_queue) {
-	struct task_node* next_task = task_queue->queues_head;
+static struct process_control_block* task_dequeue(struct task_queue* task_queue) {
+	struct process_control_block* next_task = task_queue->queues_head;
 	if (task_queue->queues_head == task_queue->queues_rear) {
 		task_queue->queues_rear = NULL;
 	}

@@ -12,6 +12,8 @@ struct process_control_block {
 	struct interrupt_info* interrupt_info;
 
 	struct vfs_file* fds[MAX_PROCESS_FDS];
+
+	struct process_control_block* next;
 };
 
 void init_process_manager();
