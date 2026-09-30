@@ -31,3 +31,6 @@ void syscall_getppid_handler(struct process_control_block* pcb,
 void syscall_exit_handler(struct process_control_block* pcb, struct interrupt_info* process_regs) {
 	pm_exit((int)process_regs->rdi, pcb, process_regs);
 }
+void syscall_wait_handler(struct process_control_block* pcb, struct interrupt_info* process_regs) {
+	process_regs->rax = pm_wait((int*)pcb->interrupt_info->rdi, pcb, process_regs);
+}

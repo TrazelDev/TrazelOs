@@ -159,6 +159,44 @@ void pm_exit(int status, struct process_control_block* pcb, struct interrupt_inf
 	pm_waitqueue_dequeue_all(g_process_list[pcb->ppid]->parent_wait_queue);
 }
 
+size_t pm_wait(int* status, struct process_control_block* pcb,
+			   struct interrupt_info* process_regs) {
+	bool has_children = false;
+	for (size_t i = 0; i < MAX_PIDS; i++) {
+		if (g_process_list[i] == NULL) {
+			continue;
+		}
+		if (g_process_list[i]->ppid != pcb->pid) {
+			continue;
+		}
+
+		if (g_process_list[i]->process_state != PS_ZOMBIE_STATE) {
+			has_children = true;
+			continue;
+		}
+
+		if (status) {
+			*status = g_process_list[i]->exit_status;
+		}
+
+		size_t repead_pid = g_process_list[i]->pid;
+		vmm_delete_pagemap(g_process_list[i]->pagemap_hhdm_ptr);
+		kfree(g_process_list[i]->interrupt_info);
+		kfree(g_process_list[i]->parent_wait_queue);
+		kfree(g_process_list[i]);
+		g_process_list[i] = NULL;
+
+		return repead_pid;
+	}
+
+	if (!has_children) {
+		return -1;
+	}
+
+	pm_waitqueue_enqueue(pcb->parent_wait_queue);
+	return 0;
+}
+
 struct process_control_block* pm_get_pcb_by_pid(size_t pid) {
 	if (pid >= MAX_PIDS) {
 		return NULL;

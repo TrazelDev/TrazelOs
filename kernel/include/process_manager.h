@@ -26,6 +26,9 @@ int64_t pm_execve(struct process_control_block* pcb, const char* path,
 				  struct interrupt_info* process_regs);
 int pm_fork(struct process_control_block* pcb, struct interrupt_info* process_regs);
 void pm_exit(int status, struct process_control_block* pcb, struct interrupt_info* process_regs);
+/** Waits for a terminated child
+ * @return the pid of the process that is returned */
+size_t pm_wait(int* status, struct process_control_block* pcb, struct interrupt_info* process_regs);
 
 struct process_control_block* pm_get_curr_pcb();
 /** @return PCB of requested pid, NULL if there is no process with that pid */
