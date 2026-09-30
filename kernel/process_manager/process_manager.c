@@ -26,6 +26,7 @@ static size_t generate_pid();
 void init_process_manager() {
 	struct process_control_block* init_process_pcb = kmalloc(sizeof(struct process_control_block));
 	init_process_pcb->pid = generate_pid();
+	init_process_pcb->ppid = 0;
 	init_process_pcb->process_state = PS_READY_STATE;
 
 	// Setup process file descriptors:
@@ -106,6 +107,7 @@ int64_t pm_execve(struct process_control_block* pcb, const char* path,
 int pm_fork(struct process_control_block* pcb, struct interrupt_info* process_regs) {
 	struct process_control_block* child_pcb = kmalloc(sizeof(struct process_control_block));
 	child_pcb->pid = generate_pid();
+	child_pcb->ppid = pcb->pid;
 	child_pcb->process_state = PS_READY_STATE;
 
 	for (uint64_t i = 0; i < MAX_PROCESS_FDS; i++) {

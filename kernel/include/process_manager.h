@@ -6,6 +6,7 @@ enum process_state { PS_READY_STATE, PS_WAITING_STATE, PS_ZOMBIE_STATE };
 #define MAX_PROCESS_FDS 32
 struct process_control_block {
 	size_t pid;
+	size_t ppid;
 	enum process_state process_state;
 
 	void* pagemap_hhdm_ptr;

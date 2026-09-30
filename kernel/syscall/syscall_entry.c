@@ -81,6 +81,9 @@ void syscall_kernel_handler(struct interrupt_info* syscall_info) {
 		case 59:
 			syscall_execve_handler(pcb, syscall_info);
 			break;
+		case 110:
+			syscall_getppid_handler(pcb, syscall_info);
+			break;
 		default: {
 			printk("Trying to to execute unknown syscall number %d", syscall_info->rax);
 			// TODO: refactor kernel panic and kernel assert to accept arguments
