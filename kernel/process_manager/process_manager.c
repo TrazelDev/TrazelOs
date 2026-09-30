@@ -27,6 +27,8 @@ void init_process_manager() {
 	struct process_control_block* init_process_pcb = kmalloc(sizeof(struct process_control_block));
 	init_process_pcb->pid = generate_pid();
 	init_process_pcb->ppid = 0;
+	init_process_pcb->kill_signal = false;
+
 	init_process_pcb->process_state = PS_READY_STATE;
 	init_process_pcb->parent_wait_queue = pm_create_wait_queue();
 
@@ -109,6 +111,7 @@ int pm_fork(struct process_control_block* pcb, struct interrupt_info* process_re
 	struct process_control_block* child_pcb = kmalloc(sizeof(struct process_control_block));
 	child_pcb->pid = generate_pid();
 	child_pcb->ppid = pcb->pid;
+	child_pcb->kill_signal = false;
 	child_pcb->process_state = PS_READY_STATE;
 	child_pcb->parent_wait_queue = pm_create_wait_queue();
 

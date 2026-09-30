@@ -1,6 +1,8 @@
 #pragma once
 #include <kernel/include/process_manager.h>
 
+#define KILL_SINGLA_EXIT_CODE 139
+
 struct task_queue {
 	struct process_control_block* queues_head;
 	struct process_control_block* queues_rear;

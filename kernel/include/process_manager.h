@@ -9,6 +9,7 @@ struct process_control_block {
 	size_t pid;
 	size_t ppid;
 	int exit_status;
+	bool kill_signal;
 
 	enum process_state process_state;
 	struct pm_wait_queue* parent_wait_queue;

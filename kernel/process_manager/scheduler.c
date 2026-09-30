@@ -80,15 +80,18 @@ static void timer_scheduler(struct interrupt_info* curr_task_state) {
 	KERNEL_ASSERT(!gdt_is_segment_ring0(curr_task_code_segment),
 				  "Scheduler trying to context switch from ring0 process");
 
-	if (task_queue_empty(&g_runnable_tasks)) {
+	if (task_queue_empty(&g_runnable_tasks) && !g_curr_task->kill_signal) {
 		return;
 	}
 
-	*g_curr_task->interrupt_info = *curr_task_state;
-	task_enqueue(&g_runnable_tasks, g_curr_task);
-	g_curr_task = task_dequeue(&g_runnable_tasks);
-	*curr_task_state = *g_curr_task->interrupt_info;
-	vmm_reload_cr3(g_curr_task->pagemap_hhdm_ptr);
+	if (g_curr_task->kill_signal) {
+		pm_exit(KILL_SINGLA_EXIT_CODE, g_curr_task, curr_task_state);
+	} else {
+		*g_curr_task->interrupt_info = *curr_task_state;
+		task_enqueue(&g_runnable_tasks, g_curr_task);
+	}
+
+	*curr_task_state = *pm_load_next_ready_process();
 }
 
 static void task_enqueue(struct task_queue* task_queue, struct process_control_block* task) {
