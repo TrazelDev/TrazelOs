@@ -200,6 +200,15 @@ size_t pm_wait(int* status, struct process_control_block* pcb,
 	return 0;
 }
 
+size_t pm_kill(size_t pid, struct process_control_block* pcb, struct interrupt_info* process_regs) {
+	if (pid >= MAX_PIDS || g_process_list[pid] == NULL) {
+		return -1;
+	}
+
+	g_process_list[pid]->kill_signal = true;
+	return 0;
+}
+
 struct process_control_block* pm_get_pcb_by_pid(size_t pid) {
 	if (pid >= MAX_PIDS) {
 		return NULL;

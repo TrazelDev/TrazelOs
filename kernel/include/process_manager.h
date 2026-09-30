@@ -30,6 +30,7 @@ void pm_exit(int status, struct process_control_block* pcb, struct interrupt_inf
 /** Waits for a terminated child
  * @return the pid of the process that is returned */
 size_t pm_wait(int* status, struct process_control_block* pcb, struct interrupt_info* process_regs);
+size_t pm_kill(size_t pid, struct process_control_block* pcb, struct interrupt_info* process_regs);
 
 struct process_control_block* pm_get_curr_pcb();
 /** @return PCB of requested pid, NULL if there is no process with that pid */

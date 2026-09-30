@@ -31,6 +31,7 @@ uint64_t getpid(void) { return (uint64_t)syscall(39, 0, 0, 0); }
 uint64_t getppid(void) { return (uint64_t)syscall(110, 0, 0, 0); }
 void exit(int status) { syscall(60, (uint64_t)status, 0, 0); }
 uint64_t wait(int* status) { return (uint64_t)syscall(61, (uint64_t)status, 0, 0); }
+uint64_t kill(uint64_t pid, int sig) { return (uint64_t)syscall(62, pid, (uint64_t)sig, 0); }
 
 void child() {
 	write(1, "Hello from child process\n", 25);

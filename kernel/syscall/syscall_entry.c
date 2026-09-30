@@ -87,6 +87,9 @@ void syscall_kernel_handler(struct interrupt_info* syscall_info) {
 		case 61:
 			syscall_wait_handler(pcb, syscall_info);
 			break;
+		case 62:
+			syscall_kill_handler(pcb, syscall_info);
+			break;
 		case 110:
 			syscall_getppid_handler(pcb, syscall_info);
 			break;
