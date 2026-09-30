@@ -72,6 +72,9 @@ void syscall_kernel_handler(struct interrupt_info* syscall_info) {
 		case 33:
 			syscall_dup2_handler(pcb, syscall_info);
 			break;
+		case 39:
+			syscall_getpid_handler(pcb, syscall_info);
+			break;
 		case 57:
 			syscall_fork_handler(pcb, syscall_info);
 			break;

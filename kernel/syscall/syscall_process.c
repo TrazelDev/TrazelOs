@@ -18,3 +18,8 @@ void syscall_execve_handler(struct process_control_block* pcb,
 void syscall_fork_handler(struct process_control_block* pcb, struct interrupt_info* process_regs) {
 	process_regs->rax = pm_fork(pcb, process_regs);
 }
+
+void syscall_getpid_handler(struct process_control_block* pcb,
+							struct interrupt_info* process_regs) {
+	process_regs->rax = pcb->pid;
+}

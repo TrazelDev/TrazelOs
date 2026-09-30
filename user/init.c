@@ -27,6 +27,7 @@ int execve(const char* path, char* const argv[], char* const envp[]) {
 	return (int)syscall(59, (uint64_t)path, (uint64_t)argv, (uint64_t)envp);
 }
 int fork(void) { return (int)syscall(57, 0, 0, 0); }
+uint64_t getpid(void) { return (uint64_t)syscall(39, 0, 0, 0); }
 
 void child() {
 	write(1, "Hello from child process\n", 25);
