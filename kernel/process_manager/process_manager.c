@@ -17,6 +17,8 @@
 #define USER_STACK_PTR 0x00007FFFFFFFF000
 #define MAX_PIDS 0x1000
 
+struct process_control_block* g_process_list[MAX_PIDS];
+
 extern void asm_jump_usermode(uint64_t usermode_entrypoint, uint64_t stack_ptr);
 
 static size_t generate_pid();
@@ -55,6 +57,7 @@ void init_process_manager() {
 
 	init_process_pcb->interrupt_info = kmalloc(sizeof(struct interrupt_info));
 
+	g_process_list[init_process_pcb->pid] = init_process_pcb;
 	scheduler_add_task(init_process_pcb);
 	printk("Initializing processor scheduler and jumping to user mode init process\n\n\n");
 
@@ -118,17 +121,29 @@ int pm_fork(struct process_control_block* pcb, struct interrupt_info* process_re
 	child_pcb->pagemap_hhdm_ptr = vmm_clone_pagemap(pcb->pagemap_hhdm_ptr);
 
 	child_pcb->interrupt_info->rax = 0;	 // telling the child process it is not the parent
+
+	g_process_list[child_pcb->pid] = child_pcb;
 	scheduler_add_task(child_pcb);
 	return (int)child_pcb->pid;
+}
+
+struct process_control_block* pm_get_pcb_by_pid(size_t pid) {
+	if (pid >= MAX_PIDS) {
+		return NULL;
+	}
+
+	return g_process_list[pid];
 }
 
 // module private functions:
 // -------------------------------------------------------------------------------------------------
 
 static size_t generate_pid() {
-	static size_t current_pid = 0;
-	KERNEL_ASSERT(current_pid < MAX_PIDS, "PID generator ran out of pids");
+	for (size_t i = 1; i < MAX_PIDS; i++) {
+		if (g_process_list[i] == NULL) {
+			return i;
+		}
+	}
 
-	current_pid++;
-	return current_pid;
+	KERNEL_PANIC("Too many processes running at once. MAX_PIDS limit reached");
 }

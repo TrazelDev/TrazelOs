@@ -22,6 +22,8 @@ int64_t pm_execve(struct process_control_block* pcb, const char* path,
 int pm_fork(struct process_control_block* pcb, struct interrupt_info* process_regs);
 
 struct process_control_block* pm_get_curr_pcb();
+/** @return PCB of requested pid, NULL if there is no process with that pid */
+struct process_control_block* pm_get_pcb_by_pid(size_t pid);
 
 struct pm_wait_queue;
 struct pm_wait_queue* pm_create_wait_queue(void);
