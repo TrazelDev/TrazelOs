@@ -43,7 +43,7 @@ export AR = x86_64-elf-ar
 CC_BIN_FLAGS := -ffreestanding -mno-red-zone -m64 -fno-pie -fno-pic
 CC_INCLUDE_FLAGS := -I $(DIR_INCLUDS) -I $(DIR_CURR)
 CC_DEP_GENERATION_FLAGS := -MMD -MP
-CC_WARNINGS_AS_ERRORS := -Wall -Werror
+CC_WARNINGS_AS_ERRORS := -Wall -Wpointer-arith -Werror
 CC_DEBUG_FLAGS := -ggdb3
 # This makes it so that the compiler outputs paths in the generated files as relative to the project root directory,
 # not the full absolute paths on the filesystem this is necessary for debug information to work well:

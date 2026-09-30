@@ -34,8 +34,8 @@ void init_pmm(volatile struct limine_memmap_response* memmap_response,
 	uint64_t bits_needed_for_bitmap = systems_physical_ram_size / REGULAR_PAGE_SIZE;
 	uint64_t bytes_needed_for_bitmap = DIV_ROUND_UP(bits_needed_for_bitmap, BITS_PER_BYTE);
 	uint64_t pages_needed_for_bitmap = DIV_ROUND_UP(bytes_needed_for_bitmap, REGULAR_PAGE_SIZE);
-	g_bitmap =
-		bitmap_create((void*)bitmap_region->base + hhdm_response->offset, bits_needed_for_bitmap);
+	g_bitmap = bitmap_create((uint8_t*)bitmap_region->base + hhdm_response->offset,
+							 bits_needed_for_bitmap);
 	memset(g_bitmap.bitmap, 0xFF, bytes_needed_for_bitmap);
 
 	// Marking all the safe usable regions:
@@ -91,14 +91,14 @@ void* pmm_alloc_pages(size_t count) {
 }
 
 void* pmm_alloc_page_hhdm(void) {
-	void* page = pmm_alloc_page();
+	uint8_t* page = pmm_alloc_page();
 	if (page) {
 		return page + g_hhdm_offset;
 	}
 	return page;
 }
 void* pmm_alloc_pages_hhdm(size_t count) {
-	void* pages = pmm_alloc_pages(count);
+	uint8_t* pages = pmm_alloc_pages(count);
 	if (pages) {
 		return pages + g_hhdm_offset;
 	}

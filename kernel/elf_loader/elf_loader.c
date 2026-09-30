@@ -75,7 +75,7 @@ static void load_segment(Elf64_Phdr* program_header, struct vfs_file* elf_file, 
 
 	// Loading the segment to memory:
 	uint8_t* segment_start_hhdm_location =
-		vmm_phys_to_virt_hhdm(phys_pages) + (program_header->p_vaddr % REGULAR_PAGE_SIZE);
+		(uint8_t*)vmm_phys_to_virt_hhdm(phys_pages) + (program_header->p_vaddr % REGULAR_PAGE_SIZE);
 	vfs_seek(elf_file, (int64_t)program_header->p_offset, SKW_VFS_SEEK_SET);
 	vfs_read(elf_file, segment_start_hhdm_location, program_header->p_filesz);
 
