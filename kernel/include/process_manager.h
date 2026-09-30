@@ -1,13 +1,17 @@
 #pragma once
 #include <include/types.h>
 
+struct pm_wait_queue;
 enum process_state { PS_READY_STATE, PS_WAITING_STATE, PS_ZOMBIE_STATE };
 
 #define MAX_PROCESS_FDS 32
 struct process_control_block {
 	size_t pid;
 	size_t ppid;
+	int exit_status;
+
 	enum process_state process_state;
+	struct pm_wait_queue* parent_wait_queue;
 
 	void* pagemap_hhdm_ptr;
 	struct interrupt_info* interrupt_info;
@@ -21,12 +25,12 @@ void init_process_manager();
 int64_t pm_execve(struct process_control_block* pcb, const char* path,
 				  struct interrupt_info* process_regs);
 int pm_fork(struct process_control_block* pcb, struct interrupt_info* process_regs);
+void pm_exit(int status, struct process_control_block* pcb, struct interrupt_info* process_regs);
 
 struct process_control_block* pm_get_curr_pcb();
 /** @return PCB of requested pid, NULL if there is no process with that pid */
 struct process_control_block* pm_get_pcb_by_pid(size_t pid);
 
-struct pm_wait_queue;
 struct pm_wait_queue* pm_create_wait_queue(void);
 /** Changes the current process sate to waiting and adds it to the device_wait_queue */
 void pm_waitqueue_enqueue(struct pm_wait_queue* wait_queue);

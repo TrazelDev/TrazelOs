@@ -23,7 +23,11 @@ void syscall_getpid_handler(struct process_control_block* pcb,
 							struct interrupt_info* process_regs) {
 	process_regs->rax = pcb->pid;
 }
+
 void syscall_getppid_handler(struct process_control_block* pcb,
 							 struct interrupt_info* process_regs) {
 	process_regs->rax = pcb->ppid;
+}
+void syscall_exit_handler(struct process_control_block* pcb, struct interrupt_info* process_regs) {
+	pm_exit((int)process_regs->rdi, pcb, process_regs);
 }

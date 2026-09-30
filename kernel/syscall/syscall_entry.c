@@ -81,6 +81,9 @@ void syscall_kernel_handler(struct interrupt_info* syscall_info) {
 		case 59:
 			syscall_execve_handler(pcb, syscall_info);
 			break;
+		case 60:
+			syscall_exit_handler(pcb, syscall_info);
+			break;
 		case 110:
 			syscall_getppid_handler(pcb, syscall_info);
 			break;
@@ -91,7 +94,7 @@ void syscall_kernel_handler(struct interrupt_info* syscall_info) {
 		}
 	}
 
-	if (pcb->process_state != PS_WAITING_STATE) {
+	if (pcb->process_state != PS_WAITING_STATE && pcb->process_state != PS_ZOMBIE_STATE) {
 		return;
 	}
 

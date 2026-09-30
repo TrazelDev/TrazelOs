@@ -28,6 +28,7 @@ void init_process_manager() {
 	init_process_pcb->pid = generate_pid();
 	init_process_pcb->ppid = 0;
 	init_process_pcb->process_state = PS_READY_STATE;
+	init_process_pcb->parent_wait_queue = pm_create_wait_queue();
 
 	// Setup process file descriptors:
 	struct vfs_file* tty_dev = vfs_open("/dev/tty");
@@ -109,6 +110,7 @@ int pm_fork(struct process_control_block* pcb, struct interrupt_info* process_re
 	child_pcb->pid = generate_pid();
 	child_pcb->ppid = pcb->pid;
 	child_pcb->process_state = PS_READY_STATE;
+	child_pcb->parent_wait_queue = pm_create_wait_queue();
 
 	for (uint64_t i = 0; i < MAX_PROCESS_FDS; i++) {
 		child_pcb->fds[i] = pcb->fds[i];
@@ -127,6 +129,34 @@ int pm_fork(struct process_control_block* pcb, struct interrupt_info* process_re
 	g_process_list[child_pcb->pid] = child_pcb;
 	scheduler_add_task(child_pcb);
 	return (int)child_pcb->pid;
+}
+
+void pm_exit(int status, struct process_control_block* pcb, struct interrupt_info* process_regs) {
+	pcb->exit_status = status;
+	pcb->process_state = PS_ZOMBIE_STATE;
+
+	for (uint64_t i = 0; i < MAX_PROCESS_FDS; i++) {
+		if (pcb->fds[i] == NULL) {
+			continue;
+		}
+
+		vfs_close(pcb->fds[i]);
+		pcb->fds[i] = NULL;
+	}
+
+	for (uint64_t i = 0; i < MAX_PIDS; i++) {
+		if (g_process_list[i] == NULL) {
+			continue;
+		}
+		if (g_process_list[i]->ppid != pcb->pid) {
+			continue;
+		}
+
+		g_process_list[i]->ppid = 1;
+	}
+
+	KERNEL_ASSERT(g_process_list[pcb->ppid], "Process does not have a valid parent process");
+	pm_waitqueue_dequeue_all(g_process_list[pcb->ppid]->parent_wait_queue);
 }
 
 struct process_control_block* pm_get_pcb_by_pid(size_t pid) {
