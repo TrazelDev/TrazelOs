@@ -22,12 +22,11 @@ static bool g_first_task_added = true;
  */
 static volatile bool g_cpu_is_idle = false;
 
-static void timer_scheduler(struct interrupt_info* curr_task_state);
 static void task_enqueue(struct task_queue* task_queue, struct process_control_block* task);
 static struct process_control_block* task_dequeue(struct task_queue* task_queue);
 static inline bool task_queue_empty(struct task_queue* task_queue);
 
-void init_scheduler() { apic_setup_timer_handler(timer_scheduler); }
+void init_scheduler() { apic_setup_timer_handler(pm_scheduler_context_switch); }
 
 void scheduler_add_task(struct process_control_block* pcb) {
 	task_enqueue(&g_runnable_tasks, pcb);
@@ -68,10 +67,7 @@ struct interrupt_info* pm_load_next_ready_process() {
 	return g_curr_task->interrupt_info;
 }
 
-// module private functions:
-// -------------------------------------------------------------------------------------------------
-
-static void timer_scheduler(struct interrupt_info* curr_task_state) {
+void pm_scheduler_context_switch(struct interrupt_info* curr_task_state) {
 	if (g_cpu_is_idle) {
 		return;
 	}
@@ -93,6 +89,9 @@ static void timer_scheduler(struct interrupt_info* curr_task_state) {
 
 	*curr_task_state = *pm_load_next_ready_process();
 }
+
+// module private functions:
+// -------------------------------------------------------------------------------------------------
 
 static void task_enqueue(struct task_queue* task_queue, struct process_control_block* task) {
 	task->next = NULL;

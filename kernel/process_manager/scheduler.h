@@ -14,3 +14,4 @@ struct pm_wait_queue {
 
 void init_scheduler();
 void scheduler_add_task(struct process_control_block* pcb);
+void pm_scheduler_context_switch(struct interrupt_info* curr_task_state);
