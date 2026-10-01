@@ -29,7 +29,7 @@ void init_cpu_exceptions() {
 	extern uint64_t isr_stub_table[CPU_EXCEPTION_INTERRUPT_COUNT];
 	struct idt_entry entry;
 	for (uint8_t i = 0; i < CPU_EXCEPTION_INTERRUPT_COUNT; i++) {
-		create_interrupt_desc(&entry, (uint64_t)isr_stub_table[i], INTTYP_TRAP_GATE, 0, 0);
+		create_interrupt_desc(&entry, (uint64_t)isr_stub_table[i], INTTYP_INTERRUPT_GATE, 0, 0);
 		load_new_interrupt(i, &entry);
 	}
 
