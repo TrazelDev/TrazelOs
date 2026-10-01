@@ -15,6 +15,8 @@ struct process_control_block {
 	struct pm_wait_queue* parent_wait_queue;
 
 	void* pagemap_hhdm_ptr;
+	void* process_heap_ptr;
+
 	struct interrupt_info* interrupt_info;
 
 	struct vfs_file* fds[MAX_PROCESS_FDS];

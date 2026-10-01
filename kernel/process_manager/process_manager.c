@@ -60,6 +60,7 @@ void init_process_manager() {
 
 	vmm_reload_cr3(pagemap_hhdm_ptr);
 	init_process_pcb->pagemap_hhdm_ptr = pagemap_hhdm_ptr;
+	init_process_pcb->process_heap_ptr = (void*)elf_info->heap_start;
 
 	init_process_pcb->interrupt_info = kmalloc(sizeof(struct interrupt_info));
 
@@ -108,6 +109,8 @@ int64_t pm_execve(struct process_control_block* pcb, const char* path,
 	vmm_delete_pagemap(pcb->pagemap_hhdm_ptr);
 
 	pcb->pagemap_hhdm_ptr = pagemap_hhdm;
+	pcb->process_heap_ptr = (void*)elf_info->heap_start;
+
 	process_regs->rip = elf_info->entry_point;
 	process_regs->rcx = elf_info->entry_point;
 	process_regs->original_rsp = USER_STACK_PTR;
@@ -137,6 +140,7 @@ int pm_fork(struct process_control_block* pcb, struct interrupt_info* process_re
 	*child_pcb->interrupt_info = *process_regs;
 
 	child_pcb->pagemap_hhdm_ptr = vmm_clone_pagemap(pcb->pagemap_hhdm_ptr);
+	child_pcb->process_heap_ptr = pcb->process_heap_ptr;
 
 	child_pcb->interrupt_info->rax = 0;	 // telling the child process it is not the parent
 

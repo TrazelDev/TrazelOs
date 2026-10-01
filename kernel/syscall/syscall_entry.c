@@ -12,6 +12,7 @@
 #include "kernel/include/process_manager.h"
 #include "kernel/include/syscall.h"
 #include "kernel/include/vfs.h"
+#include "kernel/syscall/syscall_memops.h"
 #include "syscall_fileops.h"
 #include "syscall_process.h"
 
@@ -65,6 +66,9 @@ void syscall_kernel_handler(struct interrupt_info* syscall_info) {
 			break;
 		case 3:
 			syscall_close_handler(pcb, syscall_info);
+			break;
+		case 12:
+			syscall_brk_handler(pcb, syscall_info);
 			break;
 		case 32:
 			syscall_dup_handler(pcb, syscall_info);
