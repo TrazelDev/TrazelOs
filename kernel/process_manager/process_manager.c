@@ -50,8 +50,8 @@ void init_process_manager() {
 				  "process to boot");
 
 	void* pagemap_hhdm_ptr = vmm_create_new_pagemap();
-	uint64_t entry_point = load_elf_to_memory(init_file, pagemap_hhdm_ptr);
-	KERNEL_ASSERT(entry_point, "Failed to load init process into memory");
+	struct elf_file_info* elf_info = load_elf_to_memory(init_file, pagemap_hhdm_ptr);
+	KERNEL_ASSERT(elf_info, "Failed to load init process into memory");
 
 	int mappage_result = vmm_map_page(
 		pagemap_hhdm_ptr, (void*)(USER_STACK_PTR - REGULAR_PAGE_SIZE), pmm_alloc_page(),
@@ -77,7 +77,10 @@ void init_process_manager() {
 	set_cpu_exception_handler(CEI_DEBUG_EXCEPTION, process_exception_handler);
 	set_cpu_exception_handler(CEI_BREAKPOINT, process_exception_handler);
 
+	uint64_t entry_point = elf_info->entry_point;
+	kfree(elf_info);
 	printk("Initializing processor scheduler and jumping to user mode init process\n\n\n");
+
 	init_scheduler();
 	asm_jump_usermode(entry_point, USER_STACK_PTR);
 }
@@ -90,20 +93,14 @@ int64_t pm_execve(struct process_control_block* pcb, const char* path,
 	}
 
 	void* pagemap_hhdm = vmm_create_new_pagemap();
+	struct elf_file_info* elf_info = load_elf_to_memory(file, pagemap_hhdm);
+	int mappage_result = vmm_map_page(pagemap_hhdm, (void*)(USER_STACK_PTR - REGULAR_PAGE_SIZE),
+									  pmm_alloc_page(), MPF_WRITABLE_PAGE | MPF_USER_ACCESSIBLE);
 
-	uint64_t entry_point = load_elf_to_memory(file, pagemap_hhdm);
-	if (entry_point == NULL) {
+	if (mappage_result != 0 || elf_info == NULL) {
 		vmm_delete_pagemap(pagemap_hhdm);
 		vfs_close(file);
-		return -1;
-	}
-
-	int mappage_result =
-		vmm_map_page(pagemap_hhdm, (void*)(USER_STACK_PTR - REGULAR_PAGE_SIZE), pmm_alloc_page(),
-					 MPF_OVERRIDE_CURRENT_PAGING | MPF_WRITABLE_PAGE | MPF_USER_ACCESSIBLE);
-	if (mappage_result != 0) {
-		vmm_delete_pagemap(pagemap_hhdm);
-		vfs_close(file);
+		kfree(elf_info);
 		return -1;
 	}
 
@@ -111,12 +108,13 @@ int64_t pm_execve(struct process_control_block* pcb, const char* path,
 	vmm_delete_pagemap(pcb->pagemap_hhdm_ptr);
 
 	pcb->pagemap_hhdm_ptr = pagemap_hhdm;
-	process_regs->rip = entry_point;
-	process_regs->rcx = entry_point;
+	process_regs->rip = elf_info->entry_point;
+	process_regs->rcx = elf_info->entry_point;
 	process_regs->original_rsp = USER_STACK_PTR;
 	process_regs->r11 = RFLAGS_INTERRUPTS_ENABLED;
 
 	vfs_close(file);
+	kfree(elf_info);
 	return 0;
 }
 
