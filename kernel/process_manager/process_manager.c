@@ -8,6 +8,7 @@
 #include <kernel/include/vfs.h>
 #include <kernel/include/vmm.h>
 
+#include "kernel/include/gdt.h"
 #include "kernel/include/process_manager.h"
 #include "scheduler.h"
 
@@ -22,6 +23,7 @@ struct process_control_block* g_process_list[MAX_PIDS];
 extern void asm_jump_usermode(uint64_t usermode_entrypoint, uint64_t stack_ptr);
 
 static size_t generate_pid();
+static void process_exception_handler(struct interrupt_info* info);
 
 void init_process_manager() {
 	struct process_control_block* init_process_pcb = kmalloc(sizeof(struct process_control_block));
@@ -63,8 +65,19 @@ void init_process_manager() {
 
 	g_process_list[init_process_pcb->pid] = init_process_pcb;
 	scheduler_add_task(init_process_pcb);
-	printk("Initializing processor scheduler and jumping to user mode init process\n\n\n");
 
+	set_cpu_exception_handler(CEI_DIVIDE_ERROR, process_exception_handler);
+	set_cpu_exception_handler(CEI_INVALID_OPCODE, process_exception_handler);
+	set_cpu_exception_handler(CEI_GENERAL_PROTECTION, process_exception_handler);
+	set_cpu_exception_handler(CEI_STACK_SEGMENT_FAULT, process_exception_handler);
+	set_cpu_exception_handler(CEI_STACK_SEGMENT_FAULT, process_exception_handler);
+	set_cpu_exception_handler(CEI_X87_FLOATING_POINT_ERROR, process_exception_handler);
+	set_cpu_exception_handler(CEI_ALIGNMENT_CHECK, process_exception_handler);
+	set_cpu_exception_handler(CEI_PAGE_FAULT, process_exception_handler);
+	set_cpu_exception_handler(CEI_DEBUG_EXCEPTION, process_exception_handler);
+	set_cpu_exception_handler(CEI_BREAKPOINT, process_exception_handler);
+
+	printk("Initializing processor scheduler and jumping to user mode init process\n\n\n");
 	init_scheduler();
 	asm_jump_usermode(entry_point, USER_STACK_PTR);
 }
@@ -228,4 +241,27 @@ static size_t generate_pid() {
 	}
 
 	KERNEL_PANIC("Too many processes running at once. MAX_PIDS limit reached");
+}
+
+static void process_exception_handler(struct interrupt_info* info) {
+	union gdt_segment_selector cs_segment = {.raw = info->code_segment};
+	if (gdt_is_segment_ring0(cs_segment)) {
+		printk("===========================================================================\n");
+		printk("Kernel Info: Kernel crushed with exception: %d\n", info->interrupt_index);
+		printk("===========================================================================\n");
+		KERNEL_PANIC("Kernel space process crushed with exception");
+	}
+
+	if (info->interrupt_index == CEI_DEBUG_EXCEPTION || info->interrupt_index == CEI_BREAKPOINT) {
+		printk("\n\n\n\n\n\n=============================================================\n");
+		printk("Kernel Info: debug and break point exceptions are not supported right now\n");
+		printk("=============================================================\n\n\n\n\n\n");
+	}
+
+	printk("\n\n\n\n\n\n=============================================================\n");
+	printk("Kernel info: User space process crushed with exception: %d\n", info->interrupt_index);
+	printk("=============================================================\n\n\n\n\n\n");
+
+	pm_get_curr_pcb()->kill_signal = true;
+	pm_scheduler_context_switch(info);
 }
