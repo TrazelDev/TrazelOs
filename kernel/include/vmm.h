@@ -2,8 +2,6 @@
 #include <include/types.h>
 #include <include/vendor/limine.h>
 
-// TODO: Create good unit test for this vmm unit
-
 enum vmm_map_page_flags {
 	NO_FLAGS = 0,
 	MPF_OVERRIDE_CURRENT_PAGING = (1 << 0),
@@ -41,3 +39,8 @@ void vmm_delete_pagemap(void* pagemap_hhdm);
  * @return new pagemap in hhdm form
  */
 void* vmm_clone_pagemap(void* pagemap_hhdm);
+
+/** @brief Calculates the number of memory pages spanned by some range of 2 addresses
+ * Func parameter must satisfy the condition (start_ptr <= end_ptr)
+ * @return The number of pages that touch this range (if both address in the same page returns 1) */
+size_t vmm_count_spanned_pages(uint64_t start_ptr, uint64_t end_ptr);

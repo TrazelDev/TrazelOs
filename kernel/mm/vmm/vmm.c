@@ -200,6 +200,13 @@ void* vmm_clone_pagemap(void* pagemap_hhdm) {
 	return new_page_map;
 }
 
+size_t vmm_count_spanned_pages(uint64_t start_ptr, uint64_t end_ptr) {
+	uint64_t start_page = start_ptr & ~(REGULAR_PAGE_SIZE - 1);
+	uint64_t end_page = end_ptr & ~(REGULAR_PAGE_SIZE - 1);
+
+	return (end_page - start_page) / REGULAR_PAGE_SIZE + 1;
+}
+
 // module private functions:
 // -------------------------------------------------------------------------------------------------
 
