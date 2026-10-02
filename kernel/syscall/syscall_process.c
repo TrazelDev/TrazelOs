@@ -32,7 +32,7 @@ void syscall_exit_handler(struct process_control_block* pcb, struct interrupt_in
 	pm_exit((int)process_regs->rdi, pcb, process_regs);
 }
 void syscall_wait_handler(struct process_control_block* pcb, struct interrupt_info* process_regs) {
-	process_regs->rax = pm_wait((int*)pcb->interrupt_info->rdi, pcb, process_regs);
+	process_regs->rax = pm_wait((int*)process_regs->rdi, pcb, process_regs);
 }
 void syscall_kill_handler(struct process_control_block* pcb, struct interrupt_info* process_regs) {
 	uint64_t signal = (uint64_t)process_regs->rsi;
