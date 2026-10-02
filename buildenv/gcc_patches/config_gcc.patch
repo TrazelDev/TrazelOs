@@ -1,0 +1,26 @@
+--- ./gcc-10.2.0/gcc/config.gcc.bak	2026-10-02 10:20:23.020915551 +0000
++++ ./gcc-10.2.0/gcc/config.gcc	2026-10-02 10:50:30.244456239 +0000
+@@ -675,6 +675,13 @@
+ 
+ # Common parts for widely ported systems.
+ case ${target} in
++*-*-trazelos*)
++  extra_options="$extra_options gnu-user.opt"
++  gas=yes
++  gnu_ld=yes
++  default_use_cxa_atexit=yes
++  use_gcc_stdint=provide
++  ;;
+ *-*-darwin*)
+   tmake_file="t-darwin "
+   tm_file="${tm_file} darwin.h"
+@@ -1033,6 +1040,9 @@
+ esac
+ 
+ case ${target} in
++x86_64-*-trazelos*)
++    tm_file="${tm_file} i386/unix.h i386/att.h elfos.h newlib-stdint.h i386/i386elf.h i386/x86-64.h trazelos.h gnu-user.h"
++    ;;
+ aarch64*-*-elf | aarch64*-*-fuchsia* | aarch64*-*-rtems*)
+ 	tm_file="${tm_file} dbxelf.h elfos.h newlib-stdint.h"
+ 	tm_file="${tm_file} aarch64/aarch64-elf.h aarch64/aarch64-errata.h aarch64/aarch64-elf-raw.h"

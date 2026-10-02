@@ -1,0 +1,13 @@
+--- ./gcc-10.2.0/libgcc/config.host.bak	2026-10-02 11:08:43.203523974 +0000
++++ ./gcc-10.2.0/libgcc/config.host	2026-10-02 11:11:55.008386188 +0000
+@@ -359,6 +359,10 @@
+ esac
+ 
+ case ${host} in
++x86_64-*-trazelos*)
++	extra_parts="$extra_parts crti.o crtbegin.o crtend.o crtn.o"
++	tmake_file="$tmake_file i386/t-crtstuff t-crtstuff-pic t-libgcc-pic"
++	;;
+ aarch64*-*-elf | aarch64*-*-rtems*)
+ 	extra_parts="$extra_parts crtbegin.o crtend.o crti.o crtn.o"
+ 	extra_parts="$extra_parts crtfastmath.o"

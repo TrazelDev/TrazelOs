@@ -30,9 +30,9 @@ export BIN_USER_INIT := $(DIR_BIN_USER)/init
 
 # tools:
 export ASM = nasm
-export CC = x86_64-elf-gcc
-export LD = x86_64-elf-ld
-export AR = x86_64-elf-ar
+export CC = x86_64-trazelos-gcc
+export LD = x86_64-trazelos-ld
+export AR = x86_64-trazelos-ar
 
 # common compiler flags:
 # ------------------------------------------------------------------

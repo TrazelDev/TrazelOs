@@ -1,0 +1,15 @@
+--- ./gcc-10.2.0/libstdc++-v3/crossconfig.m4.bak	2026-10-02 11:06:21.007900484 +0000
++++ ./gcc-10.2.0/libstdc++-v3/crossconfig.m4	2026-10-02 11:06:58.748251957 +0000
+@@ -5,6 +5,12 @@
+ AC_DEFUN([GLIBCXX_CROSSCONFIG],[
+ # Base decisions on target environment.
+ case "${host}" in
++  *-trazelos*)
++    GLIBCXX_CHECK_COMPILER_FEATURES
++    GLIBCXX_CHECK_LINKER_FEATURES
++    GLIBCXX_CHECK_MATH_SUPPORT
++    GLIBCXX_CHECK_STDLIB_SUPPORT
++    ;;
+   arm*-*-symbianelf*)
+     # This is a freestanding configuration; there is nothing to do here.
+     ;;

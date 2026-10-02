@@ -1,0 +1,13 @@
+--- ./binutils-2.35.1/ld/configure.tgt.bak	2026-10-01 15:31:28.064822028 +0000
++++ ./binutils-2.35.1/ld/configure.tgt	2026-10-01 15:32:38.701845597 +0000
+@@ -43,6 +43,10 @@
+ # Please try to keep this table more or less in alphabetic order - it
+ # makes it much easier to lookup a specific archictecture.
+ case "${targ}" in
++x86_64-*-trazelos*)
++			targ_emul=elf_x86_64_trazelos
++			targ_extra_emuls="elf_x86_64 elf_i386"
++			;;
+ aarch64_be-*-elf)	targ_emul=aarch64elfb
+ 			targ_extra_emuls="aarch64elf aarch64elf32 aarch64elf32b armelfb armelf"
+ 			;;

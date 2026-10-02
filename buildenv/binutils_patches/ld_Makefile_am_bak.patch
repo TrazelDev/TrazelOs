@@ -1,0 +1,10 @@
+--- ./binutils-2.35.1/ld/Makefile.am.bak	2026-10-01 16:22:06.074229974 +0000
++++ ./binutils-2.35.1/ld/Makefile.am	2026-10-01 16:23:22.659770812 +0000
+@@ -381,6 +381,7 @@
+ ALL_EMULATIONS = $(ALL_EMULATION_SOURCES:.c=.@OBJEXT@)
+ 
+ ALL_64_EMULATION_SOURCES = \
++	eelf_x86_64_trazelos.c \
+ 	eaarch64elf.c \
+ 	eaarch64elf32.c \
+ 	eaarch64elfb.c \

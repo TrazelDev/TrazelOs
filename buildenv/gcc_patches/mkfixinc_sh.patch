@@ -1,0 +1,11 @@
+--- ./gcc-10.2.0/fixincludes/mkfixinc.sh.bak	2026-10-02 11:17:56.492884447 +0000
++++ ./gcc-10.2.0/fixincludes/mkfixinc.sh	2026-10-02 11:19:51.426176557 +0000
+@@ -11,6 +11,8 @@
+ 
+ # Check for special fix rules for particular targets
+ case $machine in
++    *-trazelos*  | \
++    *-*-trazelos* | \
+     i?86-*-cygwin* | \
+     i?86-*-mingw32* | \
+     x86_64-*-mingw32* | \
