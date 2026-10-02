@@ -1,0 +1,10 @@
+--- ./newlib-2.5.0/newlib/libc/sys/configure.in.bak	2026-10-02 14:35:55.594932431 +0000
++++ ./newlib-2.5.0/newlib/libc/sys/configure.in	2026-10-02 14:37:28.639714415 +0000
+@@ -22,6 +22,7 @@
+ 
+ if test -n "${sys_dir}"; then
+   case ${sys_dir} in
++	trazelos) AC_CONFIG_SUBDIRS(trazelos) ;;
+ 	a29khif) AC_CONFIG_SUBDIRS(a29khif) ;;
+ 	arm) AC_CONFIG_SUBDIRS(arm) ;;
+ 	d10v) AC_CONFIG_SUBDIRS(d10v) ;;

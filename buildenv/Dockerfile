@@ -85,6 +85,72 @@ RUN make all-target-libgcc
 RUN make install-gcc
 RUN make install-target-libgcc
 
+# Installing autoconf for newlib:
+WORKDIR $AUXILIARIES_TARBALLS_PATH
+RUN curl -O https://ftp.gnu.org/gnu/autoconf/autoconf-2.65.tar.gz
+RUN tar xf autoconf-2.65.tar.gz
+RUN mv autoconf-2.65 $CROSSC_COMPILER_AUXILIARIES_PATH
+WORKDIR $CROSSC_COMPILER_AUXILIARIES_PATH
+RUN mkdir -p autoconf-2.65-bins
+WORKDIR autoconf-2.65
+RUN ./configure --prefix=$CROSSC_COMPILER_AUXILIARIES_PATH/autoconf-2.65-bins \
+    --program-suffix=-2.65 && make && make install
+ENV PATH="$CROSSC_COMPILER_AUXILIARIES_PATH/autoconf-2.65-bins/bin:$PATH"
+
+# Installing automake for newlib:
+WORKDIR $AUXILIARIES_TARBALLS_PATH
+RUN curl -O https://ftp.gnu.org/gnu/automake/automake-1.11.tar.gz
+RUN tar xf automake-1.11.tar.gz
+RUN mv automake-1.11 $CROSSC_COMPILER_AUXILIARIES_PATH
+WORKDIR $CROSSC_COMPILER_AUXILIARIES_PATH
+RUN mkdir -p automake-1.11-bins
+WORKDIR automake-1.11
+RUN ./configure --prefix=$CROSSC_COMPILER_AUXILIARIES_PATH/automake-1.11-bins \
+    --program-suffix=-1.11 && make && make install
+ENV PATH="$CROSSC_COMPILER_AUXILIARIES_PATH/automake-1.11-bins/bin:$PATH"
+
+# building newlib:
+WORKDIR $AUXILIARIES_TARBALLS_PATH
+RUN curl -O https://sourceware.org/pub/newlib/newlib-2.5.0.tar.gz
+RUN tar xf newlib-2.5.0.tar.gz
+RUN mv newlib-2.5.0 $CROSSC_COMPILER_AUXILIARIES_PATH
+WORKDIR $CROSSC_COMPILER_AUXILIARIES_PATH
+# patching everything:
+COPY newlib_patches/ /tmp/newlib_patches/
+RUN patch -p0 --input /tmp/newlib_patches/config_sub.patch
+RUN patch -p0 --input /tmp/newlib_patches/configure_host.patch
+RUN patch -p0 --input /tmp/newlib_patches/libc_sys_configure_in.patch
+WORKDIR $CROSSC_COMPILER_AUXILIARIES_PATH/newlib-2.5.0/newlib/libc/sys
+RUN autoconf-2.65
+COPY newlib_libc/ /tmp/newlib_libc
+RUN mkdir -p $CROSSC_COMPILER_AUXILIARIES_PATH/newlib-2.5.0/newlib/libc/sys/trazelos/
+RUN cp /tmp/newlib_libc/* $CROSSC_COMPILER_AUXILIARIES_PATH/newlib-2.5.0/newlib/libc/sys/trazelos/
+WORKDIR $CROSSC_COMPILER_AUXILIARIES_PATH/newlib-2.5.0/newlib/libc/sys/trazelos
+RUN AUTOMAKE=automake-1.11 ACLOCAL=aclocal-1.11 autoreconf-2.65
+WORKDIR $CROSSC_COMPILER_AUXILIARIES_PATH
+RUN mkdir build-newlib
+WORKDIR build-newlib
+ENV SYSROOT=/mnt/sysroot
+RUN ../newlib-2.5.0/configure --target=$TARGET --prefix=/usr --enable-newlib-io-long-long
+RUN make all
+RUN make DESTDIR=${SYSROOT} install
+RUN cp -ar $SYSROOT/usr/$TARGET/* $SYSROOT/usr/
+RUN mv $SYSROOT/usr/lib/crt0.o $SYSROOT/usr/lib/crt1.o
+
+# Rebuilding binutils with libc in mind:
+WORKDIR $CROSSC_COMPILER_AUXILIARIES_PATH
+RUN mkdir -p binutils_build_hosted
+WORKDIR binutils_build_hosted
+RUN ../binutils-2.35.1/configure --target=$TARGET --prefix=$PREFIX --with-sysroot=$SYSROOT --enable-interwork --enable-multilib --disable-nls --disable-werror
+RUN make all install
+
+# Rebuilding gcc with libc in mind:
+WORKDIR $CROSSC_COMPILER_AUXILIARIES_PATH
+RUN mkdir -p gcc_build_hosted
+WORKDIR gcc_build_hosted
+RUN ../gcc-10.2.0/configure --target=$TARGET --prefix=$PREFIX --with-sysroot=$SYSROOT --disable-nls --disable-libssp --enable-languages=c,c++
+RUN make all-gcc all-target-libgcc
+RUN make install-gcc install-target-libgcc
 
 # Making sure there is access to the compiler everywhere:
 ENV PATH="$PATH:/mnt/cross_compiler/compiler/bin"

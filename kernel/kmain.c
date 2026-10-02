@@ -67,5 +67,4 @@ int kmain() {
 	init_usermode();
 	init_process_manager();
 	KERNEL_PANIC("Kernel failed to jump to ring3 init process");
-
 }

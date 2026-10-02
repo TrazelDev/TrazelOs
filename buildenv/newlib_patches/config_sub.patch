@@ -1,0 +1,11 @@
+--- ./newlib-2.5.0/config.sub.bak	2026-10-02 14:17:27.282859692 +0000
++++ ./newlib-2.5.0/config.sub	2026-10-02 14:21:02.322659468 +0000
+@@ -1399,7 +1399,7 @@
+ 	      | -morphos* | -superux* | -rtmk* | -rtmk-nova* | -windiss* \
+ 	      | -powermax* | -dnix* | -nx6 | -nx7 | -sei* | -dragonfly* \
+ 	      | -skyos* | -haiku* | -rdos* | -toppers* | -drops* | -es* \
+-	      | -onefs* | -tirtos* | -phoenix*)
++	      | -onefs* | -tirtos* | -phoenix* | -trazelos* )
+ 	# Remember, each alternative MUST END IN *, to match a version number.
+ 		;;
+ 	-qnx*)

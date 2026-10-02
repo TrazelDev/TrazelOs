@@ -1,63 +1,10 @@
-typedef unsigned long long uint64_t;
-typedef long long int64_t;
-typedef long long ssize_t;
+#include <stdbool.h>
+#include <stdio.h>
 
-static int64_t syscall(uint64_t syscall_num, uint64_t arg1, uint64_t arg2, uint64_t arg3) {
-	int64_t ret;
-
-	asm volatile("syscall"
-				 : "=a"(ret)
-				 : "a"(syscall_num), "D"(arg1), "S"(arg2), "d"(arg3)
-				 : "memory");
-
-	return ret;
-}
-
-ssize_t read(int64_t file_desc, void* buf, uint64_t count) {
-	return syscall(0, file_desc, (uint64_t)buf, count);
-}
-ssize_t write(int64_t file_desc, void* buf, uint64_t count) {
-	return syscall(1, file_desc, (uint64_t)buf, count);
-}
-ssize_t open(const char* path, uint64_t flags) { return syscall(2, (uint64_t)path, flags, 0); }
-ssize_t close(int64_t file_desc) { return syscall(3, file_desc, 0, 0); }
-int64_t dup(int64_t file_desc) { return syscall(32, file_desc, 0, 0); }
-int64_t dup2(int64_t newfd, int64_t oldfd) { return syscall(33, newfd, oldfd, 0); }
-int execve(const char* path, char* const argv[], char* const envp[]) {
-	return (int)syscall(59, (uint64_t)path, (uint64_t)argv, (uint64_t)envp);
-}
-int fork(void) { return (int)syscall(57, 0, 0, 0); }
-uint64_t getpid(void) { return (uint64_t)syscall(39, 0, 0, 0); }
-uint64_t getppid(void) { return (uint64_t)syscall(110, 0, 0, 0); }
-void exit(int status) { syscall(60, (uint64_t)status, 0, 0); }
-uint64_t wait(int* status) { return (uint64_t)syscall(61, (uint64_t)status, 0, 0); }
-uint64_t kill(uint64_t pid, int sig) { return (uint64_t)syscall(62, pid, (uint64_t)sig, 0); }
-
-void child() {
-	write(1, "Hello from child process\n", 25);
-	char buf[] = "In the child process: x\n";
-
-	while (1) {
-		ssize_t ret = read(0, buf + 22, 1);
-		write(1, buf, 24);
+int main() {
+	printf("Hello world from libc\n");
+	while (true) {
+		// the for loop is because init process cannot exit
 	}
+	return 0;
 }
-
-void parent() {
-	write(1, "Hello from parent process\n", 26);
-	char buf[] = "In the parent process: x\n";
-
-	while (1) {
-		ssize_t ret = read(0, buf + 23, 1);
-		write(1, buf, 25);
-	}
-}
-
-void _start() {
-	if (fork()) {
-		parent();
-	} else {
-		child();
-	}
-}
-

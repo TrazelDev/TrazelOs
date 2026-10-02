@@ -1,0 +1,12 @@
+--- ./newlib-2.5.0/newlib/configure.host.bak	2026-10-02 14:24:12.399888142 +0000
++++ ./newlib-2.5.0/newlib/configure.host	2026-10-02 14:30:50.628269824 +0000
+@@ -376,6 +376,9 @@
+ # THIS TABLE IS ALPHA SORTED.  KEEP IT THAT WAY.
+ 
+ case "${host}" in
++  x86_64-*-trazelos*)
++	sys_dir=trazelos
++	;;
+   *-*-cygwin*)
+ 	posix_dir=posix
+ 	stdio64_dir=stdio64
