@@ -7,6 +7,7 @@
 #include <include/vendor/limine.h>
 #include <kernel/include/acpi.h>
 #include <kernel/include/apic.h>
+#include <kernel/include/cmos.h>
 #include <kernel/include/gdt.h>
 #include <kernel/include/heap.h>
 #include <kernel/include/intrrupts.h>
@@ -62,6 +63,7 @@ int kmain() {
 	init_madt();
 	init_ioapic();
 	init_lapic();
+	init_cmos();
 
 	vfs_init();
 	init_usermode();
