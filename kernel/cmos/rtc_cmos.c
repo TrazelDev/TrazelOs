@@ -44,7 +44,7 @@ void init_cmos() {
 	g_boot_unix_epoch_seconds = rtc_get_unix_epoch_seconds();
 	printk("alized CMOS RTC, boot unix epoch seconds: %d\n", g_boot_unix_epoch_seconds);
 }
-uint64_t get_boot_unix_epoch_secs() { return g_boot_unix_epoch_seconds; }
+uint64_t cmos_get_boot_unix_epoch_secs() { return g_boot_unix_epoch_seconds; }
 
 // module private functions:
 // -------------------------------------------------------------------------------------------------

@@ -1,13 +1,13 @@
 #include "include/io.h"
-#include "pit.h"
+#include "kernel/include/time.h"
 
 #define PIT_COMMAND_PORT 0x43
 #define PIT_CHANNEL_2_PORT 0x42
 #define PC_SPEAKER_PORT 0x61
 #define PIT_TICKS_PER_MS 1193
 
-void pit_spin_sleep_ms(uint32_t ms) {
-	for (uint32_t i = 0; i < ms; i++) {
+void time_pit_spin_sleep_ms(uint32_t milliseconds) {
+	for (uint32_t i = 0; i < milliseconds; i++) {
 		outb(PIT_COMMAND_PORT, 0xB0);
 
 		outb(PIT_CHANNEL_2_PORT, PIT_TICKS_PER_MS & 0xFF);

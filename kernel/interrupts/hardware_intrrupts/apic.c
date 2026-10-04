@@ -8,7 +8,7 @@
 #include <kernel/include/vmm.h>
 
 #include "kernel/include/apic.h"
-#include "pit.h"
+#include "kernel/include/time.h"
 
 /** https://wiki.osdev.org/APIC#Local_APIC_registers */
 enum lapic_registers {
@@ -97,7 +97,7 @@ void init_lapic() {
 	write_lapic_register(LAPIC_REG_TMRINITCNT, 0xFFFFFFFF);
 
 	// Perform PIT-supported sleep
-	pit_spin_sleep_ms(MILLISECONDS_PER_TIMER_ACTIVATION);
+	time_pit_spin_sleep_ms(MILLISECONDS_PER_TIMER_ACTIVATION);
 
 	// Stop the APIC timer
 	write_lapic_register(LAPIC_REG_LVT_TMR, APIC_LVT_INT_MASKED);
