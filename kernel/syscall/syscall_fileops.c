@@ -112,6 +112,17 @@ void syscall_dup2_handler(struct process_control_block* pcb, struct interrupt_in
 	pcb->fds[newfd] = pcb->fds[oldfd];
 	process_regs->rax = newfd;
 }
+void syscall_lseek_handler(struct process_control_block* pcb, struct interrupt_info* process_regs) {
+	int64_t file_desc = (int64_t)process_regs->rdi;
+	int64_t offset = (int64_t)process_regs->rsi;
+	enum vfs_seek_whence whence = (enum vfs_seek_whence)process_regs->rdx;
+
+	if (!is_fd_valid(file_desc, pcb->fds)) {
+		process_regs->rax = -1;
+		return;
+	}
+	process_regs->rax = vfs_seek(pcb->fds[file_desc], offset, whence);
+}
 
 // module private functions:
 // -------------------------------------------------------------------------------------------------

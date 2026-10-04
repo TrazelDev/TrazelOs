@@ -8,3 +8,4 @@ void syscall_open_handler(struct process_control_block* pcb, struct interrupt_in
 void syscall_close_handler(struct process_control_block* pcb, struct interrupt_info* process_regs);
 void syscall_dup_handler(struct process_control_block* pcb, struct interrupt_info* process_regs);
 void syscall_dup2_handler(struct process_control_block* pcb, struct interrupt_info* process_regs);
+void syscall_lseek_handler(struct process_control_block* pcb, struct interrupt_info* process_regs);

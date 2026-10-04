@@ -67,6 +67,9 @@ void syscall_kernel_handler(struct interrupt_info* syscall_info) {
 		case 3:
 			syscall_close_handler(pcb, syscall_info);
 			break;
+		case 8:
+			syscall_lseek_handler(pcb, syscall_info);
+			break;
 		case 12:
 			syscall_brk_handler(pcb, syscall_info);
 			break;
