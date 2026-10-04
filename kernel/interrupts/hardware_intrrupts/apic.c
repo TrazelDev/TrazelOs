@@ -44,6 +44,8 @@ enum lapic_registers {
 uint32_t volatile* g_io_apic_base = NULL;
 uint32_t volatile* g_lapic_base = NULL;
 void (*g_lapic_timer_handler)(struct interrupt_info* state) = NULL;
+static uint64_t g_system_lapic_timer_uptimer = 0;
+static const uint32_t MILLISECONDS_PER_TIMER_ACTIVATION = 10;
 
 union apic_redirection_entry {
 	struct {
@@ -71,7 +73,7 @@ static void write_ioapic_redirection_entry(union apic_redirection_entry entry, u
 static uint32_t read_lapic_register(enum lapic_registers reg_offset);
 static void write_lapic_register(enum lapic_registers reg_offset, uint32_t value);
 static void disable_pic();
-static void lapic_timer_handler();
+static void lapic_timer_handler(struct interrupt_info* state);
 __attribute__((unused)) static void print_apic_redirection_entry(
 	union apic_redirection_entry entry);
 
@@ -88,8 +90,6 @@ void init_ioapic() {
 }
 
 void init_lapic() {
-	const uint32_t MILLISECONDS_PER_TIMER_ACTIVATION = 35;
-
 	// Tell APIC timer to use divider 16
 	write_lapic_register(LAPIC_REG_TMRDIV, 0x3);
 
@@ -127,6 +127,9 @@ void apic_setup_timer_handler(void (*handler)(struct interrupt_info* state)) {
 	g_lapic_timer_handler = handler;
 }
 
+uint64_t apic_get_system_milliseconds_uptime() {
+	return g_system_lapic_timer_uptimer * MILLISECONDS_PER_TIMER_ACTIVATION;
+}
 // module private functions:
 // -------------------------------------------------------------------------------------------------
 
@@ -164,7 +167,9 @@ static void disable_pic() {
 }
 
 static void lapic_timer_handler(struct interrupt_info* state) {
-	if (g_lapic_timer_handler) {
+	g_system_lapic_timer_uptimer++;
+
+	if (g_lapic_timer_handler && g_system_lapic_timer_uptimer % 35 == 0) {
 		g_lapic_timer_handler(state);
 	}
 

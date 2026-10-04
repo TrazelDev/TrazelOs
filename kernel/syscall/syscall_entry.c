@@ -11,6 +11,7 @@
 #include "kernel/include/madt.h"
 #include "kernel/include/process_manager.h"
 #include "kernel/include/syscall.h"
+#include "kernel/include/time.h"
 #include "kernel/include/vfs.h"
 #include "kernel/syscall/syscall_memops.h"
 #include "syscall_fileops.h"
@@ -96,6 +97,9 @@ void syscall_kernel_handler(struct interrupt_info* syscall_info) {
 			break;
 		case 62:
 			syscall_kill_handler(pcb, syscall_info);
+			break;
+		case 96:
+			syscall_info->rax = gettimeofday((struct timeval*)syscall_info->rdi);
 			break;
 		case 110:
 			syscall_getppid_handler(pcb, syscall_info);

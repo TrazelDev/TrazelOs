@@ -10,6 +10,7 @@ void init_lapic();
 void apic_send_eoi();
 void apic_set_legacy_irq_desc_num(enum legacy_isa_irq irq, uint32_t desc_num);
 void apic_setup_timer_handler(void (*handler)(struct interrupt_info* state));
+uint64_t apic_get_system_milliseconds_uptime();
 
 enum legacy_isa_irq {
 	LIRQ_PIT = 0,
