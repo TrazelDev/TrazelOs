@@ -10,7 +10,7 @@ ifeq ($(RUN_ONLY), 0)
 RUN_DEPENDENCIES := build
 endif
 QEMU := qemu-system-x86_64
-QEMU_FLAGS :=
+QEMU_FLAGS := -m 2G
 QEMU_DEBUG_FLAGS := -monitor tcp:0.0.0.0:55555,server,nowait -s -S
 ifeq ($(HEADLESS),0)
 	QEMU_FLAGS += -serial stdio

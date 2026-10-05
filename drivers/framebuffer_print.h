@@ -9,3 +9,5 @@ struct char_device* init_framebuffer_print(
 /** Can only be called after the init_framebuffer_print was called at least once cause it is
  * initlazing the driver with the framebuffer_response */
 struct char_device* get_framebuffer_print_driver();
+
+uint32_t* framebuffer_get_framebuffer();

@@ -34,6 +34,9 @@ $(OS_IMG): $(BIN_KERNEL) $(BIN_USER_INIT)
 	mmd -i $(BIN_BOOT_PARTITION_IMG) ::boot
 	mmd -i $(BIN_BOOT_PARTITION_IMG) ::boot/limine
 	mmd -i $(BIN_BOOT_PARTITION_IMG) ::sbin
+
+	cd bin && curl -O https://www.jbserver.com/downloads/games/doom/misc/shareware/doom1.wad.zip && unzip doom1.wad.zip && mv DOOM1.WAD doom1.wad
+	mcopy -i $(BIN_BOOT_PARTITION_IMG) bin/doom1.wad ::doom1.wad
 	mcopy -i $(BIN_BOOT_PARTITION_IMG) $(BIN_KERNEL) ::kernel.bin
 	mcopy -i $(BIN_BOOT_PARTITION_IMG) $(BIN_USER_INIT) ::/sbin/init
 	mcopy -i $(BIN_BOOT_PARTITION_IMG) boot/limine/limine.conf ::limine.conf

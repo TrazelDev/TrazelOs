@@ -73,8 +73,8 @@ static ssize_t ps2_read(struct char_device* device, void* buffer, size_t size) {
 	for (uint64_t i = 0; i < size; i++) {
 		if (!ring_buffer_pop(&data->s_ps2keyboard_rb, (uint8_t*)&input_char)) {
 			if (i == 0) {
-				pm_waitqueue_enqueue(data->device_wait_queue);
-				return 0;
+				// pm_waitqueue_enqueue(data->device_wait_queue);
+				return -1;
 			}
 
 			return (ssize_t)i;
@@ -96,12 +96,13 @@ static ssize_t ps2_ioctl(struct char_device* device, uint32_t command, void* arg
 static void keyboard_interrupt_handler(struct interrupt_info* info) {
 	uint8_t scan_code = inb(IO_KEYBOARD_DATA_PORT);
 
-	if (scan_code >= sizeof(SCAN_CODE_LOOKUP_TABLE)) {
-		apic_send_eoi();
-		return;
-	}
+	// if (scan_code >= sizeof(SCAN_CODE_LOOKUP_TABLE)) {
+	// 	apic_send_eoi();
+	// 	return;
+	// }
 
-	char input_char = SCAN_CODE_LOOKUP_TABLE[scan_code];
+	// char input_char = SCAN_CODE_LOOKUP_TABLE[scan_code];
+	char input_char = scan_code;
 	ring_buffer_push(&s_ps2_keyboard_data.s_ps2keyboard_rb, input_char);
 	pm_waitqueue_dequeue_all(s_ps2_keyboard_data.device_wait_queue);
 

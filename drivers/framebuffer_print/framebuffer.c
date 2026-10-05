@@ -57,6 +57,7 @@ struct char_device* init_framebuffer_print(
 	};
 	return &g_framebuffer_device;
 }
+uint32_t* framebuffer_get_framebuffer() { return g_framebuffer_addr; }
 
 struct char_device* get_framebuffer_print_driver() {
 	KERNEL_ASSERT(g_device_initialized, "Framebuffer print driver not initialized");

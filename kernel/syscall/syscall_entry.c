@@ -1,3 +1,4 @@
+#include <drivers/framebuffer_print.h>
 #include <include/types.h>
 #include <kernel/include/elf_loader.h>
 #include <kernel/include/gdt.h>
@@ -8,6 +9,7 @@
 #include <kernel/include/printk.h>
 #include <kernel/include/vmm.h>
 
+#include "kernel/include/apic.h"
 #include "kernel/include/madt.h"
 #include "kernel/include/process_manager.h"
 #include "kernel/include/syscall.h"
@@ -104,6 +106,18 @@ void syscall_kernel_handler(struct interrupt_info* syscall_info) {
 		case 110:
 			syscall_getppid_handler(pcb, syscall_info);
 			break;
+		// DOOM syscalls:
+		case 201: {
+			uint32_t* framebuffer_hhdm = framebuffer_get_framebuffer();
+			uint8_t* framebuffer_phys = vmm_virt_hhdm_to_phys(framebuffer_hhdm);
+			uint8_t* vmm_addr = (uint8_t*)0x90000000000;
+			for (uint64_t i = 0; i < 5000; i++) {
+				vmm_map_page(pcb->pagemap_hhdm_ptr, (void*)(vmm_addr + (i * REGULAR_PAGE_SIZE)),
+							 (void*)(framebuffer_phys + (i * REGULAR_PAGE_SIZE)),
+							 MPF_WRITABLE_PAGE | MPF_USER_ACCESSIBLE);
+			}
+			syscall_info->rax = (uint64_t)vmm_addr;
+		} break;
 		default: {
 			printk("Trying to to execute unknown syscall number %d", syscall_info->rax);
 			// TODO: refactor kernel panic and kernel assert to accept arguments

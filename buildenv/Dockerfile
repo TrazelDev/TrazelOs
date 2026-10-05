@@ -167,7 +167,7 @@ RUN apt-get update
 RUN apt-get install -y clangd-15
 RUN apt-get install -y clang-tidy
 RUN apt-get install -y parted
-
+RUN apt-get install -y unzip
 
 # Getting limine-bootloader:
 WORKDIR /mnt 
