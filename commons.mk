@@ -47,6 +47,6 @@ CC_WARNINGS_AS_ERRORS := -Wall -Wpointer-arith -Werror
 CC_DEBUG_FLAGS := -ggdb3
 # This makes it so that the compiler outputs paths in the generated files as relative to the project root directory,
 # not the full absolute paths on the filesystem this is necessary for debug information to work well:
-export CC_PATH_MAP_FLAGS := -ffile-prefix-map=$(shell pwd)=.
+export CC_PATH_MAP_FLAGS := -ffile-prefix-map=$(shell pwd)=. --sysroot=/mnt/sysroot
 export CC_FLAGS := $(CC_BIN_FLAGS) $(CC_INCLUDE_FLAGS) $(CC_DEP_GENERATION_FLAGS) $(CC_WARNINGS_AS_ERRORS) $(CC_DEBUG_FLAGS) $(CC_PATH_MAP_FLAGS) -mcmodel=kernel
 # ------------------------------------------------------------------
